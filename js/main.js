@@ -555,6 +555,7 @@ function animateMayCalendar(wrap) {
 
 function buildTier2Panel(panel, item) {
   if (item.image) {
+    const frame = el("div", "tier2-frame");
     const img = el("img", "tier2-image");
     img.alt = item.label;
     img.loading = "lazy";
@@ -565,7 +566,8 @@ function buildTier2Panel(panel, item) {
       img.classList.add("is-placeholder");
     });
     img.src = item.image;
-    panel.appendChild(img);
+    frame.appendChild(img);
+    panel.appendChild(frame);
   }
 
   if (item.widget === "calendar-may-1543") panel.appendChild(buildMayCalendar());
