@@ -1,6 +1,6 @@
 # TESTIS
 
-**Beta — v0.1.1-beta.** Playable start to finish, all three endings reachable.
+**Beta — v0.1.2-beta.** Playable start to finish, all three endings reachable.
 
 A short narrative web game. Plain HTML/CSS/JS, no build step, no backend, no persistence.
 
@@ -39,9 +39,9 @@ and match `docs/testis-art-prompts.md` exactly.
 labelled with the filename it's waiting for. Drop the real PNG in at that name and it appears on
 next load — no code change. Every referenced asset is currently present.
 
-`char-copernicus-bound.png`, `char-player-hands.png`, and `char-witness-silhouette.png` are
-generated but unplaced — the script gives each scene one background and each hotspot one object
-image, with no slot for a portrait. `char-copernicus-reveal.png` is used as Scene 4's plate.
+Three of the four `char-*` portraits are used as plates (see [Plates](#plates)) — the portrait ratio
+suits a plate, which is why they have no home as backgrounds or hotspot images.
+`char-witness-silhouette.png` is not used.
 
 The generated art is dark-native (light linework on black), so CSS only warms and dims it; there is
 no inversion. If a later batch comes back as black-ink-on-white instead, the two `filter:` lines in
@@ -62,11 +62,22 @@ and legibility comes from the soft column of shade in `.vignette`, not from crus
 A plate is a full-bleed image with one line of text and nothing else, held until the player
 dismisses it. It's the only mode that shows art undimmed — backgrounds sit under a scrim and tier2
 shots are thumbnails — so it's reserved for moments where the image should be the event rather than
-the setting. Scene 4's closing line uses one.
+the setting. Three fire per playthrough:
 
-Add one by putting `closingPlate: "assets/<file>.png"` next to a scene's `closingText`. A 4:5
-portrait is contained rather than cropped, with a blurred copy of itself filling the room behind it;
-the image is preloaded when the scene opens, so it's warm before the branch resolves.
+| Where | Asset | Form |
+|---|---|---|
+| Scene 2, before the first word | `char-copernicus-bound.png` | silent |
+| Scene 4, on the closing line | `char-copernicus-reveal.png` | captioned |
+| Scene 5, before the first word | `char-player-hands.png` | silent |
+
+Two fields, both optional and both accepting either `"path.png"` or `{ image, text }`:
+
+- `openingPlate` — lands before the scene renders; the outgoing scene is faded out first.
+- `closingPlate` — pairs with `closingText`, replacing the inline closing paragraph.
+
+Omit the text for a silent plate; it gets more of the frame (74vh rather than 62vh) and is often the
+stronger beat. A 4:5 portrait is contained rather than cropped, with a blurred copy of itself
+filling the room behind it. Plates are preloaded a scene ahead, so they're warm before they fire.
 
 ## Debug jumps
 

@@ -140,12 +140,20 @@ function preload(paths) {
   paths.filter(Boolean).forEach(src => { new Image().src = src; });
 }
 
+function openingPlateFor(id) {
+  const s = SCENES.find(x => x.id === id);
+  return s && s.openingPlate ? normalizePlate(s.openingPlate).image : null;
+}
+
 function nextPossibleImages(scene) {
-  const out = scene.branch
-    ? scene.branch.options.map(o => backgroundFor(o.next))
-    : (scene.next ? [backgroundFor(scene.next)] : []);
-  // The plate appears the instant the branch resolves; it must already be warm.
-  if (scene.closingPlate) out.push(scene.closingPlate);
+  const nexts = scene.branch
+    ? scene.branch.options.map(o => o.next)
+    : (scene.next ? [scene.next] : []);
+
+  const out = [];
+  nexts.forEach(id => { out.push(backgroundFor(id), openingPlateFor(id)); });
+  // Plates appear the instant a choice resolves; they must already be warm.
+  if (scene.closingPlate) out.push(normalizePlate(scene.closingPlate).image);
   return out;
 }
 
@@ -400,8 +408,15 @@ function renderChoices(block, onPick, extraClass) {
 // player dismisses it. The only place the art is shown at full strength —
 // backgrounds sit under a scrim and tier2 shots are thumbnails, so this is
 // the game's one way to make an image the event rather than the setting.
-function renderPlate(spec, onDone) {
-  const plate = el("div", "plate");
+// A plate is either "path/to.png" or { image, text }. Text is optional: a
+// silent plate is a legitimate beat, and often a stronger one.
+function normalizePlate(spec) {
+  return typeof spec === "string" ? { image: spec, text: null } : spec;
+}
+
+function renderPlate(rawSpec, onDone) {
+  const spec = normalizePlate(rawSpec);
+  const plate = el("div", "plate" + (spec.text ? "" : " silent"));
   plate.setAttribute("role", "button");
   plate.tabIndex = 0;
 
@@ -497,8 +512,17 @@ function renderContinue(onGo) {
 
 function advanceTo(id) {
   currentSceneId = id;
-  if (String(id).startsWith("ending-")) renderEnding(id);
-  else renderScene(id);
+  if (String(id).startsWith("ending-")) return renderEnding(id);
+
+  // An opening plate lands before a word of the scene is on screen. Fade the
+  // outgoing scene first so nothing of it is left behind the plate.
+  const scene = SCENES.find(s => s.id === id);
+  if (scene && scene.openingPlate) {
+    content.classList.add("fade-out");
+    return renderPlate(scene.openingPlate, () => renderScene(id));
+  }
+
+  renderScene(id);
 }
 
 /* ──────────────────────────────────────────────────────────── endings */

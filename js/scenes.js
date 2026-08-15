@@ -74,6 +74,8 @@ const SCENES = [
     id: "scene-2",
     title: "The Chapel",
     background: "assets/scene-2-chapel.png",
+    // You meet him as a person before you see him as a composition.
+    openingPlate: "assets/char-copernicus-bound.png",
     text: [
       "He sat bound at the center of them, and the monks moved around his stillness the way tide moves around a stone, patient, certain, in no hurry to be cruel.",
       "His face troubled me before I understood why. Something in it suggested a man who had carried a single unspoken sentence for so long that the carrying had become indistinguishable from the man. Thirty years, I would come to learn, is a long time to hold a truth quietly. Long enough for the holding itself to start to look like guilt, even when the truth was never the crime."
@@ -287,6 +289,8 @@ const SCENES = [
     id: "scene-5",
     title: "Waking",
     background: "assets/scene-5-waking.png",
+    // Your own hands at your temple, before the prose explains them.
+    openingPlate: "assets/char-player-hands.png",
     text: [
       "I woke the way a candle wakes, not remembering it had ever been out. My hand had already found my temple before my mind caught up to it.",
       "There was a seam there. Not a scar. A <em>seam</em>, and it was wet. Not bleeding-wet. Something slower than blood, something that clung to my fingers the way old glue clings, half-dried and unwilling to fully let go of either surface it was meant to join.",
