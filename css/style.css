@@ -132,7 +132,8 @@ em { font-style: italic; color: #f7f2e6; }
   opacity: 0.5;
 }
 
-.drip span {
+.drip span,
+.drip .drop {
   position: absolute;
   top: -14px;
   left: 0;
@@ -143,7 +144,31 @@ em { font-style: italic; color: #f7f2e6; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .drip span { animation: fall 7.3s cubic-bezier(0.45, 0, 0.9, 1) infinite; }
+  .drip span.ambient { animation: fall 7.3s cubic-bezier(0.45, 0, 0.9, 1) infinite; }
+}
+
+/* While a scene is beating out its phrase, the ambient drop stands down so the
+   rhythm stays countable. */
+.drip.coded span.ambient { display: none; }
+
+.drip .drop {
+  animation-name: drop-fall;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.9, 1);
+  animation-fill-mode: forwards;
+}
+
+/* A dash is a longer drop as well as a slower one — length and duration both
+   carry the distinction, so it reads even at a glance. */
+.drip .drop.long {
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, rgba(201,165,95,0.72));
+}
+
+@keyframes drop-fall {
+  0%   { transform: translateY(0);     opacity: 0; }
+  5%   { opacity: 0.9; }
+  92%  { opacity: 0.85; }
+  100% { transform: translateY(100vh); opacity: 0; }
 }
 
 @keyframes fall {
@@ -172,7 +197,8 @@ em { font-style: italic; color: #f7f2e6; }
   background:
     radial-gradient(ellipse at center, #16120c 0%, #05050400 70%), #050504;
   text-align: center;
-  padding: 2rem;
+  padding: 1.5rem;
+  overflow-y: auto;
   transition: opacity 700ms ease;
 }
 
@@ -184,54 +210,77 @@ em { font-style: italic; color: #f7f2e6; }
 #title-screen h1 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(4rem, 16vw, 8.5rem);
+  /* Small enough on a short viewport that the whole card fits with no
+     scroll; still scales up on a tall one via the vw term. */
+  font-size: clamp(2.75rem, 10vw, 5rem);
   line-height: 1;
-  margin: 0 0 1.25rem;
+  margin: 0 0 0.6rem;
   color: var(--paper);
   text-shadow: 0 0 42px rgba(201,165,95,0.28);
 }
 
-#title-screen h1 { margin-bottom: 1rem; }
-
 .beta {
   font-family: var(--label);
-  font-size: 0.62rem;
-  letter-spacing: 0.42em;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--candle-dim);
   border: 1px solid var(--candle-deep);
-  padding: 0.3rem 0.5rem 0.25rem 0.72rem;
+  padding: 0.28rem 0.5rem 0.22rem 0.7rem;
   display: inline-block;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.1rem;
 }
 
+/* Left-aligned, like the passage below it, so the gloss and the passage read
+   as one flush-left column under the centered title rather than jogging
+   left when the passage starts. */
 .latin {
+  max-width: 24rem;
+  text-align: left;
   font-family: var(--label);
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--paper-faint);
-  margin: 0 0 2.5rem;
+  margin: 0 0 0.4rem;
+}
+
+.latin.small {
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  margin: 0 0 1.4rem;
+  color: #5c5548;
 }
 
 .latin em { color: var(--candle-dim); font-style: italic; }
 
+/* Capped to roughly the gloss lines' own measure so the passage doesn't
+   stretch to the full title card, but left-anchored (no auto margin) so its
+   left edge stays flush with everything else's shared column — a centered
+   box here would drift the left edge away from the heading above it. */
 .blurb {
+  max-width: 24rem;
+  margin: 0 0 1.6rem;
   color: var(--paper-dim);
   font-style: italic;
-  margin: 0 0 2.75rem;
-  line-height: 1.9;
+  font-size: 0.92rem;
+  text-align: left;
+  line-height: 1.4;
 }
+
+.blurb-line { margin: 0 0 0.4rem; }
+.blurb-line:last-child { margin-bottom: 0; }
 
 #begin {
   font-family: var(--label);
-  font-size: 0.8rem;
-  letter-spacing: 0.3em;
+  font-size: 0.76rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--paper);
   background: transparent;
   border: 1px solid var(--candle-dim);
-  padding: 1rem 2.25rem;
+  padding: 0.75rem 1.8rem;
   cursor: pointer;
   transition: background 300ms ease, color 300ms ease, box-shadow 300ms ease;
 }
@@ -246,9 +295,9 @@ em { font-style: italic; color: #f7f2e6; }
 
 .foot {
   font-family: var(--label);
-  margin: 2.5rem 0 0;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
+  margin: 1.4rem 0 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
   color: #4a453c;
 }
 
@@ -308,6 +357,69 @@ em { font-style: italic; color: #f7f2e6; }
 }
 @media (prefers-reduced-motion: reduce) {
   .enters { opacity: 1; transform: none; }
+}
+
+/* An inscription, not a caption. Faint enough to be missed, sharp enough to
+   be copied out by anyone who notices it. Never translated. */
+.morse {
+  /* Reserve the line's height up front so the typing never reflows the page. */
+  min-height: 2.1em;
+  margin: 2.75rem 0 0;
+  text-align: center;
+  font-family: var(--label);
+  font-size: 1.65rem;
+  line-height: 1.4;
+  letter-spacing: 0.32em;
+  color: var(--candle);
+  opacity: 0.72;
+  user-select: text;
+  text-shadow: 0 0 28px rgba(201,165,95,0.26), 0 2px 12px rgba(0,0,0,0.9);
+  transition: opacity 600ms ease;
+}
+
+.morse:hover { opacity: 1; }
+
+/* The same inscription, quoted inline within a tier2 hotspot's own prose
+   (the narrator transcribing what they heard) rather than sitting ambiently
+   below the scene. Sized down from the ambient version and re-specified
+   against `.tier2-panel p` so it isn't quietly overridden by the panel's
+   generic paragraph rule. */
+.tier2-panel .morse-inline {
+  min-height: 1.7em;
+  margin: 1.4rem 0 !important;
+  font-size: 1.3rem;
+  letter-spacing: 0.26em;
+  opacity: 0.8;
+  text-shadow: 0 0 22px rgba(201,165,95,0.22), 0 2px 10px rgba(0,0,0,0.9);
+}
+
+.morse-cursor {
+  color: var(--candle);
+  margin-left: 0.1em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .morse-cursor { animation: morse-blink 900ms steps(2, end) infinite; }
+  /* Lingers after the phrase lands, then bows out. */
+  .morse-cursor.done { animation: morse-blink 900ms steps(2, end) 4, morse-retire 700ms ease 3.6s forwards; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .morse-cursor { display: none; }
+}
+
+@keyframes morse-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+@keyframes morse-retire {
+  to { opacity: 0; }
+}
+
+@media (max-width: 640px) {
+  .morse { font-size: 1.25rem; letter-spacing: 0.22em; }
+  .tier2-panel .morse-inline { font-size: 1.05rem; letter-spacing: 0.18em; }
 }
 
 /* ───────────────────────────────────────────── tier 2 accordions */
@@ -393,7 +505,98 @@ em { font-style: italic; color: #f7f2e6; }
 }
 .tier2-image.is-placeholder { filter: none; opacity: 0.85; }
 
-/* ─────────────────────────────────────────────── the name interaction */
+/* ────────────────────────────────────────────── the May 1543 calendar
+
+   Static on purpose: no navigation, nothing clickable but the hotspot's own
+   close. The fixed month is the point. Strikes and the circle are drawn as
+   ink paths (see buildMayCalendar/handStrike/handCircle in main.js), not
+   CSS line-through or border-radius, so they read as drawn rather than
+   styled — the spec is explicit that this matters.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.calendar {
+  width: min(100%, 22rem);
+  margin: 0 0 1.75rem;
+  padding: 1.1rem 1rem 1.3rem;
+  border: 1px solid rgba(200,186,158,0.28);
+  background: rgba(255,255,255,0.02);
+}
+
+.calendar-title {
+  margin: 0 0 0.9rem;
+  text-align: center;
+  font-family: var(--label);
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--candle-dim);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal-head {
+  padding: 0.2rem 0 0.4rem;
+  text-align: center;
+  font-family: var(--label);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  color: var(--paper-faint);
+}
+
+.cal-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal-blank { visibility: hidden; }
+
+.cal-day {
+  position: relative;
+  z-index: 1;
+  font-family: var(--label);
+  font-size: 0.92rem;
+  color: var(--paper-dim);
+}
+
+.cal-mark {
+  position: absolute;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.cal-strike path {
+  fill: none;
+  stroke: rgba(160,148,128,0.68);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.cal-circle path {
+  fill: none;
+  stroke: var(--candle);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 6px rgba(201,165,95,0.35));
+}
+
+@media (max-width: 640px) {
+  .cal-day { font-size: 0.8rem; }
+  .calendar { padding: 0.9rem 0.7rem 1.1rem; }
+}
+
+/* ─────────────────────────────────────────────────── the name interaction */
 
 .interaction { margin-top: 1.5rem; }
 

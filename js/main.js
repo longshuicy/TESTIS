@@ -86,18 +86,51 @@ function el(tag, className, text) {
   return node;
 }
 
-// Authored prose may carry <em>. Player input never passes through here.
-function prose(node, str) {
-  const parts = String(str).split(/\n{2,}/);
-  parts.forEach(p => {
-    const para = document.createElement("p");
-    para.innerHTML = p.replace(/\n/g, "<br>");
-    node.appendChild(para);
+// Authored prose may carry <em>/<strong>. Player input never passes through here.
+//
+// `content` is either a single string (split into paragraphs on blank lines,
+// as before) or an array of paragraphs, used by plates whose text is already
+// segmented. `tokens` lets a paragraph consisting solely of a placeholder
+// render as something other than plain text:
+//   tokens.morse       — a paragraph that is exactly "{morse}" types itself in
+//   tokens.playerName  — a paragraph that is exactly "{player_name}" renders
+//                        as the carved name, styled like the Scene 1 carving
+function prose(node, content, tokens) {
+  const parts = Array.isArray(content) ? content : String(content).split(/\n{2,}/);
+  parts.forEach(part => {
+    const trimmed = String(part).trim();
+
+    if (tokens && tokens.morse && trimmed === "{morse}") {
+      const p = el("p", "morse morse-inline");
+      p.setAttribute("aria-hidden", "true");
+      node.appendChild(p);
+      typeMorseInto(p, morseGlyphs(tokens.morse));
+      return;
+    }
+
+    const p = document.createElement("p");
+    if (tokens && tokens.playerName !== undefined && trimmed === "{player_name}") {
+      p.className = "carved-name";
+      p.textContent = tokens.playerName; // textContent only — no injection surface
+    } else {
+      p.innerHTML = String(part).replace(/\n/g, "<br>");
+    }
+    node.appendChild(p);
   });
 }
 
+// Returns null (never undefined) if the flag hasn't been set to one of the
+// case keys yet — e.g. a debug jump straight to a scene that reads a flag an
+// earlier scene normally guarantees. Mirrors the ending tables' own
+// fallback-warns-on-console convention so a bad jump is loud in the console,
+// not a literal "undefined" printed into the page.
 function resolveConditional(cond) {
-  return cond.cases[String(flags[cond.key])];
+  const key = String(flags[cond.key]);
+  if (!Object.prototype.hasOwnProperty.call(cond.cases, key)) {
+    console.warn("resolveConditional: no case for", cond.key, "=", flags[cond.key]);
+    return null;
+  }
+  return cond.cases[key];
 }
 
 function backgroundFor(id) {
@@ -105,6 +138,129 @@ function backgroundFor(id) {
   if (s) return s.background;
   const e = ENDINGS.find(x => x.id === id);
   return e ? e.background : null;
+}
+
+/* ─────────────────────────────────────────────────────── the coded drip
+
+   Some scenes carry a morse phrase. It is never decoded in-game and never
+   translated — the design notes are explicit about that — so it surfaces two
+   ways, both of which reward attention rather than demanding it: a faint
+   inscription in the margin of the scene, and the drip itself beating out the
+   symbols. The script establishes that water as "metered, something counted",
+   which makes it the right instrument.
+
+   Real morse timing is far too fast to read as falling water, so this keeps
+   morse's *proportions* (a dash is long, a dot is short, gaps separate letters
+   and words) at a tempo you can actually count.
+   ────────────────────────────────────────────────────────────────────────── */
+
+const DRIP = {
+  dot: 1150,        // fall duration of a short drop
+  dash: 2700,       // fall duration of a long drop
+  symbolGap: 380,
+  letterGap: 1000,
+  wordGap: 2000,
+  loopGap: 7000
+};
+
+const dripLayer = document.getElementById("drip");
+let dripTimer = null;
+
+function stopDrip() {
+  clearTimeout(dripTimer);
+  dripTimer = null;
+  dripLayer.querySelectorAll(".drop").forEach(d => d.remove());
+  dripLayer.classList.remove("coded");
+}
+
+function setDrip(code) {
+  stopDrip();
+  if (!code) return;                                     // ambient CSS drip resumes
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  dripLayer.classList.add("coded");
+
+  // Flatten to a queue of { symbol, gapAfter } so the loop stays trivial.
+  const queue = [];
+  const words = code.trim().split(" / ");
+  words.forEach((word, wi) => {
+    const letters = word.split(" ").filter(Boolean);
+    letters.forEach((letter, li) => {
+      letter.split("").forEach((sym, si) => {
+        const lastOfLetter = si === letter.length - 1;
+        const lastOfWord = lastOfLetter && li === letters.length - 1;
+        const lastOfAll = lastOfWord && wi === words.length - 1;
+        queue.push({
+          long: sym === "-",
+          gap: lastOfAll ? DRIP.loopGap
+             : lastOfWord ? DRIP.wordGap
+             : lastOfLetter ? DRIP.letterGap
+             : DRIP.symbolGap
+        });
+      });
+    });
+  });
+  if (!queue.length) return;
+
+  let i = 0;
+  (function step() {
+    const item = queue[i];
+    const fall = item.long ? DRIP.dash : DRIP.dot;
+
+    const drop = el("div", "drop" + (item.long ? " long" : ""));
+    drop.style.animationDuration = fall + "ms";
+    drop.addEventListener("animationend", () => drop.remove());
+    dripLayer.appendChild(drop);
+
+    i = (i + 1) % queue.length;
+    dripTimer = setTimeout(step, fall + item.gap);
+  })();
+}
+
+function morseGlyphs(code) {
+  return code.replace(/\./g, "·").replace(/-/g, "—");
+}
+
+/* ─────────────────────────────────────────────────── typing the inscription
+
+   The phrase types itself in rather than arriving whole, so the eye is caught
+   by movement in a page that is otherwise still. Paced like something being
+   tapped out, with the gaps between letters and words held longer than the
+   marks themselves.
+
+   Each call is self-contained: it checks `node.isConnected` before every
+   character rather than relying on a caller to cancel it, so a morse line
+   left mid-type when a scene changes just stops quietly once its paragraph
+   is removed from the DOM. No shared timer to track or leak, and multiple
+   instances (the scene-level inscription, a tier2 hotspot's own line) can be
+   in flight at once without fighting each other.
+   ───────────────────────────────────────────────────────────────────────── */
+
+const TYPE = { mark: 130, letterGap: 320, wordGap: 480, startDelay: 900 };
+
+function typeMorseInto(node, glyphs, startDelay) {
+  const text = el("span", "morse-text");
+  const cursor = el("span", "morse-cursor", "·");
+  node.appendChild(text);
+  node.appendChild(cursor);
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    text.textContent = glyphs;
+    cursor.remove();
+    return;
+  }
+
+  const chars = glyphs.split("");
+  let i = 0;
+
+  setTimeout(function tick() {
+    if (!node.isConnected) return;              // scene moved on; let it lapse
+    if (i >= chars.length) { cursor.classList.add("done"); return; }
+    const ch = chars[i++];
+    text.textContent += ch;
+    const delay = ch === "/" ? TYPE.wordGap : ch === " " ? TYPE.letterGap : TYPE.mark;
+    setTimeout(tick, delay);
+  }, startDelay != null ? startDelay : TYPE.startDelay);
 }
 
 /* ────────────────────────────────────────────────────────── transitions */
@@ -120,8 +276,11 @@ function fadeOut(cb) {
   }, FADE_MS);
 }
 
+let currentBgSrc = null;
+
 function setBackground(src) {
-  if (!src) return;
+  if (!src || src === currentBgSrc) return;   // already showing it; don't crossfade to itself
+  currentBgSrc = src;
   const next = activeBg === bgA ? bgB : bgA;
   const probe = new Image();
   probe.onload = () => swap(src);
@@ -192,8 +351,21 @@ function renderScene(id) {
 
     const body = el("div", "narration");
     scene.text.forEach(p => prose(body, p));
-    if (scene.conditionalText) prose(body, resolveConditional(scene.conditionalText));
+    if (scene.conditionalText) {
+      const t = resolveConditional(scene.conditionalText);
+      if (t) prose(body, t);
+    }
     content.appendChild(body);
+
+    setDrip(scene.morse);
+    if (scene.morse) {
+      // Marked hidden from assistive tech on purpose: read aloud as a string of
+      // dots and dashes it is noise, and spelling it out would translate it.
+      const mark = el("p", "morse");
+      mark.setAttribute("aria-hidden", "true");
+      content.appendChild(mark);
+      typeMorseInto(mark, morseGlyphs(scene.morse));
+    }
 
     renderTier2(scene.tier2);
 
@@ -250,6 +422,78 @@ function renderTier2(list) {
   content.appendChild(wrap);
 }
 
+/* ─────────────────────────────────────────────── the May 1543 calendar
+
+   Scene 5's one hotspot with no image. A static Julian-calendar grid — no
+   navigation, nothing clickable, the fixed month is the point. Day 24 (the
+   day Copernicus died) is circled and never explained; days 1–20 are struck
+   through, the strikes drawn as wobbly hand-inked paths rather than CSS
+   `line-through`, loosening as the month goes on. Deterministic per day
+   number, not Math.random, so the calendar looks the same on every render.
+   ─────────────────────────────────────────────────────────────────────── */
+
+const CAL_WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
+const CAL_LAST_STRUCK = 20;   // days 1..20 crossed out
+const CAL_CIRCLED = 24;       // never explained in-game
+
+function seededRand(seed) {
+  let s = seed >>> 0;
+  return () => ((s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296);
+}
+
+// A single wobbly stroke through the day number. Jitter grows with the day
+// number so the line reads as looser, more tired, further into the month.
+function handStrike(day) {
+  const rand = seededRand(day * 97 + 13);
+  const jitter = 2.5 + (day / CAL_LAST_STRUCK) * 7;
+  const x1 = 8 + (rand() - 0.5) * jitter, y1 = 48 + (rand() - 0.5) * jitter;
+  const x2 = 92 + (rand() - 0.5) * jitter, y2 = 52 + (rand() - 0.5) * jitter;
+  const mx = 50 + (rand() - 0.5) * jitter * 1.4, my = 50 + (rand() - 0.5) * jitter * 1.8;
+  return `<svg class="cal-mark cal-strike" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">` +
+    `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} Q ${mx.toFixed(1)} ${my.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}"/>` +
+  `</svg>`;
+}
+
+// An ink-drawn ellipse, not a border-radius box: an irregular polygon of
+// jittered points reads as drawn rather than styled at this size.
+function handCircle(day) {
+  const rand = seededRand(day * 61 + 7);
+  const cx = 50, cy = 50, rx = 46, ry = 40, pts = [];
+  const n = 11;
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const jr = 0.88 + rand() * 0.24;
+    pts.push([cx + Math.cos(a) * rx * jr, cy + Math.sin(a) * ry * jr]);
+  }
+  const d = "M " + pts.map(p => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L ") + " Z";
+  return `<svg class="cal-mark cal-circle" viewBox="0 0 100 100" aria-hidden="true"><path d="${d}"/></svg>`;
+}
+
+function buildMayCalendar() {
+  const wrap = el("div", "calendar");
+  wrap.appendChild(el("p", "calendar-title", "Maius · MDXLIII"));
+
+  const grid = el("div", "calendar-grid");
+  CAL_WEEKDAYS.forEach(w => grid.appendChild(el("div", "cal-head", w)));
+
+  // May 1, 1543 (Julian) fell on a Tuesday — weekday index 2 of a S-M-T-W-T-F-S
+  // header, so the grid opens with two empty cells. Verified against the
+  // Julian day number; see the script doc.
+  const FIRST_WEEKDAY = 2;
+  for (let i = 0; i < FIRST_WEEKDAY; i++) grid.appendChild(el("div", "cal-cell cal-blank"));
+
+  for (let day = 1; day <= 31; day++) {
+    const cell = el("div", "cal-cell");
+    cell.appendChild(el("span", "cal-day", String(day)));
+    if (day <= CAL_LAST_STRUCK) cell.insertAdjacentHTML("beforeend", handStrike(day));
+    if (day === CAL_CIRCLED) cell.insertAdjacentHTML("beforeend", handCircle(day));
+    grid.appendChild(cell);
+  }
+
+  wrap.appendChild(grid);
+  return wrap;
+}
+
 function buildTier2Panel(panel, item) {
   if (item.image) {
     const img = el("img", "tier2-image");
@@ -265,8 +509,23 @@ function buildTier2Panel(panel, item) {
     panel.appendChild(img);
   }
 
-  const body = item.conditionalText ? resolveConditional(item.conditionalText) : item.text;
-  if (body) prose(panel, body);
+  if (item.widget === "calendar-may-1543") panel.appendChild(buildMayCalendar());
+
+  const tokens = {};
+  let body = item.conditionalText ? resolveConditional(item.conditionalText) : item.text;
+
+  // The Scene 3 tally: a second, quieter use of player_name. Two entirely
+  // different passages, not one passage with a name spliced in — a declined
+  // carve gets its own paragraph about an abandoned mark, not a fallback
+  // string, so there is no "a name" here the way there is in the endings.
+  if (item.nameConditional) {
+    const carved = (flags.player_name || "").trim();
+    body = carved ? item.nameConditional.named : item.nameConditional.unnamed;
+    if (carved) tokens.playerName = carved;
+  }
+
+  if (item.morse) tokens.morse = item.morse;
+  if (body) prose(panel, body, tokens);
 
   if (item.interaction) renderInteraction(panel, item.interaction);
 }
@@ -408,8 +667,9 @@ function renderChoices(block, onPick, extraClass) {
 // player dismisses it. The only place the art is shown at full strength —
 // backgrounds sit under a scrim and tier2 shots are thumbnails, so this is
 // the game's one way to make an image the event rather than the setting.
-// A plate is either "path/to.png" or { image, text }. Text is optional: a
-// silent plate is a legitimate beat, and often a stronger one.
+// A plate is either "path/to.png" or { image, text }, where text is an array
+// of paragraphs (or omitted — a silent plate is a legitimate beat, and often
+// a stronger one).
 function normalizePlate(spec) {
   return typeof spec === "string" ? { image: spec, text: null } : spec;
 }
@@ -480,13 +740,14 @@ function renderExit(scene) {
     renderChoices(scene.branch, choice => {
       flags[scene.branch.flagKey] = choice.value;
 
-      // A closing line with a plate takes over the screen instead of appending
-      // another paragraph to the page the player has been reading all scene.
-      if (scene.closingText && scene.closingPlate) {
-        return renderPlate(
-          { image: scene.closingPlate, text: scene.closingText },
-          () => advanceTo(choice.next)
-        );
+      // A closing plate takes over the screen instead of appending another
+      // paragraph to the page the player has been reading all scene.
+      if (scene.closingPlate) {
+        stopDrip();
+        // Same reasoning as an opening plate: the destination's background is
+        // put up behind the plate, not after it.
+        setBackground(backgroundFor(choice.next));
+        return renderPlate(scene.closingPlate, () => advanceTo(choice.next));
       }
 
       if (scene.closingText) {
@@ -519,6 +780,10 @@ function advanceTo(id) {
   const scene = SCENES.find(s => s.id === id);
   if (scene && scene.openingPlate) {
     content.classList.add("fade-out");
+    stopDrip();   // the outgoing scene's phrase ends with the outgoing scene
+    // Swap the background now, while the plate hides it. Otherwise the plate
+    // lifts onto the scene the player just left.
+    setBackground(scene.background);
     return renderPlate(scene.openingPlate, () => renderScene(id));
   }
 
@@ -547,6 +812,7 @@ function renderEnding(id) {
 
   fadeOut(() => {
     runtime = null;
+    stopDrip();
     setBackground(e.background);
     document.body.classList.add("is-ending");
 
