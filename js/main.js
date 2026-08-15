@@ -484,14 +484,73 @@ function buildMayCalendar() {
 
   for (let day = 1; day <= 31; day++) {
     const cell = el("div", "cal-cell");
-    cell.appendChild(el("span", "cal-day", String(day)));
+    const daySpan = el("span", "cal-day", String(day));
+    daySpan.dataset.day = String(day);
+    cell.appendChild(daySpan);
     if (day <= CAL_LAST_STRUCK) cell.insertAdjacentHTML("beforeend", handStrike(day));
     if (day === CAL_CIRCLED) cell.insertAdjacentHTML("beforeend", handCircle(day));
     grid.appendChild(cell);
   }
 
   wrap.appendChild(grid);
+  animateMayCalendar(wrap);
   return wrap;
+}
+
+/* One-time reveal, the first time the hotspot opens (buildMayCalendar only
+   runs once per panel — see the `panel.dataset.built` guard in renderTier2).
+   Every day's number shuffles through random digits and locks in a wave
+   left-to-right/top-to-bottom, then the struck-through days ink in one by
+   one, and last the 24th's circle settles into place — the animation's one
+   deliberate stop. Respects prefers-reduced-motion by skipping straight to
+   the final state. */
+const CAL_SHUFFLE_TICK = 45;      // ms between random digit swaps
+const CAL_SHUFFLE_BASE = 260;     // ms every cell shuffles at minimum
+const CAL_SHUFFLE_STAGGER = 16;   // ms added per day, so the lock sweeps the grid
+const CAL_MARK_STAGGER = 16;      // ms between successive struck-day reveals
+const CAL_PAUSE_BEFORE_MARKS = 180;
+const CAL_PAUSE_BEFORE_CIRCLE = 220;
+
+function animateMayCalendar(wrap) {
+  const reduceMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduceMotion) {
+    wrap.querySelectorAll(".cal-mark").forEach(m => m.classList.add("revealed"));
+    return;
+  }
+
+  let maxLock = 0;
+  wrap.querySelectorAll(".cal-day").forEach(span => {
+    const day = Number(span.dataset.day);
+    const lockAt = CAL_SHUFFLE_BASE + day * CAL_SHUFFLE_STAGGER;
+    maxLock = Math.max(maxLock, lockAt);
+
+    span.classList.add("is-shuffling");
+    const tick = setInterval(() => {
+      span.textContent = String(Math.floor(Math.random() * 10)) +
+        (day >= 10 ? String(Math.floor(Math.random() * 10)) : "");
+    }, CAL_SHUFFLE_TICK);
+
+    setTimeout(() => {
+      clearInterval(tick);
+      span.textContent = String(day);
+      span.classList.remove("is-shuffling");
+    }, lockAt);
+  });
+
+  const strikes = Array.from(wrap.querySelectorAll(".cal-strike"));
+  const circle = wrap.querySelector(".cal-circle");
+
+  const marksStart = maxLock + CAL_PAUSE_BEFORE_MARKS;
+  strikes.forEach((mark, i) => {
+    setTimeout(() => mark.classList.add("revealed"), marksStart + i * CAL_MARK_STAGGER);
+  });
+
+  if (circle) {
+    const circleStart = marksStart + strikes.length * CAL_MARK_STAGGER + CAL_PAUSE_BEFORE_CIRCLE;
+    setTimeout(() => circle.classList.add("revealed"), circleStart);
+  }
 }
 
 function buildTier2Panel(panel, item) {

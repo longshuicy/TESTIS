@@ -19,6 +19,8 @@
   --head:    "Grenze Gotisch", Georgia, serif;
   --body:    "Grenze", "EB Garamond", Georgia, "Times New Roman", serif;
   --label:   "Grenze", Georgia, serif;   /* small uppercase labels */
+  --cal-title: "Mrs Saint Delafield", cursive;   /* the calendar's own hand */
+  --cal-mono:  "Special Elite", Georgia, serif;  /* typed weekday/day glyphs */
 
   --measure: 34rem;        /* ≈ 68–72 characters */
   --fade: 400ms;
@@ -525,10 +527,9 @@ em { font-style: italic; color: #f7f2e6; }
 .calendar-title {
   margin: 0 0 0.9rem;
   text-align: center;
-  font-family: var(--label);
-  font-size: 0.72rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
+  font-family: var(--cal-title);
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
   color: var(--candle-dim);
 }
 
@@ -541,7 +542,7 @@ em { font-style: italic; color: #f7f2e6; }
 .cal-head {
   padding: 0.2rem 0 0.4rem;
   text-align: center;
-  font-family: var(--label);
+  font-family: var(--cal-mono);
   font-size: 0.68rem;
   letter-spacing: 0.05em;
   color: var(--paper-faint);
@@ -560,7 +561,7 @@ em { font-style: italic; color: #f7f2e6; }
 .cal-day {
   position: relative;
   z-index: 1;
-  font-family: var(--label);
+  font-family: var(--cal-mono);
   font-size: 0.92rem;
   color: var(--paper-dim);
 }
@@ -572,6 +573,29 @@ em { font-style: italic; color: #f7f2e6; }
   height: 116%;
   pointer-events: none;
   overflow: visible;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.cal-mark.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* the circled day never quite settles — a slow, steady pulse, the animation's
+   one point that doesn't resolve. Opacity-only: animating transform or the
+   drop-shadow itself here is what caused the flicker, since a running
+   animation and the .cal-mark transition above were fighting over the same
+   properties. */
+.cal-circle.revealed {
+  animation: cal-circle-blink 2400ms ease-in-out infinite;
+  animation-delay: 260ms;
+}
+
+@keyframes cal-circle-blink {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1; }
 }
 
 .cal-strike path {
@@ -591,8 +615,18 @@ em { font-style: italic; color: #f7f2e6; }
   filter: drop-shadow(0 0 6px rgba(201,165,95,0.35));
 }
 
+/* mid-shuffle, the digits read as unsettled — dimmer, no drawn marks yet */
+.cal-day.is-shuffling {
+  color: var(--paper-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cal-mark, .cal-circle.revealed { transition: none; animation: none; }
+}
+
 @media (max-width: 640px) {
   .cal-day { font-size: 0.8rem; }
+  .calendar-title { font-size: 1.2rem; }
   .calendar { padding: 0.9rem 0.7rem 1.1rem; }
 }
 
