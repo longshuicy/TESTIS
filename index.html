@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TESTIS</title>
+<meta name="description" content="A short narrative game about being correct too early.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400;500;600;700&family=Grenze:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- stacked background layers, crossfaded -->
+  <div id="stage" aria-hidden="true">
+    <div class="bg" id="bg-a"></div>
+    <div class="bg" id="bg-b"></div>
+  </div>
+
+  <div class="drip" aria-hidden="true"><span></span></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <main id="scene-content" class="scene-content"></main>
+
+  <!-- title screen -->
+  <section id="title-screen">
+    <div class="title-inner">
+      <h1>Testis</h1>
+      <p class="beta">Beta</p>
+      <p class="latin">Latin: <em>witness</em>&nbsp;&mdash; also, in a stretch, <em>testament</em></p>
+      <p class="blurb">
+        A monastery gate. A man thirty years early. Water where blood should be.
+      </p>
+      <button id="begin" type="button">Enter the fog</button>
+      <p class="foot">15&ndash;20 minutes &middot; no saves &middot; refreshing begins again</p>
+    </div>
+  </section>
+
+  <script src="js/scenes.js"></script>
+  <script src="js/endings.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
