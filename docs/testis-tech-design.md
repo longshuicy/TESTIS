@@ -40,7 +40,7 @@ examples below assume plain scripts and global consts.
     scenes.js      // SCENES array, all scene data
     endings.js     // ENDINGS array + WITNESS_CALLBACK shared table
     main.js        // state machine, rendering, event handling
-  /images          // 30 assets, filenames per testis-art-prompts.md
+  /assets          // 32 assets, filenames per testis-art-prompts.md
 ```
 
 Load order in `index.html`: `scenes.js`, `endings.js`, then `main.js`.
@@ -58,7 +58,7 @@ One object per scene. `main.js` holds rendering logic only and never hardcodes n
 const SCENES = [
   {
     id: "scene-1",
-    background: "images/scene-1-gate.png",
+    background: "assets/scene-1-gate.png",
 
     // Array of paragraphs, not one blob. Lets the renderer control spacing and pacing.
     text: [
@@ -78,7 +78,7 @@ const SCENES = [
       {
         id: "sundial",
         label: "The sundial",
-        image: "images/obj-sundial.png",   // optional; omit for text-only
+        image: "assets/obj-sundial.png",   // optional; omit for text-only
         text: "A dial with no sun to read by..."
       },
       {
@@ -149,9 +149,9 @@ Only two scenes branch. Everything else uses `next`.
 ```js
 {
   id: "scene-4",
-  background: "images/scene-4-reveal.png",
+  background: "assets/scene-4-reveal.png",
   text: [ /* ... */ ],
-  tier2: [ { id: "eyes", image: "images/obj-eyes-his.png", /* ... */ } ],
+  tier2: [ { id: "eyes", image: "assets/obj-eyes-his.png", /* ... */ } ],
   reactive: [ { flagKey: "witness_reaction", options: [ /* A-D */ ] } ],
   branch: {
     flagKey: "looked_away",
@@ -192,7 +192,7 @@ const WITNESS_CALLBACK = {
 const ENDINGS = [
   {
     id: "ending-a",
-    background: "images/ending-a.png",
+    background: "assets/ending-a.png",
     baseOpening: "I let it happen...",
     conditionalMiddle: {
       keys: ["witness_reaction", "looked_away"],

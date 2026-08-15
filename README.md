@@ -36,8 +36,7 @@ Load order matters: `scenes.js`, `endings.js`, then `main.js`.
 
 ## Art
 
-Images live in `assets/` (not `images/` as the tech-design doc sketches) — filenames are unchanged
-and match `docs/testis-art-prompts.md` exactly.
+Images live in `assets/` — filenames match `docs/testis-art-prompts.md` exactly.
 
 **Missing assets render a procedural placeholder** at the correct path: a dark, in-theme card
 labelled with the filename it's waiting for. Drop the real PNG in at that name and it appears on
