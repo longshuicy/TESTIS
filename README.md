@@ -1,7 +1,6 @@
 # TESTIS
 
-**Beta — v0.1.0-beta.** Playable start to finish, all three endings reachable. Art is still being
-generated, so some examine images render placeholders (see [Art](#art)).
+**Beta — v0.1.1-beta.** Playable start to finish, all three endings reachable.
 
 A short narrative web game. Plain HTML/CSS/JS, no build step, no backend, no persistence.
 
@@ -38,8 +37,11 @@ and match `docs/testis-art-prompts.md` exactly.
 
 **Missing assets render a procedural placeholder** at the correct path: a dark, in-theme card
 labelled with the filename it's waiting for. Drop the real PNG in at that name and it appears on
-next load — no code change. Currently 6 of 29 referenced files are still placeholders:
-`obj-wire`, `obj-letter`, `obj-seam`, `obj-reflection`, `obj-watcher`, `obj-rope`.
+next load — no code change. Every referenced asset is currently present.
+
+`char-copernicus-bound.png`, `char-player-hands.png`, and `char-witness-silhouette.png` are
+generated but unplaced — the script gives each scene one background and each hotspot one object
+image, with no slot for a portrait. `char-copernicus-reveal.png` is used as Scene 4's plate.
 
 The generated art is dark-native (light linework on black), so CSS only warms and dims it; there is
 no inversion. If a later batch comes back as black-ink-on-white instead, the two `filter:` lines in
@@ -54,6 +56,17 @@ Google Fonts; the stack falls back to Georgia offline.
 
 Accent is candlelight gold (`--candle`). The background art is lifted with a `brightness()` filter
 and legibility comes from the soft column of shade in `.vignette`, not from crushing the image.
+
+## Plates
+
+A plate is a full-bleed image with one line of text and nothing else, held until the player
+dismisses it. It's the only mode that shows art undimmed — backgrounds sit under a scrim and tier2
+shots are thumbnails — so it's reserved for moments where the image should be the event rather than
+the setting. Scene 4's closing line uses one.
+
+Add one by putting `closingPlate: "assets/<file>.png"` next to a scene's `closingText`. A 4:5
+portrait is contained rather than cropped, with a blurred copy of itself filling the room behind it;
+the image is preloaded when the scene opens, so it's warm before the branch resolves.
 
 ## Debug jumps
 

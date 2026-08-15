@@ -150,12 +150,6 @@ const SCENES = [
         text: "Black glass, smooth as still water, holding no image at all, and yet I had the distinct sense it was capable of one, the way an unlit room is capable of a lamp."
       },
       {
-        id: "wire",
-        label: "The coil of colored wire",
-        image: "assets/obj-wire.png",
-        text: "Red and white, twisted together, entirely unlike any cord or rope this century had reason to own. I did not touch it. Some things ask to stay untouched the way a held breath asks to stay held."
-      },
-      {
         id: "water-clock",
         label: "The second water-clock, half-hidden",
         image: "assets/obj-water-clock.png",
@@ -282,6 +276,9 @@ const SCENES = [
         { label: "I kept watching.", value: false, next: "scene-5" }
       ]
     },
+    // The scene's payoff is shown as a full-bleed plate rather than one more
+    // paragraph on a page the player has been reading for minutes.
+    closingPlate: "assets/char-copernicus-reveal.png",
     closingText: "“I'm ahead of my time,” he said, not as excuse, not as grievance. As apology. As if being right early was a debt he owed the room, and this, the water, the stone, the small patient sound of himself running out, was only him finally paying it."
   },
 

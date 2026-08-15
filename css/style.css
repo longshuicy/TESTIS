@@ -565,6 +565,121 @@ em { font-style: italic; color: #f7f2e6; }
 
 .continue:disabled { opacity: 0.3; cursor: default; }
 
+/* ─────────────────────────────────────────────────────────── the plate
+
+   The one place art is shown undimmed. A 4:5 portrait can't fill a 16:9
+   viewport without cropping the face, so the figure is contained and a
+   blurred copy of itself fills the room behind it.
+   ────────────────────────────────────────────────────────────────────── */
+
+body.plate-open { overflow: hidden; }
+
+.plate {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 5vh 1.5rem 4vh;
+  background: #030303;
+  cursor: pointer;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .plate { transition: opacity 900ms ease; }
+}
+
+.plate.visible { opacity: 1; }
+.plate:focus { outline: none; }
+
+.plate-backdrop {
+  position: absolute;
+  inset: -8%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(46px) brightness(0.34) saturate(0.8);
+  z-index: 0;
+}
+
+.plate-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.85) 100%);
+}
+
+.plate-figure {
+  position: relative;
+  z-index: 1;
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.plate-figure img {
+  max-height: 62vh;
+  max-width: min(100%, 42rem);
+  object-fit: contain;
+  /* Undimmed on purpose — this is the only time the art plays at full strength.
+     The hairline reads the crop as a deliberate plate rather than a seam. */
+  border: 1px solid rgba(201,165,95,0.16);
+  box-shadow: 0 0 90px rgba(0,0,0,0.9), 0 0 200px rgba(201,165,95,0.07);
+}
+
+.plate-text {
+  position: relative;
+  z-index: 1;
+  max-width: 36rem;
+  text-align: center;
+  font-size: 1.08rem;
+  line-height: 1.8;
+  font-style: italic;
+  color: #f5efe2;
+}
+
+.plate-text p { margin: 0; text-shadow: 0 2px 20px rgba(0,0,0,0.95); }
+
+.plate-hint {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--label);
+  font-size: 0.66rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--candle-dim);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .plate.visible .plate-figure img { animation: plate-breathe 24s ease-out forwards; }
+  .plate.visible .plate-hint { animation: plate-hint 1.6s ease 3.2s forwards; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate-hint { opacity: 0.8; }
+}
+
+@keyframes plate-breathe {
+  from { transform: scale(1); }
+  to   { transform: scale(1.055); }
+}
+
+@keyframes plate-hint {
+  from { opacity: 0; }
+  to   { opacity: 0.75; }
+}
+
+@media (max-width: 640px) {
+  .plate { gap: 1.5rem; padding: 4vh 1.25rem 3vh; }
+  .plate-figure img { max-height: 50vh; }
+  .plate-text { font-size: 1rem; }
+}
+
 /* ───────────────────────────────────────────────────────── endings */
 
 body.is-ending .scene-content { padding-top: 20vh; }

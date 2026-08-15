@@ -7,7 +7,7 @@ Generate everything in one sitting, back to back, so style stays consistent. Pic
 prompt and move on. Do not re-roll chasing perfection; consistency across the set matters more than
 any single image being ideal.
 
-**Total assets: 33.** 10 scene and ending backgrounds, 19 object shots, 4 character shots.
+**Total assets: 32.** 10 scene and ending backgrounds, 18 object shots, 4 character shots.
 
 ---
 
@@ -120,7 +120,7 @@ reflected figure visible in the wet dark of the pupil, this time it is the viewe
 
 ---
 
-## 2. OBJECT SHOTS (19)
+## 2. OBJECT SHOTS (18)
 
 Used as tier2 examine images. Each corresponds to a specific examine hotspot in the script.
 
@@ -161,7 +161,7 @@ volume slipped forward revealing a fragment of an orbital diagram
 a hooded monk in profile, lips parted mid-whisper, eyes lowered, hands worrying a rosary, close-up
 ```
 
-### Scene 3 (7)
+### Scene 3 (6)
 **`obj-tool-glowing.png`**
 ```
 a smooth surgical instrument of impossibly precise manufacture, a thin cold light glowing within it,
@@ -171,11 +171,6 @@ resting on dark cloth among antique implements, isolated close-up
 ```
 a small rectangular slab of black glass lying among 16th century surgical tools, blank and faintly
 reflective, screen-like, isolated close-up
-```
-**`obj-wire.png`**
-```
-a coiled length of thin twisted red-and-white insulated wire, entirely anachronistic, half-hidden
-beneath a linen cloth, isolated close-up
 ```
 **`obj-water-clock.png`**: *reused in Scenes 1, 3, 6*
 ```
@@ -288,7 +283,7 @@ level below.
 
 | Cut | Saves | Cost |
 |---|---|---|
-| All 19 object shots; render tier2 as text only | ~40% of art time | Low. Tier2 is primarily writing; the prose carries it. |
+| All 18 object shots; render tier2 as text only | ~40% of art time | Low. Tier2 is primarily writing; the prose carries it. |
 | The 4 character shots; let backgrounds imply figures | ~15% | Low. Implied presence is a standard horror technique and often stronger. |
 | `ending-b.png` and `ending-c.png`; reuse `ending-a.png` | ~7% | Medium. Endings feel less distinct. |
 | `scene-6-chapel-again.png`; reuse `scene-2-chapel.png` | ~7% | **Do not cut.** The changed composition is the reveal that the player has become him. |

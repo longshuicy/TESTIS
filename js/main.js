@@ -141,8 +141,12 @@ function preload(paths) {
 }
 
 function nextPossibleImages(scene) {
-  if (scene.branch) return scene.branch.options.map(o => backgroundFor(o.next));
-  return scene.next ? [backgroundFor(scene.next)] : [];
+  const out = scene.branch
+    ? scene.branch.options.map(o => backgroundFor(o.next))
+    : (scene.next ? [backgroundFor(scene.next)] : []);
+  // The plate appears the instant the branch resolves; it must already be warm.
+  if (scene.closingPlate) out.push(scene.closingPlate);
+  return out;
 }
 
 // True only while a scene is painting its opening state. Blocks added then
@@ -390,12 +394,86 @@ function renderChoices(block, onPick, extraClass) {
   appendBlock(wrap);
 }
 
+/* ─────────────────────────────────────────────────────────── the plate */
+
+// A full-bleed image with one line of text and nothing else, held until the
+// player dismisses it. The only place the art is shown at full strength —
+// backgrounds sit under a scrim and tier2 shots are thumbnails, so this is
+// the game's one way to make an image the event rather than the setting.
+function renderPlate(spec, onDone) {
+  const plate = el("div", "plate");
+  plate.setAttribute("role", "button");
+  plate.tabIndex = 0;
+
+  const backdrop = el("div", "plate-backdrop");
+  const figure = el("div", "plate-figure");
+
+  const img = el("img");
+  img.alt = "";
+  img.addEventListener("error", () => {
+    if (img.dataset.fallback) return;
+    img.dataset.fallback = "1";
+    const ph = placeholderFor(spec.image, "square");
+    img.src = ph;
+    backdrop.style.backgroundImage = `url("${ph}")`;
+  });
+  img.src = spec.image;
+  backdrop.style.backgroundImage = `url("${spec.image}")`;
+  figure.appendChild(img);
+
+  const caption = el("div", "plate-text");
+  if (spec.text) prose(caption, spec.text);
+
+  const hint = el("p", "plate-hint", "Continue");
+
+  plate.appendChild(backdrop);
+  plate.appendChild(figure);
+  plate.appendChild(caption);
+  plate.appendChild(hint);
+  document.body.appendChild(plate);
+  document.body.classList.add("plate-open");
+
+  void plate.offsetHeight;
+  plate.classList.add("visible");
+  plate.focus();
+
+  let done = false;
+  function dismiss() {
+    if (done) return;
+    done = true;
+    plate.classList.remove("visible");
+    document.body.classList.remove("plate-open");
+    document.removeEventListener("keydown", onKey);
+    setTimeout(() => { plate.remove(); onDone(); }, 500);
+  }
+
+  function onKey(e) {
+    if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+      e.preventDefault();
+      dismiss();
+    }
+  }
+
+  plate.addEventListener("click", dismiss);
+  document.addEventListener("keydown", onKey);
+}
+
 /* ───────────────────────────────────────────────────────── scene exit */
 
 function renderExit(scene) {
   if (scene.branch) {
     renderChoices(scene.branch, choice => {
       flags[scene.branch.flagKey] = choice.value;
+
+      // A closing line with a plate takes over the screen instead of appending
+      // another paragraph to the page the player has been reading all scene.
+      if (scene.closingText && scene.closingPlate) {
+        return renderPlate(
+          { image: scene.closingPlate, text: scene.closingText },
+          () => advanceTo(choice.next)
+        );
+      }
+
       if (scene.closingText) {
         const res = el("div", "response closing");
         prose(res, scene.closingText);

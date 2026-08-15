@@ -156,9 +156,6 @@ art direction. Don't duplicate it here; it drifted once already.
 **TIER 2, examine the dark glass surface among the tools:**
 > Black glass, smooth as still water, holding no image at all, and yet I had the distinct sense it was capable of one, the way an unlit room is capable of a lamp.
 
-**TIER 2, examine the coil of colored wire:**
-> Red and white, twisted together, entirely unlike any cord or rope this century had reason to own. I did not touch it. Some things ask to stay untouched the way a held breath asks to stay held.
-
 **TIER 2, examine the second water-clock, half-hidden:**
 > Same brass, same crack along its base, same slow patient drip, as though the room kept a spare in case the first one ever told the truth too plainly. I could not tell, looking at them side by side, which one had been built first. They agreed with each other too perfectly for that question to matter.
 
@@ -457,7 +454,7 @@ tables, `identity_found` logic corrected so refusal no longer sets it true.
 |---|---|
 | Scenes | 7 |
 | Endings | 3 |
-| Tier 2 examine objects | 21 (19 dedicated images; `obj-water-clock` is reused, and Scene 6's "hands" is text-only) |
+| Tier 2 examine objects | 20 (18 dedicated images; `obj-water-clock` is reused, and Scene 6's "hands" is text-only) |
 | Reactive blocks (non-branching) | 8 |
 | Real branch points | 2 (Scene 4 `looked_away`, Scene 7 `final_choice`) |
 | Conditional ending rows | 8 + 6 + 6, plus 4 shared witness rows |
