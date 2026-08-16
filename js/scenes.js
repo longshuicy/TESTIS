@@ -29,9 +29,9 @@ const SCENES = [
       },
       {
         // Kept as its own hotspot (reusing obj-water-clock.png, per the art
-        // doc's "reused in Scenes 1, 3, 6") rather than merged into the
-        // sundial paragraph. Text below is the v3 script's sundial passage,
-        // split at the point where it turns from the dial to the water.
+        // doc's "reused in Scenes 1, 3") rather than merged into the sundial
+        // paragraph. Text below is the v3 script's sundial passage, split at
+        // the point where it turns from the dial to the water.
         id: "water-clock-1",
         label: "The water-clock behind the wall",
         image: "assets/images/obj-water-clock.png",
@@ -445,7 +445,10 @@ const SCENES = [
       {
         id: "water-clock-6",
         label: "The water-clock",
-        image: "assets/images/obj-water-clock.png",
+        // Its own image, not a reuse of Scene 1/3's obj-water-clock — the
+        // basin is dry and a second empty basin sits beside it, so the shot
+        // has to show wear the earlier two don't. See art doc, Scene 6.
+        image: "assets/images/obj-water-clock-2.png",
         morse: ". --. --- / ... --- .-.. ..-",
         text: "Nearly dry, the basin beneath it dark with old use, and beside it, I now noticed, a second empty basin, drier still, as though it had finished this same errand some while before I arrived to start mine.\n\nWhat was left of it was still trying. Slower now, with long gaps where a drip should have fallen and didn't, the way a voice goes when there isn't breath enough left to finish:\n\n{morse}\n\nThen nothing. Whatever it had been counting toward, it did not reach."
       },

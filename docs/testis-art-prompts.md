@@ -8,7 +8,7 @@ Generate everything in one sitting, back to back, so style stays consistent. Pic
 prompt and move on. Do not re-roll chasing perfection; consistency across the set matters more than
 any single image being ideal.
 
-**Total assets: 32.** 10 scene and ending backgrounds, 18 object shots, 4 character shots.
+**Total assets: 34.** 10 scene and ending backgrounds, 20 object shots, 4 character shots.
 
 **All of them live in `assets/images/`.** Filenames below are bare; the directory is implied and is
 what `scenes.js`, `endings.js`, and `style.css` reference (`assets/images/scene-1-gate.png`). Audio
@@ -126,7 +126,7 @@ reflected figure visible in the wet dark of the pupil, this time it is the viewe
 
 ---
 
-## 2. OBJECT SHOTS (18)
+## 2. OBJECT SHOTS (20)
 
 Used as tier2 examine images. Each corresponds to a specific examine hotspot in the script.
 
@@ -178,7 +178,7 @@ resting on dark cloth among antique implements, isolated close-up
 a small rectangular slab of black glass lying among 16th century surgical tools, blank and faintly
 reflective, screen-like, isolated close-up
 ```
-**`obj-water-clock.png`**: *reused in Scenes 1, 3, 6*
+**`obj-water-clock.png`**: *reused in Scenes 1, 3*
 ```
 an antique brass water clock, a clepsydra, with a dripping basin beneath it, a hairline crack along
 its base, ornate but worn metalwork, isolated on dark stone
@@ -220,7 +220,7 @@ a dark window at night returning a faint partial reflection of a face, the refle
 older man's collar that the viewer does not own, ambiguous and half-formed
 ```
 
-### Scene 6 (2)
+### Scene 6 (3)
 **`obj-hands-bound.png`**
 ```
 close-up of a pair of hands resting in a lap, wrists bound loosely by old rope, seen from above in
@@ -229,6 +229,18 @@ the first-person seated position, the rope gone soft with age, isolated close fr
 *This is the player's own hands, seen from the chair. The same rope that held him. Compose it as a
 downward look — what you see when you glance at your own wrists mid-scene. Pairs with `obj-rope.png`
 from Scene 7, which shows the same wrists from a slightly different angle. Generate back to back.*
+
+**`obj-water-clock-2.png`**: *not a reuse — this is the same clock later, failing*
+```
+the same antique brass water clock, a clepsydra, its basin beneath it nearly dry, a second empty
+basin set beside it drier still, the hairline crack along its base more pronounced, ornate but worn
+metalwork, isolated on dark stone
+```
+*Scene 6's clock is described as running down — a second empty basin, long gaps where a drip should
+have fallen and didn't — which `obj-water-clock.png` cannot show without contradicting Scenes 1 and 3,
+where the same clock is still keeping time. Same object, same metalwork and framing as
+`obj-water-clock.png` so the two read as one clock across the game, generated back to back with it
+for consistency; the only change is the wear and the second basin.*
 
 **`obj-watcher.png`**: *reused in Scene 7*
 ```
@@ -279,7 +291,7 @@ out of frame, minimal linework
    the suffix alone. Confirm the crosshatch-to-flat-area balance looks right before committing to
    real scenes. Ten minutes here saves an hour of inconsistent output.
 2. **Lock a seed.** Once a test image has the right feel, note its seed and reuse it across the set.
-   This is the single highest-leverage step for making 33 images look authored rather than assembled.
+   This is the single highest-leverage step for making 34 images look authored rather than assembled.
 3. **Scene backgrounds** in narrative order, so lighting and mood carry scene to scene.
 4. **The matched pair** (`obj-eyes-his.png` and `ending-c.png`) together, back to back, same seed.
    Their similarity is a narrative device; generate them as one job.

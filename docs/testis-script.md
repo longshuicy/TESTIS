@@ -167,7 +167,7 @@ appear with no fade at all, cutting straight in from Scene 1's last line.
 > A dial with no sun to read by, and yet its shadow falls anyway, and falls precisely, as though the hour it names has nothing to do with the sky.
 
 **TIER 2, examine the water-clock behind the wall:** *(reuses `obj-water-clock`, per the art doc's
-"reused in Scenes 1, 3, 6"; kept as its own hotspot rather than folded into the sundial's, so the
+"reused in Scenes 1, 3"; kept as its own hotspot rather than folded into the sundial's, so the
 image renders)*
 > Beneath the wall the drip keeps its rhythm, patient, unhurried, the same figure over and over:
 >
@@ -177,6 +177,8 @@ image renders)*
 
 > **Build note, Morse fragment 1 of 3.** Decodes to **SOL STAT**, "the sun stands still." Three
 > water-clocks in Scenes 1, 3, and 6 carry one sentence: **SOL STAT / TERRA MOVET / EGO SOLUS.**
+> Scene 6's clock is `obj-water-clock-2`, not a reuse — the same clock, failing, and its own image so
+> the wear can show.
 >
 > Never translate it in-game and never acknowledge that it decodes. Render as selectable text so it
 > can be copied into a decoder. Notation: interpunct `·` for dits, em-dash `—` for dahs, single space
@@ -583,7 +585,8 @@ image renders)*
 - if `looked_away == true`: *My hands were shaking the way his never had, as if he had spent his fear already and left me only the leftover of it.*
 - if `looked_away == false`: *My hands were steady. I had rehearsed this without knowing it, every time I refused to look away from his.*
 
-**TIER 2, examine the water-clock:**
+**TIER 2, examine the water-clock:** *(own image, `obj-water-clock-2.png` — not a reuse of Scenes 1
+and 3's `obj-water-clock`, since this is the same clock later, dry and failing)*
 > Nearly dry, the basin beneath it dark with old use, and beside it, I now noticed, a second empty basin, drier still, as though it had finished this same errand some while before I arrived to start mine.
 >
 > What was left of it was still trying. Slower now, with long gaps where a drip should have fallen and didn't, the way a voice goes when there isn't breath enough left to finish:
@@ -816,7 +819,7 @@ identical to v2, so **all existing art and the tech design doc remain valid.**
 | Scenes | 7 |
 | Plates (held character images) | 3 (Scenes 2, 4, 5) |
 | Endings | 3 |
-| Tier 2 examine objects | 22 (19 dedicated images; `obj-water-clock` reused across Scenes 1, 3 and 6; Scene 5 "calendar" is an HTML widget) |
+| Tier 2 examine objects | 22 (20 dedicated images; `obj-water-clock` reused across Scenes 1 and 3, Scene 6's clock is its own `obj-water-clock-2`; Scene 5 "calendar" is an HTML widget) |
 | Reactive blocks (non-branching) | 8 |
 | Real branch points | 2 (Scene 4 `looked_away`, Scene 7 `final_choice`) |
 | Conditional ending rows | 8 + 6 + 6, plus 4 shared witness rows |
