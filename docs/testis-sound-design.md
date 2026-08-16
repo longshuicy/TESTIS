@@ -53,15 +53,29 @@ game.
 reactive block was gated away and never asked, so no choice was ever answered — it is cut over
 350ms and the next bed starts *after* it, not across it.
 
-**Silence before the decision is now the house rule, not the marking.** It used to be what set Scenes
-4 and 7 apart; every choice does it now, so those two are marked by what happens *on selection*
-instead — one has an answer, the other deliberately has none:
+**Choices are not silent moments any more.** The bed still goes out on arrival, but what fills the
+gap is the interface: every choice in the game sounds `prompt-notification` as its question becomes
+readable and `confirmation` as its answer goes in. **Universally — branches included.** There is no
+scene, no block type and no branch that is exempt, and no table of exceptions to keep in sync.
+
+*Revised from the version of this doc that made Scenes 4 and 7 render into silence.* That rule was
+written when a choice had no cue of its own and silence was the only way to mark one. It is not
+worth the special-casing now: a rule that holds everywhere is worth more here than a distinction two
+scenes carried.
+
+Two silences survive, and they are not about choices:
 
 | Moment | Treatment |
 |---|---|
 | Scene 3, the tally hotspot | Total silence on open. Hold through the reveal. Bed returns only when the player closes the hotspot, at a lower volume than before, and that difference is never restored. Implemented as `AUDIO.dim = 0.6`, a multiplier on every bed volume from that point on, including later scenes and the endings. It is set when the hotspot **opens**, not when it closes, so a player who reads their own name and then walks away from the open panel still loses the difference. **If the scene's choice has already arrived the bed is halted for good and closing the tally brings nothing back** — the dim is still taken. |
-| Scene 4, the branch (look away / keep watching) | A single low sustained note on selection — the only choice in the game that answers back. |
-| Scene 7, the final branch | Silence on selection, as on render. The ending's bed starts when the **ending paints**, not when the choice is made. |
+| Scene 7, after the final choice | The confirmation sounds, and then nothing until the ending paints. The ending's bed starts with the **ending**, not with the choice that led to it — answering fast should not let you hear an ending you have not reached. |
+
+Scene 4's branch keeps its single low sustained note on selection, now under the confirmation rather
+than alone in the quiet. It is still the only choice in the game that answers back.
+
+The name carved at the Scene 1 gate gets the confirmation too — it is an answer like any other.
+Declining does not: leaving the stone as you found it is a decision that is meant to cost nothing and
+make no noise.
 
 Examine hotspots do not affect the bed at all. It continues unducked beneath the examine text, and
 the Scene 3 tally is the only one that stops it.
@@ -304,6 +318,11 @@ stings — with two exceptions that stay uncompressed, below. AAC rather than MP
 `afconvert` is the encoder here and cannot write MP3; support is universal in every browser this
 game targets. Audio lazy-loads and never blocks the first scene render.
 
+**The two interface cues ship as `.mp3`** — a third extension, and the only files here not produced
+by the `afconvert` pipeline. They were delivered as MP3, they are 41KB and 129KB, and re-encoding
+them to AAC would save nothing worth the generation loss. Do not assume one extension anywhere in
+this directory; `js/audio.js` is the only place the filenames are written down.
+
 Two files stay WAV on purpose:
 
 - **`bed-scene-5.wav`** is a seamless tick loop, and every lossy codec adds encoder padding at the
@@ -429,6 +448,20 @@ everywhere, and the sample is short enough that the format costs nothing.
 | `plate-scene-4.m4a` | Scene 4 closing, `char-copernicus-reveal` | Water on stone and nothing else | `water pouring onto stone`, `liquid drip echo`, `whisper reverb distant` |
 | `plate-scene-5.m4a` | Scene 5 opening, `char-player-hands` | Wet, tacky, intimate. Recorded close, no reverb. **6.0s, cut from the 87-second source** at 46.75s — the point where the texture swells out of near-silence, peaks, and settles — with an 8ms fade in and a 1.2s fade out. Trimmed copy kept as `assets_sound_src/plate-scene-5-trimmed.wav` | `sticky wet fingers`, `skin friction close mic`, `viscous liquid slow` |
 
+### Interface cues (2)
+
+| Filename | Moment | Description |
+|---|---|---|
+| `prompt-notification.mp3` | The end of every choice's held beat, as the question becomes readable | Marks the arrival of a question. Played at **0.26** — it lands in the gap the bed left, and does not need volume to be heard. 4.03s as delivered, against a stagger that finishes in under three, so it is faded out at 220ms whenever the answer, a plate, or a new scene arrives on top of it. |
+| `confirmation.mp3` | Every choice answered, and a name carved at the Scene 1 gate | The answer going in. Played at **0.34**. 1.31s. On Scene 4's branch it sounds under the low note. Not played when the player declines to carve: leaving the stone as they found it is a decision that is meant to cost nothing and make no noise. |
+
+Neither file needs an attribution block; they are not credited assets. §11 and `ATTRIBUTIONS.txt`
+stay as they are.
+
+> `prompt-notification.mp3` is the longest cue in the game relative to the moment it marks. If it
+> reads as ringing on rather than landing, trim it in `assets_sound_src/` and re-encode — do not edit
+> the shipped file in place, and do not fix it by dropping the volume further.
+
 ### Full list in path order
 
 ```
@@ -442,15 +475,17 @@ assets/sound/                 assets_sound_src/     (git-ignored originals)
   bed-scene-4.m4a               bed-scene-4.mp3
   bed-scene-5.wav   (16-bit)    bed-scene-5.wav   (24-bit)
   bed-scene-7.m4a               bed-scene-7.mp3
+  confirmation.mp3              —  (delivered as shipped)
   drip-single.wav               drip.wav
   plate-scene-2.m4a             plate-scene-2.wav
   plate-scene-4.m4a             plate-scene-4.wav
   plate-scene-5.m4a             plate-scene-5.wav
+  prompt-notification.mp3       —  (delivered as shipped)
 ```
 
-13 shipped files. **Mixed `.m4a` and `.wav` — load each by its exact filename.** Do not assume a
-single extension and do not derive one from the scene id; the two WAVs are WAVs for the reasons in
-§7. Alphabetical order matches Finder and most file browsers.
+15 shipped files. **Mixed `.m4a`, `.wav` and `.mp3` — load each by its exact filename.** Do not
+assume a single extension and do not derive one from the scene id; the two WAVs are WAVs and the two
+cues are MP3s for the reasons in §7. Alphabetical order matches Finder and most file browsers.
 
 The re-encode, reproducible from `assets_sound_src/` with the encoder that ships with macOS:
 
@@ -551,13 +586,15 @@ bookkeeping that must survive being switched on mid-scene (which bed is current,
 |---|---|---|
 | `Sound.init()` | `DOMContentLoaded` | Wires the toggle button, paints its icon |
 | `Sound.sceneStarted(id)` | `renderScene`, inside the fade | Brings that scene's bed up from silence (cutting any bed still sounding first, never across it), clears `halted`, warms the next bed, stops any morse |
-| `Sound.endingStarted(id)` | `renderEnding` | Brings up the ending's bed. The only place an ending's bed begins |
+| `Sound.endingStarted(id)` | `renderEnding` | Brings up the ending's bed, cutting any interface cue the final choice left ringing. The only place an ending's bed begins |
 | `Sound.plateOpened(sceneId)` | `renderPlate`, once visible | Cuts a still-sounding bed over 200ms and fires that plate's sting |
 | `Sound.plateClosed()` | `renderPlate`, on dismiss | Fades that sting out with the plate, so nothing a plate started carries into the scene behind it |
 | `Sound.hotspotOpened(sceneId, item)` | tier2 accordion, on open | Water-clocks start their morse; the tally sets `AUDIO.dim` and stops the bed; everything else is silent |
 | `Sound.hotspotClosed(sceneId, item)` | tier2 accordion, on close | Stops the morse; brings the bed back after the tally, quieter — unless a choice has since halted it |
 | `Sound.choicesArriving(sceneId)` | `renderChoices`, when a choice block uncovers itself | Settles the bed out and halts it until the next scene. **This is where the music stops** |
-| `Sound.choiceMade()` | `renderChoices`, on any pick | The same halt, as a backstop for the one path with no arrival (see below). Called **before** the pick's own handler, so a branch that starts the next bed (Scene 7) is not stopped by it |
+| `Sound.promptShown(sceneId)` | `renderChoices`, at the end of the held beat | Sounds the prompt cue. Every choice, no exceptions |
+| `Sound.choiceMade()` | `renderChoices`, on any pick | Stops any prompt cue still ringing, then the same halt as a backstop for the one path with no arrival (see below), then the confirmation. Every choice, no exceptions. Called **before** the pick's own handler, so a branch that starts the next bed (Scene 7) is not stopped by it |
+| `Sound.nameCarved()` | the Scene 1 gate interaction, on a name actually carved | The confirmation. Declining sounds nothing |
 | `Sound.branchChosen(sceneId, nextId)` | `renderExit`, on selection | Scene 4 sounds the low note. Scene 7 sounds nothing |
 
 `sceneId` on a plate is the scene the plate **belongs to** — the arriving scene for an opening plate,
@@ -568,8 +605,10 @@ the departing one for a closing plate. That is what names the sting: Scene 4's c
 first of them does anything: by the time a choice is answered its arrival has already halted the bed.
 `choiceMade` stays because one path reaches a scene's end without any choice ever arriving — a scene
 whose only reactive block was gated away — and that path still has to leave silence behind it.
-Neither takes a scene id it uses: the rule applies to every choice in the game, reactive blocks and
-branches alike, and a table of exceptions is exactly what this rule replaced.
+Neither uses the scene id it is given, and `choiceMade` takes no argument at all. Both apply to every
+choice in the game, reactive blocks and branches alike. `sceneId` stays on `promptShown` for the same
+reason the other methods carry it — a future cue that does vary by scene should not have to change
+the call site to find out where it is.
 
 `Sound.branchRendered()` is gone. It existed to fall silent on Scenes 4 and 7 before the choice; now
 every choice does that, so it had nothing left to say.

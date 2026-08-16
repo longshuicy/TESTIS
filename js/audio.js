@@ -43,6 +43,7 @@ const ENABLE_FADE_MS = 800;   // the toggle fades up rather than snapping
 const CUT_MS = 350;           // clearing a bed out of the way of the next one
 const CHOICE_FADE_MS = 600;   // settling out under an answered choice
 const STING_FADE_MS = 300;    // a plate's sting going with the plate
+const CUE_FADE_MS = 220;      // the prompt cue getting out of the answer's way
 const SILENCE_FADE_MS = 500;  // the moments that render into silence
 const RESUME_FADE_MS = 900;
 
@@ -84,6 +85,19 @@ const CLOCKS = {
 
 // Hotspots that stop the bed instead of sounding. Keyed by item id.
 const FULL_STOP_HOTSPOTS = { tally: true };
+
+/* The two interface cues: one marks the question arriving, one marks the answer
+   going in. Both shipped as `.mp3` — a third extension in `assets/sound/`, see
+   §7 — because they were delivered that way and are small enough that a
+   re-encode would buy nothing.
+
+   Well under `fxVolume`. These land inside a silence the rest of the design
+   worked to earn, and a cue that has the room to itself does not need to be
+   loud to be heard. */
+const CUE_PROMPT  = "assets/sound/prompt-notification.mp3";
+const CUE_CONFIRM = "assets/sound/confirmation.mp3";
+const CUE_PROMPT_VOL  = 0.26;
+const CUE_CONFIRM_VOL = 0.34;
 
 const DRIP_SRC = "assets/sound/drip-single.wav";
 
@@ -307,6 +321,24 @@ function stopSting(ms) {
   fadeTo(el, 0, ms != null ? ms : STING_FADE_MS, () => el.pause());
 }
 
+// Whichever interface cue sounded last. The prompt cue outlasts its moment the
+// same way a sting does — the delivered file runs four seconds against a stagger
+// that finishes in under three, so a player who answers promptly would hear it
+// still ringing under their own confirmation. Faded, not cut, so the stop is not
+// a click.
+//
+// The confirmation is tracked here too, short as it is. Nothing this game starts
+// is allowed to sound over the thing that comes after it, and an ending is
+// exactly the boundary that rule exists for.
+let cue = null;
+
+function stopCue(ms) {
+  if (!cue) return;
+  const el = cue;
+  cue = null;
+  fadeTo(el, 0, ms != null ? ms : CUE_FADE_MS, () => el.pause());
+}
+
 /* ──────────────────────────────────────────── the low sustained note
 
    Scene 4's branch resolves into a single low note, and the sound design
@@ -523,6 +555,7 @@ const Sound = {
   // A scene's first paint. Brings up its bed, warms the next one.
   sceneStarted(id) {
     stopMorseAudio();
+    stopCue(0);           // nothing from the last scene's choices survives here
     stopSting();          // belt and braces: nothing from a plate survives here
     playBed(id, AUDIO.bed ? BED_FADE_MS : ENABLE_FADE_MS);
     warmNext(id);
@@ -531,6 +564,7 @@ const Sound = {
   // An ending's first paint, and the only place an ending's bed begins.
   endingStarted(id) {
     stopMorseAudio();
+    stopCue(0);           // the choice that got here does not sound over the ending
     stopSting();
     playBed(id);
   },
@@ -541,6 +575,7 @@ const Sound = {
   // arrive after a branch has already stopped the bed.
   plateOpened(sceneId) {
     stopMorseAudio();
+    stopCue(0);           // a plate's sting lands alone or it does not land
     stopSting(0);
     if (AUDIO.bed && !AUDIO.bed.paused) silenceBed(null, 200);
     sting = playFx(STINGS[sceneId]);
@@ -584,12 +619,29 @@ const Sound = {
     haltBed();
   },
 
-  // A choice has been answered. The bed is already gone — the arrival took it —
-  // so this is a no-op on any bed that reached its choice normally. It stays as
+  // The held beat is over and the question is now readable. Every choice in the
+  // game announces itself, branches included — no exceptions, by design.
+  promptShown(sceneId) {
+    cue = playFx(CUE_PROMPT, CUE_PROMPT_VOL);
+  },
+
+  // A choice has been answered. The `haltBed` is a no-op on any bed that
+  // reached its choice normally — the arrival already took it — and stays as
   // the backstop for the one path that skips an arrival: a scene whose only
   // reactive block was gated away still has to leave silence behind it.
+  //
+  // The confirmation is universal too. Scene 4 sounds it under its low note.
   choiceMade() {
+    stopCue();
     haltBed();
+    cue = playFx(CUE_CONFIRM, CUE_CONFIRM_VOL);
+  },
+
+  // A name has been carved into the gate. The same confirmation an answered
+  // choice gets, because that is what this is — the one the player typed.
+  // Declining carves nothing and sounds like nothing.
+  nameCarved() {
+    cue = playFx(CUE_CONFIRM, CUE_CONFIRM_VOL);
   },
 
   // A branch has been answered. Scene 4 answers with one low note.

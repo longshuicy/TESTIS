@@ -624,6 +624,9 @@ function renderInteraction(panel, spec) {
 
   function resolve(value, responseText) {
     flags[spec.flagKey] = value;
+    // Only a name actually carved sounds. Leaving the stone as you found it is
+    // a decision too, and it is meant to cost nothing and make no noise.
+    if (value) Sound.nameCarved();
     box.remove();
     const res = el("div", "response");
     if (value) {
@@ -823,9 +826,10 @@ function watchChoice(node, onReveal) {
 
 function renderChoices(block, onPick, extraClass) {
   const wrap = el("div", "choices veiled" + (extraClass ? " " + extraClass : ""));
+  const isBranch = /\bbranch\b/.test(extraClass || "");
   const beats = reducedMotion.matches
     ? REVEAL_REDUCED
-    : (/\bbranch\b/.test(extraClass || "") ? REVEAL_BRANCH : REVEAL_REACTIVE);
+    : (isBranch ? REVEAL_BRANCH : REVEAL_REACTIVE);
   const fade = reducedMotion.matches ? 0 : REVEAL_FADE_MS;
 
   let prompt = null;
@@ -874,7 +878,10 @@ function renderChoices(block, onPick, extraClass) {
     Sound.choicesArriving(currentSceneId);   // the bed settles out into the beat
     wrap.classList.remove("veiled");
 
+    // The end of the held beat, whether or not this block has a prompt to show
+    // for it: the question is readable from here.
     let at = beats.hold;
+    revealTimer(() => Sound.promptShown(currentSceneId), at);
     if (prompt) {
       revealTimer(() => prompt.classList.remove("veiled-item"), at);
       at += beats.prompt;
