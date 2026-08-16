@@ -1,0 +1,105 @@
+<!--
+  TESTIS - Scene 5 calendar hotspot
+  Static May 1543 (JULIAN). No navigation, no inputs, no month switching.
+  Drop the <style> into style.css and the .cal block into the tier2 accordion body.
+-->
+<style>
+.cal {
+  --ink: #0b1218;
+  --paper: #8fa3b0;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--ink);
+  max-width: 340px;
+  margin: 1rem 0;
+  padding: 1.4rem 1.2rem 1.6rem;
+  background: var(--paper);
+  box-shadow: 0 1px 0 rgba(11,18,24,.25);
+  user-select: none;
+}
+.cal__head {
+  text-align: center;
+  letter-spacing: .22em;
+  font-size: .78rem;
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
+  opacity: .85;
+}
+.cal table { width: 100%; border-collapse: collapse; }
+.cal th {
+  font-size: .62rem;
+  font-weight: 400;
+  letter-spacing: .16em;
+  padding-bottom: .5rem;
+  opacity: .5;
+}
+.cal td {
+  position: relative;
+  height: 2.1rem;
+  text-align: center;
+  font-size: .92rem;
+  vertical-align: middle;
+}
+
+/* struck-through days: hand-drawn feel, not CSS line-through */
+.cal .struck { opacity: .55; }
+.cal .struck::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 52%;
+  height: 1px;
+  background: var(--ink);
+  transform: rotate(var(--tilt, -4deg));
+  transform-origin: center;
+  opacity: .8;
+}
+/* the strikes get looser toward the 20th */
+.cal .struck:nth-child(odd)  { --tilt: -6deg; }
+.cal .struck:nth-child(even) { --tilt: -2deg; }
+.cal .late::after { left: 6%; right: 4%; --tilt: -9deg; height: 1.5px; }
+
+/* the circled day: drawn, not styled */
+.cal .circled::before {
+  content: "";
+  position: absolute;
+  inset: 8% 6%;
+  border: 1.5px solid var(--ink);
+  border-radius: 48% 52% 47% 53% / 52% 47% 53% 48%;
+  transform: rotate(-7deg);
+  opacity: .9;
+}
+</style>
+
+<div class="cal" role="img" aria-label="A calendar page for May 1543. Days one through twenty are crossed out. The twenty-fourth is circled.">
+  <div class="cal__head">Maius &middot; MDXLIII</div>
+  <table>
+    <thead>
+      <tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td><td></td>
+        <td class="struck">1</td><td class="struck">2</td><td class="struck">3</td>
+        <td class="struck">4</td><td class="struck">5</td>
+      </tr>
+      <tr>
+        <td class="struck">6</td><td class="struck">7</td><td class="struck">8</td>
+        <td class="struck">9</td><td class="struck">10</td><td class="struck">11</td>
+        <td class="struck">12</td>
+      </tr>
+      <tr>
+        <td class="struck">13</td><td class="struck">14</td><td class="struck">15</td>
+        <td class="struck">16</td><td class="struck late">17</td><td class="struck late">18</td>
+        <td class="struck late">19</td>
+      </tr>
+      <tr>
+        <td class="struck late">20</td><td>21</td><td>22</td><td>23</td>
+        <td class="circled">24</td><td>25</td><td>26</td>
+      </tr>
+      <tr>
+        <td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

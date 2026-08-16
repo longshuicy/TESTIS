@@ -1,6 +1,7 @@
 # TESTIS Art Prompt List
 
-Companion to `the-water-clock-script.md` (narrative) and `testis-tech-design.md` (build).
+Companion to `testis-script.md` (narrative), `testis-tech-design.md` (build), and
+`testis-sound-design.md` (audio).
 **This doc is the single source of truth for art direction and asset filenames.**
 
 Generate everything in one sitting, back to back, so style stays consistent. Pick best-of-two per
@@ -8,6 +9,11 @@ prompt and move on. Do not re-roll chasing perfection; consistency across the se
 any single image being ideal.
 
 **Total assets: 32.** 10 scene and ending backgrounds, 18 object shots, 4 character shots.
+
+**All of them live in `assets/images/`.** Filenames below are bare; the directory is implied and is
+what `scenes.js`, `endings.js`, and `style.css` reference (`assets/images/scene-1-gate.png`). Audio
+sits alongside in `assets/sound/` and belongs to `testis-sound-design.md`; `assets_backup/` and
+`assets_tint/` are art-pipeline working directories and are not shipped.
 
 ---
 
@@ -214,7 +220,16 @@ a dark window at night returning a faint partial reflection of a face, the refle
 older man's collar that the viewer does not own, ambiguous and half-formed
 ```
 
-### Scene 6 (1)
+### Scene 6 (2)
+**`obj-hands-bound.png`**
+```
+close-up of a pair of hands resting in a lap, wrists bound loosely by old rope, seen from above in
+the first-person seated position, the rope gone soft with age, isolated close framing
+```
+*This is the player's own hands, seen from the chair. The same rope that held him. Compose it as a
+downward look — what you see when you glance at your own wrists mid-scene. Pairs with `obj-rope.png`
+from Scene 7, which shows the same wrists from a slightly different angle. Generate back to back.*
+
 **`obj-watcher.png`**: *reused in Scene 7*
 ```
 a still human silhouette standing at the edge of darkness, no facial features, posture suggesting

@@ -1,7 +1,8 @@
 # TESTIS Technical Design Document
 
-Build spec. Companion to `the-water-clock-script.md` (all narrative content, the source of truth)
-and `testis-art-prompts.md` (art direction and asset filenames).
+Build spec. Companion to `testis-script.md` (all narrative content, the source of truth),
+`testis-art-prompts.md` (art direction and asset filenames), and `testis-sound-design.md` (audio
+behavior and audio filenames).
 
 **Read the script doc first.** This doc contains no narrative content and deliberately does not
 duplicate any. Where a code example shows story text, it is abbreviated illustration only; the real
@@ -39,11 +40,24 @@ examples below assume plain scripts and global consts.
   /js
     scenes.js      // SCENES array, all scene data
     endings.js     // ENDINGS array + WITNESS_CALLBACK shared table
+    audio.js       // AUDIO state, the Sound facade, every assets/sound/ filename
     main.js        // state machine, rendering, event handling
-  /assets          // 32 assets, filenames per testis-art-prompts.md
+  /assets
+    /images        // 32 art assets, filenames per testis-art-prompts.md
+    /sound         // 14 audio assets, filenames per testis-sound-design.md
+    /widgets       // standalone HTML prototypes; not loaded by the game
 ```
 
-Load order in `index.html`: `scenes.js`, `endings.js`, then `main.js`.
+Load order in `index.html`: `scenes.js`, `endings.js`, `audio.js`, then `main.js`.
+
+`audio.js` must load before `main.js` (which calls into `Sound`) and may read `SCENES` for bed
+preloading, so it goes after the data files. It owns every audio filename and every decision about
+when a sound plays; `main.js` only reports events to the `Sound` facade and holds no audio state.
+See [testis-sound-design.md](testis-sound-design.md) §12 for that interface.
+
+`/assets/widgets` holds design prototypes (e.g. `calendar-widget.html`, an early static version of
+the Scene 5 calendar). Nothing there is fetched at runtime — the shipped calendar is built in
+`main.js`. Fetching HTML fragments would break the `file://` constraint anyway.
 
 Asset filenames are defined in the art prompts doc and must match exactly. Do not invent new names
 at build time; if an asset is missing, use a placeholder at the correct path rather than renaming.
@@ -58,7 +72,7 @@ One object per scene. `main.js` holds rendering logic only and never hardcodes n
 const SCENES = [
   {
     id: "scene-1",
-    background: "assets/scene-1-gate.png",
+    background: "assets/images/scene-1-gate.png",
 
     // Array of paragraphs, not one blob. Lets the renderer control spacing and pacing.
     text: [
@@ -78,7 +92,7 @@ const SCENES = [
       {
         id: "sundial",
         label: "The sundial",
-        image: "assets/obj-sundial.png",   // optional; omit for text-only
+        image: "assets/images/obj-sundial.png",   // optional; omit for text-only
         text: "A dial with no sun to read by..."
       },
       {
@@ -149,9 +163,9 @@ Only two scenes branch. Everything else uses `next`.
 ```js
 {
   id: "scene-4",
-  background: "assets/scene-4-reveal.png",
+  background: "assets/images/scene-4-reveal.png",
   text: [ /* ... */ ],
-  tier2: [ { id: "eyes", image: "assets/obj-eyes-his.png", /* ... */ } ],
+  tier2: [ { id: "eyes", image: "assets/images/obj-eyes-his.png", /* ... */ } ],
   reactive: [ { flagKey: "witness_reaction", options: [ /* A-D */ ] } ],
   branch: {
     flagKey: "looked_away",
@@ -192,7 +206,7 @@ const WITNESS_CALLBACK = {
 const ENDINGS = [
   {
     id: "ending-a",
-    background: "assets/ending-a.png",
+    background: "assets/images/ending-a.png",
     baseOpening: "I let it happen...",
     conditionalMiddle: {
       keys: ["witness_reaction", "looked_away"],

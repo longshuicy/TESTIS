@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Remap every PNG in assets/ to a smooth gradient built from 4 anchor colors,
+Remap every PNG in assets/images/ to a smooth gradient built from 4 anchor colors,
 and write the results to assets_unified/.
 
 Instead of hard luminance cutoffs (which caused speckly noise wherever the
@@ -17,7 +17,7 @@ Anchors (evenly spaced across the 0-255 luminance range):
 
 Usage:
     python3 unify_colors.py [source_dir] [dest_dir]
-Defaults: source_dir=assets, dest_dir=assets_unified
+Defaults: source_dir=assets/images, dest_dir=assets_unified
 """
 
 import os
@@ -63,7 +63,7 @@ def remap_image(img: Image.Image) -> Image.Image:
 
 
 def main():
-    src = sys.argv[1] if len(sys.argv) > 1 else "assets"
+    src = sys.argv[1] if len(sys.argv) > 1 else "assets/images"
     dst = sys.argv[2] if len(sys.argv) > 2 else "assets_unified"
 
     os.makedirs(dst, exist_ok=True)

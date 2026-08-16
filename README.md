@@ -24,22 +24,28 @@ index.html
 css/style.css
 js/scenes.js     SCENES — all scene data
 js/endings.js    ENDINGS + WITNESS_CALLBACK
+js/audio.js      AUDIO state + the Sound facade
 js/main.js       state machine, rendering, events
-assets/          art, filenames per docs/testis-art-prompts.md
+assets/images/   art, filenames per docs/testis-art-prompts.md
+assets/sound/    audio, filenames per docs/testis-sound-design.md
+assets/widgets/  standalone HTML prototypes; not loaded by the game
+ATTRIBUTIONS.txt required credits; maintained from sound doc §11
 ```
 
-Load order matters: `scenes.js`, `endings.js`, then `main.js`.
+Load order matters: `scenes.js`, `endings.js`, `audio.js`, then `main.js`.
 
 ## The docs
 
-- [docs/the-water-clock-script.md](docs/the-water-clock-script.md) — narrative, scenes, endings,
+- [docs/testis-script.md](docs/testis-script.md) — narrative, scenes, endings,
   theme (source of truth for story).
 - [docs/testis-art-prompts.md](docs/testis-art-prompts.md) — art direction and asset filenames.
 - [docs/testis-tech-design.md](docs/testis-tech-design.md) — stack, file structure, data schema,
   render loop.
+- [docs/testis-sound-design.md](docs/testis-sound-design.md) — beds, stings, the morse drip, the
+  toggle, and audio filenames.
 
 For implementation detail on plates, morse, the calendar widget, and debug jumps, read the
-corresponding code directly (`js/main.js`).
+corresponding code directly (`js/main.js`, `js/audio.js`).
 
 ## Debug jumps
 

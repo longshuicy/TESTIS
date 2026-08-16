@@ -1,0 +1,564 @@
+# TESTIS — Sound Design
+
+Companion to `testis-script.md` (narrative), `testis-art-prompts.md` (art), and
+`testis-tech-design.md` (build).
+
+Audio is optional enhancement. **The game must be fully playable and coherent with sound off.**
+Nothing in the writing depends on hearing anything.
+
+Sound is **on by default**, and the player can turn it off at any time. Browsers will not let a page
+make noise before the player has interacted with it, so "on by default" means *armed*, not
+*sounding on load* — see §2.
+
+**Implemented in [`js/audio.js`](../js/audio.js).** That file owns every filename under
+`assets/sound/` and every decision about when a sound plays; `js/main.js` only reports what happened
+on screen. §12 documents that interface. Where this doc and the code disagree, fix one of them.
+
+---
+
+## 1. Bed behavior
+
+**A bed plays while the player is reading, and stops when the player answers.** That is the whole
+rule. The bed comes up with the scene, runs unducked under the prose and under every examine
+hotspot, settles out over 600ms the moment any choice is answered, and does not come back. The
+response text arrives in silence, and so does whatever is left of the scene. The next scene brings
+its own bed up from nothing.
+
+*Revised from the original spec, which ran the bed continuously and crossfaded between scenes.* In
+play, two pieces of music overlapping at a scene change was the awkward moment — a crossfade that
+reads as elegant in a spec reads as two tracks fighting when both are ambient and neither has a
+clear downbeat. Stopping at the choice removes the problem at its source rather than tuning it:
+**by the time a scene ends, the music that belonged to it has already gone**, so there is nothing
+to fade against.
+
+It also puts the silence where the game already puts its weight. Every choice in this game is a
+commitment the narrator cannot take back, and the music stopping is the sound of that.
+
+**The final choice is not an exception.** The original spec had the ending's bed start the moment
+the player answered Scene 7's branch, "under the last line". There is no last line: Scene 7's branch
+options carry no response text, so what actually follows the choice is a Continue button — and the
+ending's music played over the scene the player had just finished, for as long as they took to press
+it. Answering fast made it obvious, since you could be hearing an ending you had not reached. The
+ending's bed belongs to the ending and starts when the ending paints, like every other bed in the
+game.
+
+**Beds never overlap.** If a bed is somehow still sounding at a scene change — a scene whose only
+reactive block was gated away and never asked, so no choice was ever answered — it is cut over
+350ms and the next bed starts *after* it, not across it.
+
+**Three moments are still marked, and they are marked differently now.** Since every answered choice
+ends in silence, what distinguishes these is that the silence arrives **before** the decision rather
+than after it — the player chooses in a room that has already gone quiet:
+
+| Moment | Treatment |
+|---|---|
+| Scene 3, the tally hotspot | Total silence on open. Hold through the reveal. Bed returns only when the player closes the hotspot, at a lower volume than before, and that difference is never restored. Implemented as `AUDIO.dim = 0.6`, a multiplier on every bed volume from that point on, including later scenes and the endings. It is set when the hotspot **opens**, not when it closes, so a player who reads their own name and then walks away from the open panel still loses the difference. |
+| Scene 4, the branch (look away / keep watching) | Silence on render, while the choice is still open. A single low sustained note on selection. |
+| Scene 7, the final branch | Silence on render, and silence after. The ending's bed starts when the **ending paints**, not when the choice is made. |
+
+Examine hotspots do not affect the bed at all. It continues unducked beneath the examine text, and
+the Scene 3 tally is the only one that stops it.
+
+**The tally is resumable; an answered choice is not.** Closing the tally hotspot brings the bed back
+(quieter). Once a choice has been answered the bed is halted for good — `AUDIO.halted` — and closing
+a hotspot afterwards does not resurrect it. Only a new scene clears the flag.
+
+Timings: 600ms to settle out under an answered choice, 500ms for the full stops, 350ms to clear a
+bed out of the way of the next one, 1200ms for a bed fading up at the top of a scene.
+
+## 2. Toggle
+
+Speaker icon, fixed position, top right, always visible including on plates and endings.
+
+- **On by default**, and the player can turn it off at any time.
+- **On by default cannot mean sounding on page load.** Browsers refuse playback until the player has
+  interacted with the page, so audio is *armed* at load and starts at the first gesture. In practice
+  that gesture is **"Enter the fog"**, which happens before Scene 1 paints — so the bed comes up with
+  the first scene and the player never sees the seam. If a `play()` is refused anyway (a `?debug=`
+  jump, a stricter policy), `AUDIO.blocked` is set and the next click or keypress anywhere on the
+  page starts the current scene's bed. A bed paused deliberately — one of the three earned silences —
+  is never resurrected this way.
+- Nothing starts itself without a gesture, and nothing prompts for one.
+- Persist nothing. No localStorage anywhere in this build; refresh restarts everything, audio
+  included, and audio comes back on.
+- Icon states: `speaker-on` (default), `speaker-off`. Two inline SVGs, no icon library.
+- Keyboard reachable, `aria-pressed`, `aria-label="Sound on/off"`.
+- Fade in over 800ms when enabled rather than snapping to full volume.
+
+```js
+const AUDIO = {
+  enabled: true,      // on by default; the toggle turns it off
+  blocked: false,     // a play() was refused for want of a user gesture
+  bedVolume: 0.35,
+  duckVolume: 0.09,
+  fxVolume: 0.5,
+  dim: 1,             // permanent attenuation earned at the Scene 3 tally
+  bed: null,          // the element currently sounding
+  bedKey: null,       // which scene/ending it belongs to
+  halted: false       // stopped by an answered choice; only a new scene clears it
+};
+
+function toggleSound() {
+  AUDIO.enabled = !AUDIO.enabled;
+  if (AUDIO.enabled) { if (AUDIO.bedKey) playBed(AUDIO.bedKey, 800); }
+  else { stopMorseAudio(); fadeTo(AUDIO.bed, 0, 400, () => AUDIO.bed && AUDIO.bed.pause()); }
+  updateSpeakerIcon();
+}
+
+function duck(cb) {              // available; nothing in the shipped flow uses it (§6)
+  if (!AUDIO.enabled || !AUDIO.bed) return cb && cb();
+  fadeTo(AUDIO.bed, AUDIO.duckVolume * AUDIO.dim, 300, cb);
+}
+function unduck() {
+  if (!AUDIO.enabled || !AUDIO.bed) return;
+  if (AUDIO.bed.paused) AUDIO.bed.play();
+  fadeTo(AUDIO.bed, AUDIO.bedVolume * AUDIO.dim, 600);
+}
+function silenceBed(cb, ms) {    // full stop on render; does NOT set halted
+  if (!AUDIO.enabled || !AUDIO.bed) return cb && cb();
+  fadeTo(AUDIO.bed, 0, ms != null ? ms : 500, () => { AUDIO.bed.pause(); cb && cb(); });
+}
+function haltBed(ms) {           // an answered choice; stays down until a new scene
+  AUDIO.halted = true;
+  if (!AUDIO.enabled || !AUDIO.bed || AUDIO.bed.paused) return;
+  fadeTo(AUDIO.bed, 0, ms != null ? ms : 600, () => AUDIO.bed.pause());
+}
+```
+
+`hardPauseAll` was dropped: with no ducking in the shipped flow it had nothing to switch between.
+`AUDIO.dim` replaced it as the one global volume modifier, and it only ever moves in one direction.
+
+---
+
+## 3. Scene beds
+
+One loop per scene. Aim for 60 to 120 seconds seamlessly looped; shorter loops become audible as
+loops within a minute or two of reading. Full mood descriptions and filenames are in the asset
+manifest (section 10). The three points below apply across all beds.
+
+**Scene 3's bed should feel like Scene 2 with something wrong in it.** Not a different piece of
+music — the same ambience, but one element that does not belong to the century. If using a library
+track, layer a faint electrical hum underneath rather than finding a track that already contains one;
+the contrast between the period atmosphere and the intrusion is the effect.
+
+**Scene 7's bed should feel like Scene 4 with something building underneath.** Same principle: start
+from the same source and add rather than replace.
+
+**Scene 6 has no dedicated file.** It pitches Scene 2 down at runtime: `playbackRate = 0.89` with
+`preservesPitch = false` (plus the `moz`/`webkit` spellings). Without that flag the browser
+pitch-corrects and the slow-down stops being a pitch-down, which is the whole point.
+
+**Ending beds do not loop.** The doc originally said this of Ending A only; it is true of all three.
+B ends in a silence that a loop would step on, and C is held open rather than circular. All three are
+`loop: false` in `BEDS`.
+
+---
+
+## 4. Plate stings
+
+Plates are held images. Each gets a **one-shot** over the bed, no loop.
+
+**Keep stings near the length of the moment.** All three now run 4–7 seconds, which is about as
+long as a plate is held. `plate-scene-5` was delivered at **87 seconds** and has been cut to 6
+(see §10); nobody was ever going to sit on that plate for a minute and a half, and the tail did
+nothing but wait for a chance to play over the next scene.
+
+**A sting belongs to its plate and dies with it.** It is faded out over 300ms the moment the player
+dismisses the plate, timed to be gone before the plate has finished lifting, and `sceneStarted`
+stops any survivor as a second guard. Trimming the file is not a substitute for this: a player who
+dismisses in two seconds should not hear the remaining four over the scene. Two plates back to back
+(Scene 4's closing plate into Scene 5's opening one) cut rather than fade, so the two stings never
+sound together either.
+
+> A zero-length fade must land **synchronously**. `plateOpened` stops the outgoing sting and starts
+> the next in the same breath, and the stings share one pooled element per file — so a stop
+> scheduled even one tick late silences the playback that has already replaced it. `fadeTo` applies
+> `ms <= 0` immediately for this reason.
+
+| Plate | Effect | Search keywords |
+|---|---|---|
+| Scene 2 opening (`char-copernicus-bound`) | The jump. Sharp, dry, immediate. No musical stinger, nothing orchestral | `foot scrape stone`, `sudden breath sharp`, `impact dry short`, `chair creak wood` |
+| Scene 4 closing (`char-copernicus-reveal`) | Water on stone, and a voice. Nothing else | `water pouring onto stone`, `liquid drip echo`, `whisper reverb distant` |
+| Scene 5 opening (`char-player-hands`) | Wet, tacky, intimate. Recorded close, no reverb | `sticky wet fingers`, `skin friction close mic`, `viscous liquid slow` |
+
+**Scene 2's plate should have no music at all under it.** Cut the bed on the transition from Scene 1,
+let the sting land in silence, and bring Scene 2's bed up after the player advances. This mirrors the
+visual note in the script that Scene 2's plate should hard-cut rather than fade.
+
+The cut is a **200ms** fade rather than a true hard cut — a bed stopped dead mid-waveform clicks. At
+200ms it reads as a cut and the sting still lands in silence. The sting fires immediately, under the
+tail of the fade, rather than waiting for it.
+
+The other two plates need no cut: both arrive after a branch has already stopped the bed (§1), so
+`plateOpened` cuts only if something is actually sounding.
+
+---
+
+## 5. Hotspot effects
+
+**Examine hotspots are silent, with one exception: the water-clocks.**
+
+Giving every object its own sound turns examining into a soundboard and trains the player to click
+for the noise rather than the writing. Silence on examine keeps the bed running uninterrupted
+underneath the reading, which is where the atmosphere lives.
+
+### The water-clocks (3 assets)
+
+The same clock, three times, degrading. These carry the Morse, and hearing the rhythm match the
+written dot-dash is the entire point of having audio in this game at all.
+
+| Scene | Hotspot | Character | Keywords |
+|---|---|---|---|
+| 1 | Sundial | Patient, even, unhurried. The full phrase, twice through | `water drip single slow`, `drip reverb stone`, `dripping cave echo` |
+| 3 | Second water-clock | Same phrase, **faster**. Insistent rather than hurried | `water drip fast`, `dripping urgent`, `drip echo quick` |
+| 6 | Water-clock | **Slower, with gaps** where a drip should fall and doesn't. Stops mid-phrase and does not resume | `water drip sparse slow`, `drip final single`, `drip fading stop` |
+
+**Build the Morse rhythm, don't search for it.** Take one clean single-drip sample and sequence it in
+code or in an editor to the actual pattern:
+
+- Scene 1: `··· ——— ·—·· / ··· — ·— —` (SOL STAT)
+- Scene 3: `— · ·—· ·—· ·— / —— ——— ···— · —` (TERRA MOVET)
+- Scene 6: `· ——· ——— / ··· ——— ·—·· ··—` (EGO SOLU, cut off)
+
+Timing: dit 200ms, dah 600ms, gap between elements 200ms, between letters 600ms, between words
+1400ms. Scene 3 runs at roughly 0.7× those intervals. Scene 6 runs at 1.4× with two or three
+additional dropped beats, then silence where the final `···` should be.
+
+**Length is carried by the space after the strike, not by the strike itself.** A recorded drip cannot
+be stretched into a dah — it is a transient with a decay, and time-stretching it stops it sounding
+like water. So a dah is one drip followed by a long wait and a dit is one drip followed by a short
+one. That is how morse is read anyway: as rhythm, not as duration of tone.
+
+The sequencer lives in `playMorseAudio(code, opts)` in `audio.js` and takes its `code` straight from
+the hotspot's own `morse` field in `scenes.js` — the written dot-dash and the rhythm under it are
+necessarily the same phrase, because they are the same string. Per-scene options:
+
+| Hotspot id | Scene | Options |
+|---|---|---|
+| `water-clock-1` | 1 | `{ rate: 1.0, repeat: 2 }` — the full phrase, twice through |
+| `water-clock` | 3 | `{ rate: 0.7 }` — every interval shortened |
+| `water-clock-6` | 6 | `{ rate: 1.4, drop: [4, 7, 11] }` — slower, three beats that keep their timing and make no sound |
+
+A dropped beat holds its place in the sequence and plays nothing, so the gap falls where a drip
+should have. The sequence simply ends after its last element; the missing final `···` needs no code.
+
+Drips play from a four-element round-robin pool, so a drip's reverb tail is not cut off by the next
+strike. Still reused elements, never a new `Audio` per playback.
+
+The morse stops when the hotspot closes, when the scene changes, and when sound is switched off.
+
+One sample, three sequences. Cheapest high-value audio in the project.
+
+### Everything else
+
+Silent. Scenes 1, 2, 4, 5, and 7 have no hotspot audio; Scenes 3 and 6 have only their clock. The bed
+continues under all examine text, unducked.
+
+**Two silences**, both costing no asset:
+
+| Moment | Treatment |
+|---|---|
+| Scene 3, the tally | Full stop on open. Silence while the player reads their own name. Bed returns when the hotspot closes, at a slightly lower volume than before, and that difference is never restored. |
+| Scene 6, the watcher | No change to the bed, but no sound either. It is the only hotspot in the game the player might expect something from and get nothing. |
+
+## 6. Choice sounds
+
+No sound *added* on choices — no click, no confirm tone, no hover state. But a choice is no longer
+inaudible: **answering one stops the bed** (§1). The feedback is the room going quiet, plus the
+response text arriving, and that is enough. Nothing is layered on top.
+
+This is the one place the design changed after hearing it. The original rule was "the bed continues
+unducked" through choices, with crossfades carrying the scene changes. Crossfading two ambient beds
+turned out to be the weakest sound in the game, and stopping at the choice removes the need for one
+entirely.
+
+The three full-stop moments (Scene 3 tally, Scene 4 branch, Scene 7 branch) are specified in
+section 1 and require no assets, only the absence of sound.
+
+**One exception, and it is not a choice sound.** Scene 4's branch resolves into "a single low
+sustained note" (§1), for which the manifest allocates no file. It is synthesised with WebAudio
+instead of downloaded: two sines, 55Hz and 82.5Hz, 600ms attack, held, released over ~3.3s. Costs no
+asset and no bytes. The `AudioContext` is created on a user gesture so it starts unsuspended.
+
+---
+
+## 7. Sourcing
+
+| Source | Licence | Notes |
+|---|---|---|
+| **Freesound.org** | CC0 / CC-BY | Deepest library for field recordings. Filter to CC0 to avoid attribution admin. |
+| **Pixabay Audio** | Pixabay licence | No attribution required. Weaker on odd textures, fine for drones. |
+| **BBC Sound Effects** | Personal/educational | Excellent stone, water, interior room tones. Check terms before commercial release. |
+| **Zapsplat** | Free with attribution | Broad, reliable, decent search. |
+| Generative (Suno, ElevenLabs SFX) | Per-service | Fastest route for the 10 beds; check licence terms for game use. |
+
+**Format as shipped:** **AAC in an MP4 container (`.m4a`)** — 96kbps for beds, 128kbps for the plate
+stings — with two exceptions that stay uncompressed, below. AAC rather than MP3 because macOS
+`afconvert` is the encoder here and cannot write MP3; support is universal in every browser this
+game targets. Audio lazy-loads and never blocks the first scene render.
+
+Two files stay WAV on purpose:
+
+- **`bed-scene-5.wav`** is a seamless tick loop, and every lossy codec adds encoder padding at the
+  head and tail that a loop turns into an audible click. It is 16-bit stereo (down from 24-bit),
+  3.1MB for 17 seconds. The lossy beds all have the same padding, but they are long enough that a
+  player rarely reaches the loop point.
+- **`drip-single.wav`** is 60KB and is fired dozens of times in a row with tight timing. Nothing to
+  gain by compressing it, and decode latency to lose.
+
+**Size, and where it went:**
+
+| | Original delivery | Shipped | Target |
+|---|---|---|---|
+| Beds | 3.6MB – 21MB each | 1.0MB – 6.0MB each | ≤1.5MB each |
+| Effects | 60KB – 7.4MB | 56KB – 116KB | ≤50KB each |
+| Total | ~127MB | **~31MB** | <8MB |
+
+The effects are now within sight of their target; the beds are not, and they are the entire
+remaining overage.
+
+**Still over target, and the remaining gap is length, not bitrate.** The beds run 4 to 9 minutes;
+§3 asks for 60–120 second seamless loops. `bed-scene-3` alone is 8.7 minutes and 6MB. Trimming each
+bed to a ~120s loop would land the set near 9–13MB and, more importantly, cap what a player
+downloads no matter how long they linger — a loop is fetched once and replayed, a nine-minute track
+keeps pulling bytes. That trim is an editorial decision about the music and has deliberately not
+been made.
+
+**What a player actually downloads is not the total.** Browsers stream these with range requests, so
+transfer is roughly *minutes listened × bitrate*: about 0.7MB per minute at 96kbps, so a 15–20
+minute playthrough moves ~11–15MB, not 33MB. Nobody fetches the whole set. That was ~2.4MB/min and
+36–48MB per playthrough before the re-encode.
+
+**Originals** are kept, untouched, in `assets_sound_src/` at the repo root — 320kbps MP3 and 24-bit
+WAV, git-ignored alongside `assets_backup/` and `assets_tint/`. Re-encode from there, never from the
+shipped files. Re-encoding is a packaging step, not a code change: nothing in `audio.js` assumes a
+bitrate or a container, only exact filenames.
+
+**Trim aggressively.** Most Freesound uploads have a half second of silence at the head. On a
+one-shot triggered by a click, that reads as lag.
+
+---
+
+## 8. Build notes
+
+- **Autoplay is blocked** until a user gesture — so sound being *on* by default means armed, not
+  sounding. Do not attempt to start audio on page load, and do not treat a refused `play()` as an
+  error: catch it, set `AUDIO.blocked`, and start at the next interaction (§2).
+- **Preload the current scene's bed and its hotspot effects only.** Preload the next scene's bed
+  during the current scene, mirroring the image preload already specified in the tech doc.
+  **Only scenes with a single exit are warmed.** Warming a branch would fetch every destination's
+  bed at once — at Scene 7 that is all three ending beds, tens of megabytes, to use one. Branch
+  destinations stream from the moment of choice instead. Warming matters less than it did under the
+  original crossfade rule: a bed now starts from silence, so a few hundred ms of load reads as part
+  of the pause rather than as a hole in a crossfade. Beds are created with `preload="none"` and
+  promoted to `"auto"` only when warmed or played, so nothing is fetched while sound is off.
+- **One `Audio` object per bed, reused.** Creating new `Audio` objects per playback leaks on mobile
+  Safari.
+- **Respect `prefers-reduced-motion`?** No. That flag is about motion, not audio. But do keep the
+  toggle reachable at all times, including mid-plate.
+- **Test with sound off first.** If any beat only works with audio, the beat is broken. Sound
+  amplifies this game; it should never carry it.
+
+---
+
+## 9. Priority if time runs short
+
+Cut from the bottom. The asset count is now small enough that all of this is achievable.
+
+1. **The three full-silence moments** (Scene 3 tally, both branch points). No assets required, only
+   the absence of sound. Highest impact per minute of work in the entire document.
+2. **The three water-clock Morse sequences.** One drip sample, three sequences.
+3. **Scene beds.** Nine loops, since Scene 6 is Scene 2 pitched down.
+4. **The three plate stings.**
+
+**Total asset count: 14.** Nine beds, two drip files (the source recording and the single-drip cut
+taken from it), three plate stings. Everything else is sequencing, silence, or volume automation —
+including Scene 4's low note, which is synthesised (§6).
+
+---
+
+## 10. Asset manifest
+
+All files live under `assets/sound/`. **Filenames are referenced from `js/audio.js` only** — not
+from `scenes.js` or `endings.js`, which stay narrative data. Sound is the one domain where the
+mapping (which scene gets which bed, which plate gets which sting) is itself a sound decision, so it
+lives with the rest of the sound logic in the `BEDS`, `STINGS` and `CLOCKS` tables. Keys in those
+tables are scene ids and tier2 hotspot ids, so a renamed scene or hotspot must be renamed there too.
+
+### Beds (9)
+
+| Filename | Scene | Mood |
+|---|---|---|
+| `bed-scene-1.m4a` | Scene 1, The Gate | The feeling of arriving somewhere that has been waiting for you. Not threatening yet. Patient. The way an empty house feels inhabited even when no one is home. Something is counting in the dark and does not mind that you can hear it. |
+| `bed-scene-2.m4a` | Scene 2, The Chapel (also Scene 6 pitched) | Many bodies in one room, all of them certain. The certainty is the unsettling part, not the cruelty. A weight of accumulated ritual, of a thing done so many times it has worn grooves in the air. You are the only person present who does not know the order of service. |
+| `bed-scene-3.m4a` | Scene 3, What They Believed | Scene 2, but something in it is wrong. Not louder, not faster. The same room, the same ritual, except one instrument in the ensemble is playing something that does not belong to this century, and the longer you listen the harder it is to unhear. The wrongness hums. |
+| `bed-scene-4.m4a` | Scene 4, He Sees Me | Almost nothing. The moment before a held breath breaks. One note, very low, that does not resolve and does not move. Whatever it is waiting for, it has been waiting for a long time, and it can wait longer. |
+| `bed-scene-5.wav` | Scene 5, Waking | A grandfather clock ticking in an otherwise silent room. Nothing else. The tick should be dry and close, not distant or reverberant — the clock is in the room with you, and you cannot find it. Loops seamlessly so the ticking never stops. |
+| `bed-scene-7.m4a` | Scene 7, The Choice | Scene 4 with something underneath it that was not there before. The same held breath, the same low note that will not resolve — but beneath it, something is building so slowly you cannot say when it started. It will not arrive before you have to decide. |
+| `bed-ending-a.m4a` | Ending A, The Drained | Water running out of a room that is already empty. Not grief exactly — the sound after grief, when the feeling has finished and what remains is the absence of it. Does not loop; should end and not return. |
+| `bed-ending-b.m4a` | Ending B, The Kept Hour | Something broken that is still trying. Ragged at the edges, interrupted, going wrong in small ways and then in larger ones. And then, without warning, complete silence, which is not peace. |
+| `bed-ending-c.m4a` | Ending C, The Relay | The only ending permitted to sound like continuity rather than conclusion. Unresolved — not because it is sad, but because it has handed something to the next movement and that movement has not begun yet. Held open. |
+
+> **Scene 6 has no dedicated bed.** Load `bed-scene-2.m4a` and set `playbackRate = 0.89`
+> (roughly two semitones down, also slowing it slightly, which suits the scene). If that sounds
+> wrong, render a pitched offline copy and save it as `bed-scene-6.m4a`.
+
+### Drip (2)
+
+| Filename | Used in | Description |
+|---|---|---|
+| `drip.wav` | — (source only) | The delivered recording: 87 seconds of regularly spaced drips, 24-bit stereo, 25MB. Not shipped and not loaded — far too large to fetch for a 200ms strike, and a continuous take cannot be sequenced. It lives in `assets_sound_src/` with the other originals. |
+| `drip-single.wav` | Scenes 1, 3, 6 water-clock hotspots | One clean drip cut from `drip.wav` at 21.245s, the most isolated strike in the take: 0.62s, mono, 16-bit, ~60KB, 2ms fade in and 100ms fade out, peak-normalised. This is the file the Morse sequencer plays. |
+
+`drip-single.wav` is derived, not sourced — regenerate it from `drip.wav` rather than re-recording if
+it ever needs to change. Keep it mono 16-bit: 24-bit WAV playback in `<audio>` is not reliable
+everywhere, and the sample is short enough that the format costs nothing.
+
+### Plates (3)
+
+| Filename | Plate | Description | Search keywords |
+|---|---|---|---|
+| `plate-scene-2.m4a` | Scene 2 opening, `char-copernicus-bound` | **Piano Jump Scare Stinger** by TheSoundFXGuy_YT. Download from https://freesound.org/s/534218/ — License: Attribution 4.0. Credit must appear in the game's credits or attributions file. |
+| `plate-scene-4.m4a` | Scene 4 closing, `char-copernicus-reveal` | Water on stone and nothing else | `water pouring onto stone`, `liquid drip echo`, `whisper reverb distant` |
+| `plate-scene-5.m4a` | Scene 5 opening, `char-player-hands` | Wet, tacky, intimate. Recorded close, no reverb. **6.0s, cut from the 87-second source** at 46.75s — the point where the texture swells out of near-silence, peaks, and settles — with an 8ms fade in and a 1.2s fade out. Trimmed copy kept as `assets_sound_src/plate-scene-5-trimmed.wav` | `sticky wet fingers`, `skin friction close mic`, `viscous liquid slow` |
+
+### Full list in path order
+
+```
+assets/sound/                 assets_sound_src/     (git-ignored originals)
+  bed-ending-a.m4a              bed-ending-a.mp3
+  bed-ending-b.m4a              bed-ending-b.mp3
+  bed-ending-c.m4a              bed-ending-c.mp3
+  bed-scene-1.m4a               bed-scene-1.mp3
+  bed-scene-2.m4a               bed-scene-2.mp3
+  bed-scene-3.m4a               bed-scene-3.mp3
+  bed-scene-4.m4a               bed-scene-4.mp3
+  bed-scene-5.wav   (16-bit)    bed-scene-5.wav   (24-bit)
+  bed-scene-7.m4a               bed-scene-7.mp3
+  drip-single.wav               drip.wav
+  plate-scene-2.m4a             plate-scene-2.wav
+  plate-scene-4.m4a             plate-scene-4.wav
+  plate-scene-5.m4a             plate-scene-5.wav
+```
+
+13 shipped files. **Mixed `.m4a` and `.wav` — load each by its exact filename.** Do not assume a
+single extension and do not derive one from the scene id; the two WAVs are WAVs for the reasons in
+§7. Alphabetical order matches Finder and most file browsers.
+
+The re-encode, reproducible from `assets_sound_src/` with the encoder that ships with macOS:
+
+```sh
+afconvert -f m4af -d aac -b 96000  bed-scene-1.mp3   bed-scene-1.m4a     # beds
+afconvert -f m4af -d aac -b 128000 plate-scene-2.wav plate-scene-2.m4a   # stings
+afconvert -f WAVE -d LEI16         bed-scene-5.wav   bed-scene-5.wav     # 24- to 16-bit
+```
+
+---
+
+## 11. Attributions
+
+All assets below require credit. Add this block verbatim to the game's credits screen and to
+`ATTRIBUTIONS.txt` in the project root before release.
+
+---
+
+"Piano Jump Scare Stinger"
+TheSoundFXGuy_YT
+https://freesound.org/s/534218/
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Blue Feather"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Canon in D for Two Renaissance Harps"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Waltz (Tschikovsky Op. 40)"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Virtutes Instrumenti"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Virtutes Vocis"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Mourning Song"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Toccata and Fugue in D Minor"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Agnus Dei X"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+---
+
+
+"WATRPlmb_Kitchen-sink_tap_water_runs_in_bowl.wav"
+DBS_Sounds
+https://freesound.org/s/613664/
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Slimy flesh"
+iampagan
+https://freesound.org/s/177017/
+Licensed under Creative Commons 0
+https://creativecommons.org/publicdomain/zero/1.0/
+
+"grandfather-clockdown"
+newagesoup
+https://freesound.org/s/337163/
+Licensed under Creative Commons 0
+https://creativecommons.org/publicdomain/zero/1.0/
+
+> Add further credits here as assets are locked. One block per asset, same format.
+> The `ATTRIBUTIONS.txt` file should be copy-pasteable from this section without editing.
+
+---
+
+## 12. The `Sound` interface
+
+`js/main.js` holds no audio state and no filenames. It reports what just happened on screen and
+`js/audio.js` decides what that sounds like. Every method is a no-op when sound is off, apart from
+bookkeeping that must survive being switched on mid-scene (which bed is current, and `AUDIO.dim`).
+
+| Call | Made from | Does |
+|---|---|---|
+| `Sound.init()` | `DOMContentLoaded` | Wires the toggle button, paints its icon |
+| `Sound.sceneStarted(id)` | `renderScene`, inside the fade | Brings that scene's bed up from silence (cutting any bed still sounding first, never across it), clears `halted`, warms the next bed, stops any morse |
+| `Sound.endingStarted(id)` | `renderEnding` | Brings up the ending's bed. The only place an ending's bed begins |
+| `Sound.plateOpened(sceneId)` | `renderPlate`, once visible | Cuts a still-sounding bed over 200ms and fires that plate's sting |
+| `Sound.plateClosed()` | `renderPlate`, on dismiss | Fades that sting out with the plate, so nothing a plate started carries into the scene behind it |
+| `Sound.hotspotOpened(sceneId, item)` | tier2 accordion, on open | Water-clocks start their morse; the tally sets `AUDIO.dim` and stops the bed; everything else is silent |
+| `Sound.hotspotClosed(sceneId, item)` | tier2 accordion, on close | Stops the morse; brings the bed back after the tally, quieter — unless a choice has since halted it |
+| `Sound.choiceMade()` | `renderChoices`, on any pick | Settles the bed out and halts it until the next scene. Called **before** the pick's own handler, so a branch that starts the next bed (Scene 7) is not stopped by it |
+| `Sound.branchRendered(sceneId)` | `renderExit`, after the choices paint | Scenes 4 and 7 fall silent; other branches are unaffected |
+| `Sound.branchChosen(sceneId, nextId)` | `renderExit`, on selection | Scene 4 sounds the low note. Scene 7 sounds nothing |
+
+`sceneId` on a plate is the scene the plate **belongs to** — the arriving scene for an opening plate,
+the departing one for a closing plate. That is what names the sting: Scene 4's closing plate is
+`plate-scene-4.m4a` even though the game is on its way to Scene 5.
+
+`Sound.choiceMade()` takes no scene id on purpose: it applies to every choice in the game, reactive
+blocks and branches alike, and a table of exceptions is exactly what this rule replaced.
+
+Adding a sound to a moment that has none should mean adding a case inside `audio.js`, not a new call
+site in `main.js`. If a new moment genuinely needs one, add a method here and in the table above.

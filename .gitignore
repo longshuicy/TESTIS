@@ -3,3 +3,6 @@
 Thumbs.db
 assets_backup/
 assets_tint/
+
+assets_sound_src/
+.claude/

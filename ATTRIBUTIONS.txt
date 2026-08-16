@@ -1,0 +1,94 @@
+TESTIS — Attributions
+
+Every asset below requires credit. This file is maintained from section 11 of
+docs/testis-sound-design.md; when an asset is added or replaced, add its block
+there first and copy it here, one block per asset, same format.
+
+Fonts are served from Google Fonts under the SIL Open Font License and are not
+listed individually here.
+
+---
+
+"Piano Jump Scare Stinger"
+TheSoundFXGuy_YT
+https://freesound.org/s/534218/
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Blue Feather"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Canon in D for Two Renaissance Harps"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Waltz (Tschikovsky Op. 40)"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Virtutes Instrumenti"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Virtutes Vocis"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Mourning Song"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Toccata and Fugue in D Minor"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Agnus Dei X"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+---
+
+"WATRPlmb_Kitchen-sink_tap_water_runs_in_bowl.wav"
+DBS_Sounds
+https://freesound.org/s/613664/
+Licensed under Creative Commons: By Attribution 4.0
+http://creativecommons.org/licenses/by/4.0/
+
+"Slimy flesh"
+iampagan
+https://freesound.org/s/177017/
+Licensed under Creative Commons 0
+https://creativecommons.org/publicdomain/zero/1.0/
+
+"grandfather-clockdown"
+newagesoup
+https://freesound.org/s/337163/
+Licensed under Creative Commons 0
+https://creativecommons.org/publicdomain/zero/1.0/
+
+---
+
+Derived assets
+
+assets/sound/drip-single.wav is a 0.62-second cut of assets_sound_src/drip.wav,
+trimmed, faded and normalised for use as the Morse drip. It is a derivative of
+that recording and carries its source's licence and attribution.
+
+assets/sound/plate-scene-5.m4a is a 6-second excerpt of its source recording,
+trimmed and faded for use as the Scene 5 plate sting. Same licence and
+attribution as the full recording.
+
+assets/sound/bed-scene-2.m4a is also played at 0.89 speed as Scene 6's bed. No
+separate file, and no separate credit.
+
+Scene 4's low sustained note is synthesised at runtime with WebAudio and is not
+a sourced asset.

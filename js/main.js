@@ -343,6 +343,7 @@ function renderScene(id) {
   fadeOut(() => {
     preload(nextPossibleImages(scene));
     setBackground(scene.background);
+    Sound.sceneStarted(id);
 
     if (scene.title) {
       const h = el("h2", "scene-title", scene.title);
@@ -405,6 +406,8 @@ function renderTier2(list) {
       panel.hidden = !opening;
       row.classList.toggle("open", opening);
       btn.setAttribute("aria-expanded", String(opening));
+      if (opening) Sound.hotspotOpened(currentSceneId, item);
+      else Sound.hotspotClosed(currentSceneId, item);
       if (opening) {
         const isNew = !examined.has(item.id);
         examined.add(item.id);
@@ -714,6 +717,9 @@ function renderChoices(block, onPick, extraClass) {
       wrap.querySelectorAll("button").forEach(x => { x.disabled = true; });
       wrap.classList.add("resolved");
       b.classList.add("picked");
+      // Before onPick: a branch's own handler may start the next bed, and that
+      // must not be the thing this call stops.
+      Sound.choiceMade();
       onPick(opt);
     });
     wrap.appendChild(b);
@@ -735,7 +741,10 @@ function normalizePlate(spec) {
   return typeof spec === "string" ? { image: spec, text: null } : spec;
 }
 
-function renderPlate(rawSpec, onDone) {
+// `sceneId` is the scene the plate belongs to (the arriving scene for an
+// opening plate, the departing one for a closing plate) — it names the plate's
+// sting; see the STINGS table in audio.js.
+function renderPlate(rawSpec, onDone, sceneId) {
   const spec = normalizePlate(rawSpec);
   const plate = el("div", "plate" + (spec.text ? "" : " silent"));
   plate.setAttribute("role", "button");
@@ -772,11 +781,13 @@ function renderPlate(rawSpec, onDone) {
   void plate.offsetHeight;
   plate.classList.add("visible");
   plate.focus();
+  Sound.plateOpened(sceneId);
 
   let done = false;
   function dismiss() {
     if (done) return;
     done = true;
+    Sound.plateClosed();      // the sting lifts with the plate
     plate.classList.remove("visible");
     document.body.classList.remove("plate-open");
     document.removeEventListener("keydown", onKey);
@@ -800,6 +811,7 @@ function renderExit(scene) {
   if (scene.branch) {
     renderChoices(scene.branch, choice => {
       flags[scene.branch.flagKey] = choice.value;
+      Sound.branchChosen(scene.id, choice.next);
 
       // A closing plate takes over the screen instead of appending another
       // paragraph to the page the player has been reading all scene.
@@ -808,7 +820,7 @@ function renderExit(scene) {
         // Same reasoning as an opening plate: the destination's background is
         // put up behind the plate, not after it.
         setBackground(backgroundFor(choice.next));
-        return renderPlate(scene.closingPlate, () => advanceTo(choice.next));
+        return renderPlate(scene.closingPlate, () => advanceTo(choice.next), scene.id);
       }
 
       if (scene.closingText) {
@@ -818,6 +830,10 @@ function renderExit(scene) {
       }
       renderContinue(() => advanceTo(choice.next));
     }, "branch" + (scene.branch.final ? " final" : ""));
+
+    // Both branch points that stop the bed do it on render, not on selection:
+    // the choice is made in silence.
+    Sound.branchRendered(scene.id);
   } else {
     renderContinue(() => advanceTo(scene.next));
   }
@@ -845,7 +861,7 @@ function advanceTo(id) {
     // Swap the background now, while the plate hides it. Otherwise the plate
     // lifts onto the scene the player just left.
     setBackground(scene.background);
-    return renderPlate(scene.openingPlate, () => renderScene(id));
+    return renderPlate(scene.openingPlate, () => renderScene(id), id);
   }
 
   renderScene(id);
@@ -875,6 +891,7 @@ function renderEnding(id) {
     runtime = null;
     stopDrip();
     setBackground(e.background);
+    Sound.endingStarted(id);
     document.body.classList.add("is-ending");
 
     const body = el("div", "narration ending-text");
@@ -943,6 +960,7 @@ function startGame() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  Sound.init();
   const begin = document.getElementById("begin");
   const title = document.getElementById("title-screen");
 

@@ -512,7 +512,7 @@ em { font-style: italic; color: #f7f2e6; }
   z-index: 2;
   border-style: solid;
   border-width: 1.6rem;
-  border-image-source: url("../assets/decorative-frame-border.png");
+  border-image-source: url("../assets/images/decorative-frame-border.png");
   border-image-slice: 1600;
   border-image-width: 1.6rem;
   border-image-repeat: stretch;
@@ -1018,4 +1018,52 @@ body.is-ending .scene-content { padding-top: 20vh; }
   .scene-content { padding: 9vh 1.25rem 26vh; }
   .drip { left: 3vw; }
   #title-screen h1 { text-shadow: none; }
+}
+
+/* ────────────────────────────────────────────────────────── sound toggle
+   Fixed top right, above everything including plates and endings, and
+   reachable at every moment of the game. Off by default — the press that
+   turns it on is also the gesture browsers require before audio may start.
+   ────────────────────────────────────────────────────────────────────── */
+
+#sound-toggle {
+  position: fixed;
+  top: 1.4rem;
+  right: 1.4rem;
+  z-index: 40;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(6, 6, 5, 0.55);
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--paper-faint);
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 300ms ease, color 300ms ease, border-color 300ms ease;
+}
+
+#sound-toggle:hover,
+#sound-toggle:focus-visible { opacity: 1; color: var(--candle); border-color: var(--candle-dim); }
+#sound-toggle.is-on { color: var(--candle-dim); opacity: 0.8; }
+#sound-toggle.is-on:hover { color: var(--candle); }
+
+#sound-toggle svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: currentColor;
+}
+
+#sound-toggle svg .stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+@media (max-width: 640px) {
+  #sound-toggle { top: 0.9rem; right: 0.9rem; width: 2.3rem; height: 2.3rem; }
 }
