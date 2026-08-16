@@ -293,14 +293,14 @@ const SCENES = [
             response: "He seemed almost grateful for the silence, as if speech, even mine, would have been one more thing draining out of him. Then, quietly, not quite to me: “Good. The last one talked.”"
           },
           {
-            label: "“Why didn't you fight them?”",
-            value: "asked_why",
-            response: "“Fighting is for men who believe the argument is still open. Mine closed the day I was handed it.” He said <em>handed</em> the way you would say a diagnosis. “And others have taken it upon themselves since to soften what I meant, to make it safer than I intended. I have grown used to my own truth arriving secondhand, wearing someone else's caution. It arrived that way to me.”"
-          },
-          {
             label: "Try to reach out. Touch his shoulder, though no one sees you.",
             value: "reached",
             response: "My hand passed through him the way a hand passes through fog, and yet something in his face eased, as though he had felt weather change, if not a hand. “You did that last time as well,” he said."
+          },
+          {
+            label: "“Why didn't you fight them?”",
+            value: "asked_why",
+            response: "“Fighting is for men who believe the argument is still open. Mine closed the day I was handed it.” He said <em>handed</em> the way you would say a diagnosis. “And others have taken it upon themselves since to soften what I meant, to make it safer than I intended. I have grown used to my own truth arriving secondhand, wearing someone else's caution. It arrived that way to me.”"
           },
           {
             label: "“I'm sorry.”",

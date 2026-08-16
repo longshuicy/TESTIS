@@ -76,7 +76,7 @@ flags = {
   identity_found: false,      // Scene 2, true only if player chooses to name him
   tally_reaction: null,       // Scene 3, "before" | "denial" | "refuse"
   tools_reaction: null,       // Scene 3, "denial" | "acceptance" | "silence"
-  witness_reaction: null,     // Scene 4, "silent" | "asked_why" | "reached" | "absolved"
+  witness_reaction: null,     // Scene 4, "silent" | "reached" | "asked_why" | "absolved"
   looked_away: null,          // Scene 4 branch, true | false
   waking_reaction: null,      // Scene 5, "dream" | "mirror" | "understand"
   seen_reaction: null,        // Scene 6, "yes" | "no" | "sat_down"
@@ -395,8 +395,8 @@ image renders)*
 
 **REACTIVE, what do you do?** *(sets `witness_reaction`)*
 - **A. "Say nothing."** → *He seemed almost grateful for the silence, as if speech, even mine, would have been one more thing draining out of him. Then, quietly, not quite to me: "Good. The last one talked."* → `"silent"`
-- **B. "Why didn't you fight them?"** → *"Fighting is for men who believe the argument is still open. Mine closed the day I was handed it." He said handed the way you would say a diagnosis. "And others have taken it upon themselves since to soften what I meant, to make it safer than I intended. I have grown used to my own truth arriving secondhand, wearing someone else's caution. It arrived that way to me."* → `"asked_why"`
-- **C. "Try to reach out. Touch his shoulder, though no one sees you."** → *My hand passed through him the way a hand passes through fog, and yet something in his face eased, as though he had felt weather change, if not a hand. "You did that last time as well," he said.* → `"reached"`
+- **B. "Try to reach out. Touch his shoulder, though no one sees you."** → *My hand passed through him the way a hand passes through fog, and yet something in his face eased, as though he had felt weather change, if not a hand. "You did that last time as well," he said.* → `"reached"`
+- **C. "Why didn't you fight them?"** → *"Fighting is for men who believe the argument is still open. Mine closed the day I was handed it." He said handed the way you would say a diagnosis. "And others have taken it upon themselves since to soften what I meant, to make it safer than I intended. I have grown used to my own truth arriving secondhand, wearing someone else's caution. It arrived that way to me."* → `"asked_why"`
 - **D. "I'm sorry."** → *I did not know what I was apologizing for. It arrived before the reason did, the way an apology sometimes does when the body has understood something the mind has not been told yet.*
 >
 > *"No," he said, so gently it was almost absolution. "Not yours. It rarely is anyone's, and it is never the one holding it at the end. That is the part they never write in the histories."*
