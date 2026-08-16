@@ -173,6 +173,20 @@ pitch-corrects and the slow-down stops being a pitch-down, which is the whole po
 B ends in a silence that a loop would step on, and C is held open rather than circular. All three are
 `loop: false` in `BEDS`.
 
+**The title screen borrows Scene 5's bed.** Not a file of its own — `Sound.titleShown()` calls
+`playBed("scene-5", …)` directly, the same `BEDS` entry Scene 5 uses later. The grandfather clock is
+already ticking under the blurb, before the player has done anything, which is the point: the blurb's
+closing line is "Something is already keeping count." Reusing the key rather than adding a new one
+means "Enter the fog" hands off to Scene 1's bed exactly the way any two beds hand off elsewhere —
+cut over `CUT_MS`, next bed starts after — with no special-casing at the call site.
+
+Same autoplay constraint as everything else in §2: the title screen has had no gesture yet, so this
+almost always starts blocked and is picked up by the ordinary first-interaction retry. In practice
+that means most players never hear it — their first gesture is the "Enter the fog" click itself,
+which the retry catches a beat before the click handler fires, so the clock has at most an instant
+before Scene 1's bed cuts it over. It only really sounds for a player who lingers and interacts with
+the page first — the sound toggle, a keypress — before pressing on.
+
 ---
 
 ## 4. Plate stings
@@ -419,7 +433,7 @@ tables are scene ids and tier2 hotspot ids, so a renamed scene or hotspot must b
 | `bed-scene-2.m4a` | Scene 2, The Chapel (also Scene 6 pitched) | Many bodies in one room, all of them certain. The certainty is the unsettling part, not the cruelty. A weight of accumulated ritual, of a thing done so many times it has worn grooves in the air. You are the only person present who does not know the order of service. |
 | `bed-scene-3.m4a` | Scene 3, What They Believed | Scene 2, but something in it is wrong. Not louder, not faster. The same room, the same ritual, except one instrument in the ensemble is playing something that does not belong to this century, and the longer you listen the harder it is to unhear. The wrongness hums. |
 | `bed-scene-4.m4a` | Scene 4, He Sees Me | Almost nothing. The moment before a held breath breaks. One note, very low, that does not resolve and does not move. Whatever it is waiting for, it has been waiting for a long time, and it can wait longer. |
-| `bed-scene-5.wav` | Scene 5, Waking | A grandfather clock ticking in an otherwise silent room. Nothing else. The tick should be dry and close, not distant or reverberant — the clock is in the room with you, and you cannot find it. Loops seamlessly so the ticking never stops. |
+| `bed-scene-5.wav` | Scene 5, Waking; **also the title screen**, before the game starts (§3) | A grandfather clock ticking in an otherwise silent room. Nothing else. The tick should be dry and close, not distant or reverberant — the clock is in the room with you, and you cannot find it. Loops seamlessly so the ticking never stops. |
 | `bed-scene-7.m4a` | Scene 7, The Choice | Scene 4 with something underneath it that was not there before. The same held breath, the same low note that will not resolve — but beneath it, something is building so slowly you cannot say when it started. It will not arrive before you have to decide. |
 | `bed-ending-a.m4a` | Ending A, The Drained | Water running out of a room that is already empty. Not grief exactly — the sound after grief, when the feeling has finished and what remains is the absence of it. Does not loop; should end and not return. |
 | `bed-ending-b.m4a` | Ending B, The Kept Hour | Something broken that is still trying. Ragged at the edges, interrupted, going wrong in small ways and then in larger ones. And then, without warning, complete silence, which is not peace. |
@@ -585,6 +599,7 @@ bookkeeping that must survive being switched on mid-scene (which bed is current,
 | Call | Made from | Does |
 |---|---|---|
 | `Sound.init()` | `DOMContentLoaded` | Wires the toggle button, paints its icon |
+| `Sound.titleShown()` | `DOMContentLoaded`, right after `init` | Brings up Scene 5's bed under the title screen (see §3). Cut over the normal way when Scene 1's bed starts — no special-casing |
 | `Sound.sceneStarted(id)` | `renderScene`, inside the fade | Brings that scene's bed up from silence (cutting any bed still sounding first, never across it), clears `halted`, warms the next bed, stops any morse |
 | `Sound.endingStarted(id)` | `renderEnding` | Brings up the ending's bed, cutting any interface cue the final choice left ringing. The only place an ending's bed begins |
 | `Sound.plateOpened(sceneId)` | `renderPlate`, once visible | Cuts a still-sounding bed over 200ms and fires that plate's sting |

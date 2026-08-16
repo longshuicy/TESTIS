@@ -221,24 +221,12 @@ em { font-style: italic; color: #f7f2e6; }
   text-shadow: 0 0 42px rgba(201,165,95,0.28);
 }
 
-.beta {
-  font-family: var(--label);
-  font-size: 0.6rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--candle-dim);
-  border: 1px solid var(--candle-deep);
-  padding: 0.28rem 0.5rem 0.22rem 0.7rem;
-  display: inline-block;
-  margin: 0 0 1.1rem;
-}
-
-/* Left-aligned, like the passage below it, so the gloss and the passage read
-   as one flush-left column under the centered title rather than jogging
-   left when the passage starts. */
+/* Centered, like everything else on the card — no flush-left column, no
+   jogging left when the passage starts. */
 .latin {
   max-width: 24rem;
-  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
   font-family: var(--label);
   font-size: 0.72rem;
   letter-spacing: 0.2em;
@@ -258,16 +246,18 @@ em { font-style: italic; color: #f7f2e6; }
 .latin em { color: var(--candle-dim); font-style: italic; }
 
 /* Capped to roughly the gloss lines' own measure so the passage doesn't
-   stretch to the full title card, but left-anchored (no auto margin) so its
-   left edge stays flush with everything else's shared column — a centered
-   box here would drift the left edge away from the heading above it. */
+   stretch to the full title card, and centered under it like everything
+   else on the card. Each line is its own <p> at a clause break, so every
+   line is meant to read as a single held beat rather than a wrapped
+   paragraph — center alignment is what keeps that reading intact instead of
+   producing a ragged block. */
 .blurb {
   max-width: 24rem;
-  margin: 0 0 1.6rem;
+  margin: 0 auto 1.6rem;
   color: var(--paper-dim);
   font-style: italic;
   font-size: 0.92rem;
-  text-align: left;
+  text-align: center;
   line-height: 1.4;
 }
 

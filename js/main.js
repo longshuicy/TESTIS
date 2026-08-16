@@ -1130,6 +1130,7 @@ function startGame() {
 
 window.addEventListener("DOMContentLoaded", () => {
   Sound.init();
+  Sound.titleShown();
   const begin = document.getElementById("begin");
   const title = document.getElementById("title-screen");
 

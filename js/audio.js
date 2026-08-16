@@ -552,6 +552,20 @@ function warmNext(sceneId) {
 const Sound = {
   init: initSound,
 
+  // The title screen, before the player has done anything. Borrows Scene 5's
+  // bed rather than a file of its own: the same grandfather clock, already
+  // counting before the game starts, not a different one. Same BEDS key, so
+  // "Enter the fog" cuts it over to Scene 1's bed the normal way — one bed at
+  // a time is the rule everywhere, and the title screen is not an exception.
+  //
+  // Almost always blocked at this point — the player has made no gesture
+  // yet — and picked up by the same first-interaction retry as everything
+  // else (see armUnlock). It only actually sounds for a player who lingers
+  // or clicks the toggle before pressing "Enter the fog".
+  titleShown() {
+    playBed("scene-5", BED_FADE_MS);
+  },
+
   // A scene's first paint. Brings up its bed, warms the next one.
   sceneStarted(id) {
     stopMorseAudio();
