@@ -715,15 +715,34 @@ em { font-style: italic; color: #f7f2e6; }
   border-top: 1px solid var(--rule);
 }
 
+/* The question stays with the options. On a short viewport — and on the final
+   branch, whose options are long — the prompt would otherwise scroll away and
+   leave the player choosing between three sentences with nothing to answer.
+   No ground behind it: a filled bar reads as a UI panel dropped onto the art,
+   which is not what this page is. It carries its own weight in the shadow. */
 .prompt {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   font-family: var(--head);
   font-weight: 500;
   font-size: 1.5rem;
   line-height: 1.35;
   letter-spacing: 0.01em;
   color: var(--candle);
-  margin: 0 0 1.4rem;
-  text-shadow: 0 0 26px rgba(201,165,95,0.28), 0 2px 12px rgba(0,0,0,0.9);
+  margin: 0 0 0.9rem;
+  padding: 0.85rem 3.2rem 0.7rem 0;
+  text-shadow:
+    0 0 26px rgba(201,165,95,0.28),
+    0 2px 12px rgba(0,0,0,0.95),
+    0 0 22px rgba(5,5,4,0.95),
+    0 0 10px rgba(5,5,4,0.9);
+}
+
+/* An answered block is history; only the open question pins itself. */
+.choices.resolved .prompt {
+  position: static;
+  padding-right: 0;
 }
 
 .choice {
@@ -796,6 +815,66 @@ em { font-style: italic; color: #f7f2e6; }
 
 .choice:disabled { color: var(--paper-dim); }
 .choices.resolved .choice.picked:disabled { color: var(--candle); }
+
+/* ─────────────────────────────────── the held beat before a choice
+
+   A choice block is painted with its scene and holds its full height from the
+   start, so nothing below it ever shifts — but it is veiled until the player
+   has actually scrolled to it. Then the bed goes out, a beat passes, and the
+   prompt and options uncover one at a time. See the comment above
+   `renderChoices` in js/main.js for the timings; REVEAL_FADE_MS there is this
+   transition and the two must stay equal. */
+
+.choices.veiled { border-top-color: transparent; }
+
+.veiled-item {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* Inert while it is still uncovering. Kept focusable (aria-disabled, not
+   `disabled`) so a keyboard player can tab into the block and trigger it. */
+.choice[aria-disabled="true"] {
+  pointer-events: none;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .prompt, .choice {
+    transition: opacity 460ms ease, transform 460ms ease,
+                background 220ms ease, border-color 220ms ease,
+                color 220ms ease, box-shadow 220ms ease;
+  }
+}
+
+/* Still veiled, still held — it appears rather than fades. The pause is the
+   point; the movement is not. */
+@media (prefers-reduced-motion: reduce) {
+  .veiled-item { transform: none; transition: none; }
+}
+
+/* While the player is down at a choice, everything already read falls back to
+   leave it alone on the page. Not a mode the page puts them in: `choosing` is
+   driven by scroll position and comes off the moment they scroll back up to
+   re-read something — text you are going back for has to be readable — and off
+   for good once the choice is answered. Held light enough to be legible either
+   way; the point is to stop competing, not to make the prose work to read. */
+.scene-content.choosing .scene-title,
+.scene-content.choosing .narration,
+.scene-content.choosing .morse,
+.scene-content.choosing .tier2,
+.scene-content.choosing .response,
+.scene-content.choosing .choices.resolved { opacity: 0.55; }
+
+/* Quick enough to track a scroll rather than lag behind it. */
+@media (prefers-reduced-motion: no-preference) {
+  .scene-content .scene-title,
+  .scene-content .narration,
+  .scene-content .morse,
+  .scene-content .tier2,
+  .scene-content .response,
+  .scene-content .choices.resolved { transition: opacity 420ms ease; }
+}
 
 /* ───────────────────────────────────────────────────────── response */
 

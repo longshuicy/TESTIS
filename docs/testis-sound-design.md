@@ -18,11 +18,18 @@ on screen. §12 documents that interface. Where this doc and the code disagree, 
 
 ## 1. Bed behavior
 
-**A bed plays while the player is reading, and stops when the player answers.** That is the whole
+**A bed plays while the player is reading, and stops when the choice arrives.** That is the whole
 rule. The bed comes up with the scene, runs unducked under the prose and under every examine
-hotspot, settles out over 600ms the moment any choice is answered, and does not come back. The
-response text arrives in silence, and so does whatever is left of the scene. The next scene brings
-its own bed up from nothing.
+hotspot, and settles out over 600ms the moment a choice block uncovers itself — *before* the options
+are readable, not after they are answered. The player reads the options, and decides, in silence, and
+the bed does not come back. The response text arrives in silence too, and so does whatever is left of
+the scene. The next scene brings its own bed up from nothing.
+
+*Revised again when the choices got their held beat.* The bed used to stop on the answer. The options
+now reveal themselves only once the player has scrolled to them, after a beat of nothing (tech design
+§7), and the bed going out is what that beat sounds like — otherwise the loudest cue in the game was
+firing at a moment the player was not yet looking at. Moving it costs nothing: the silence still
+belongs to the choice, it just starts at the question instead of the answer.
 
 *Revised from the original spec, which ran the bed continuously and crossfaded between scenes.* In
 play, two pieces of music overlapping at a scene change was the awkward moment — a crossfade that
@@ -46,15 +53,15 @@ game.
 reactive block was gated away and never asked, so no choice was ever answered — it is cut over
 350ms and the next bed starts *after* it, not across it.
 
-**Three moments are still marked, and they are marked differently now.** Since every answered choice
-ends in silence, what distinguishes these is that the silence arrives **before** the decision rather
-than after it — the player chooses in a room that has already gone quiet:
+**Silence before the decision is now the house rule, not the marking.** It used to be what set Scenes
+4 and 7 apart; every choice does it now, so those two are marked by what happens *on selection*
+instead — one has an answer, the other deliberately has none:
 
 | Moment | Treatment |
 |---|---|
-| Scene 3, the tally hotspot | Total silence on open. Hold through the reveal. Bed returns only when the player closes the hotspot, at a lower volume than before, and that difference is never restored. Implemented as `AUDIO.dim = 0.6`, a multiplier on every bed volume from that point on, including later scenes and the endings. It is set when the hotspot **opens**, not when it closes, so a player who reads their own name and then walks away from the open panel still loses the difference. |
-| Scene 4, the branch (look away / keep watching) | Silence on render, while the choice is still open. A single low sustained note on selection. |
-| Scene 7, the final branch | Silence on render, and silence after. The ending's bed starts when the **ending paints**, not when the choice is made. |
+| Scene 3, the tally hotspot | Total silence on open. Hold through the reveal. Bed returns only when the player closes the hotspot, at a lower volume than before, and that difference is never restored. Implemented as `AUDIO.dim = 0.6`, a multiplier on every bed volume from that point on, including later scenes and the endings. It is set when the hotspot **opens**, not when it closes, so a player who reads their own name and then walks away from the open panel still loses the difference. **If the scene's choice has already arrived the bed is halted for good and closing the tally brings nothing back** — the dim is still taken. |
+| Scene 4, the branch (look away / keep watching) | A single low sustained note on selection — the only choice in the game that answers back. |
+| Scene 7, the final branch | Silence on selection, as on render. The ending's bed starts when the **ending paints**, not when the choice is made. |
 
 Examine hotspots do not affect the bed at all. It continues unducked beneath the examine text, and
 the Scene 3 tally is the only one that stops it.
@@ -549,16 +556,23 @@ bookkeeping that must survive being switched on mid-scene (which bed is current,
 | `Sound.plateClosed()` | `renderPlate`, on dismiss | Fades that sting out with the plate, so nothing a plate started carries into the scene behind it |
 | `Sound.hotspotOpened(sceneId, item)` | tier2 accordion, on open | Water-clocks start their morse; the tally sets `AUDIO.dim` and stops the bed; everything else is silent |
 | `Sound.hotspotClosed(sceneId, item)` | tier2 accordion, on close | Stops the morse; brings the bed back after the tally, quieter — unless a choice has since halted it |
-| `Sound.choiceMade()` | `renderChoices`, on any pick | Settles the bed out and halts it until the next scene. Called **before** the pick's own handler, so a branch that starts the next bed (Scene 7) is not stopped by it |
-| `Sound.branchRendered(sceneId)` | `renderExit`, after the choices paint | Scenes 4 and 7 fall silent; other branches are unaffected |
+| `Sound.choicesArriving(sceneId)` | `renderChoices`, when a choice block uncovers itself | Settles the bed out and halts it until the next scene. **This is where the music stops** |
+| `Sound.choiceMade()` | `renderChoices`, on any pick | The same halt, as a backstop for the one path with no arrival (see below). Called **before** the pick's own handler, so a branch that starts the next bed (Scene 7) is not stopped by it |
 | `Sound.branchChosen(sceneId, nextId)` | `renderExit`, on selection | Scene 4 sounds the low note. Scene 7 sounds nothing |
 
 `sceneId` on a plate is the scene the plate **belongs to** — the arriving scene for an opening plate,
 the departing one for a closing plate. That is what names the sting: Scene 4's closing plate is
 `plate-scene-4.m4a` even though the game is on its way to Scene 5.
 
-`Sound.choiceMade()` takes no scene id on purpose: it applies to every choice in the game, reactive
-blocks and branches alike, and a table of exceptions is exactly what this rule replaced.
+`Sound.choicesArriving()` and `Sound.choiceMade()` do the same thing, and in normal play only the
+first of them does anything: by the time a choice is answered its arrival has already halted the bed.
+`choiceMade` stays because one path reaches a scene's end without any choice ever arriving — a scene
+whose only reactive block was gated away — and that path still has to leave silence behind it.
+Neither takes a scene id it uses: the rule applies to every choice in the game, reactive blocks and
+branches alike, and a table of exceptions is exactly what this rule replaced.
+
+`Sound.branchRendered()` is gone. It existed to fall silent on Scenes 4 and 7 before the choice; now
+every choice does that, so it had nothing left to say.
 
 Adding a sound to a moment that has none should mean adding a case inside `audio.js`, not a new call
 site in `main.js`. If a new moment genuinely needs one, add a method here and in the table above.

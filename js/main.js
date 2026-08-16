@@ -341,6 +341,8 @@ function renderScene(id) {
   if (!scene) return console.error("Unknown scene:", id);
 
   fadeOut(() => {
+    clearReveals();            // nothing from the outgoing scene is still counting
+    content.classList.remove("choosing");
     preload(nextPossibleImages(scene));
     setBackground(scene.background);
     Sound.sceneStarted(id);
@@ -687,6 +689,8 @@ function reconsiderGates() {
 
   const anchor = content.querySelector(".tier2");
   if (!anchor) return;
+  clearReveals();            // the blocks about to be discarded may still be mid-beat
+  content.classList.remove("choosing");
   while (anchor.nextSibling) anchor.nextSibling.remove();
 
   runtime.skipped = [];
@@ -695,37 +699,199 @@ function reconsiderGates() {
   painting = false;
 }
 
-function renderChoices(block, onPick, extraClass) {
-  const wrap = el("div", "choices" + (extraClass ? " " + extraClass : ""));
+/* ──────────────────────────────────────── the held beat before a choice
 
-  if (block.prompt) {
-    const q = el("p", "prompt");
-    q.innerHTML = block.prompt;
-    wrap.appendChild(q);
+   Options used to be painted with the scene and left sitting at the bottom of
+   the scroll, so nothing happened at the moment the player finished reading —
+   they scrolled into more page. A choice block is still built at paint time and
+   still holds its final height (nothing below it ever shifts), but it is
+   *veiled*, and it uncovers itself only once the player has scrolled to it: the
+   bed goes out, a beat of nothing passes, then the prompt, then the options one
+   at a time. An option is inert until its own fade has finished, which is what
+   makes the pause a pause rather than a suggestion.
+
+   The bed going out is the beat's sound — see sound design §1. It happens on
+   arrival now, not on the answer, so every choice in the game is made in a room
+   that has already gone quiet.
+   ────────────────────────────────────────────────────────────────────────── */
+
+const REVEAL_FADE_MS = 460;      // one item's own fade — must match the CSS
+const REVEAL_BRANCH   = { hold: 900, prompt: 620, stagger: 680 };
+const REVEAL_REACTIVE = { hold: 650, prompt: 340, stagger: 400 };
+// The pause is a design intent, not decoration, so reduced motion keeps the
+// held beat and gives up only the staggering.
+const REVEAL_REDUCED  = { hold: 650, prompt: 200, stagger: 150 };
+
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+// Every observer and timer the scene's un-revealed choices still have pending.
+// `reconsiderGates` throws away rendered blocks wholesale and a scene change
+// throws away all of them, so both have to be able to cancel a reveal that is
+// still counting down onto nodes that no longer exist.
+const reveals = { observers: [], timers: [] };
+
+function clearReveals() {
+  reveals.observers.forEach(io => io.disconnect());
+  reveals.timers.forEach(id => clearTimeout(id));
+  reveals.observers = [];
+  reveals.timers = [];
+}
+
+function revealTimer(fn, ms) {
+  reveals.timers.push(setTimeout(fn, ms));
+}
+
+/* Watches one choice block against the scroll position and drives two separate
+   things from it.
+
+   The **reveal** happens once and never comes back: the options arrived, and
+   that is a thing that happened. Re-running a 2.6-second arrival every time the
+   player's scroll wobbles would read as a glitch — and the bed is halted by
+   then, so a second arrival would look like the first and sound like nothing.
+
+   The **hold** (the page dimming back behind the choice) is reversible, because
+   scrolling up is a reading action. A player going back for a line they half
+   remember wants that line at full strength, not held at reading-hostile
+   opacity behind a question they are still thinking about. So the dim tracks
+   where the player actually is, and lets go the moment they leave.
+
+   Two thresholds, not one: a single line would strobe the dim on any small
+   scroll sitting right at it. The block has to come up past REVEAL_LINE to take
+   the page, and fall back past RELEASE_LINE to give it back.
+
+   A plain rect check on scroll rather than an IntersectionObserver: there is
+   only ever one live block at a time, so the cost is nothing, and an observer
+   that quietly never fires would leave the options permanently invisible. This
+   cannot fail that way.
+   ────────────────────────────────────────────────────────────────────────── */
+
+const REVEAL_LINE  = 0.62;   // block top crosses this (fraction of viewport) → it has the page
+const RELEASE_LINE = 0.90;   // and has to fall back past this before it gives the page back
+
+function watchChoice(node, onReveal) {
+  let revealed = false;
+  let holding = false;
+  let live = true;
+
+  function stop() {
+    live = false;
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onScroll);
   }
 
+  function hold(on) {
+    if (holding === on) return;
+    holding = on;
+    content.classList.toggle("choosing", on);
+  }
+
+  // Used by the reveal-on-focus path, where there is no scroll to measure.
+  function take() {
+    if (!live) return;
+    if (!revealed) { revealed = true; onReveal(); }
+    hold(true);
+  }
+
+  function check() {
+    if (!live) return;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const top = node.getBoundingClientRect().top;
+    if (top <= vh * REVEAL_LINE) take();
+    else if (top > vh * RELEASE_LINE) hold(false);
+    // Between the two lines: whatever it was doing, it keeps doing.
+  }
+
+  let queued = false;
+  function onScroll() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; check(); });
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  // A block can already be in view on a short scene, or after the page scrolled
+  // itself to a block appended mid-chain.
+  requestAnimationFrame(check);
+
+  // clearReveals() speaks to this the same way it spoke to an observer.
+  reveals.observers.push({ disconnect: stop });
+
+  // Answering ends the watch and gives the page back for good.
+  return { take: take, release: () => { stop(); hold(false); } };
+}
+
+function renderChoices(block, onPick, extraClass) {
+  const wrap = el("div", "choices veiled" + (extraClass ? " " + extraClass : ""));
+  const beats = reducedMotion.matches
+    ? REVEAL_REDUCED
+    : (/\bbranch\b/.test(extraClass || "") ? REVEAL_BRANCH : REVEAL_REACTIVE);
+  const fade = reducedMotion.matches ? 0 : REVEAL_FADE_MS;
+
+  let prompt = null;
+  if (block.prompt) {
+    prompt = el("p", "prompt veiled-item");
+    prompt.innerHTML = block.prompt;
+    wrap.appendChild(prompt);
+  }
+
+  let watch = null;   // set once the block is appended, below
+
+  const buttons = [];
   block.options.forEach(opt => {
-    const b = el("button", "choice");
+    const b = el("button", "choice veiled-item");
     b.type = "button";
+    // Inert rather than `disabled`: a disabled button is not focusable, and a
+    // keyboard player tabbing down the page has to be able to reach the block
+    // to make it reveal itself at all.
+    b.setAttribute("aria-disabled", "true");
     const mark = el("span", "choice-mark", "❖");
     const body = el("span", "choice-body");
     body.innerHTML = opt.label;
     b.appendChild(mark);
     b.appendChild(body);
     b.addEventListener("click", () => {
+      if (b.getAttribute("aria-disabled") === "true") return;   // still in the beat
       // Freeze the answered block in place so the reading order stays intact.
       wrap.querySelectorAll("button").forEach(x => { x.disabled = true; });
       wrap.classList.add("resolved");
       b.classList.add("picked");
+      // The page comes back up for good: what the player just answered with is
+      // the thing to read now, not the options they didn't take.
+      if (watch) watch.release();
       // Before onPick: a branch's own handler may start the next bed, and that
       // must not be the thing this call stops.
       Sound.choiceMade();
       onPick(opt);
     });
+    buttons.push(b);
     wrap.appendChild(b);
   });
 
+  // Runs exactly once — the watcher guarantees that. Dimming the page is the
+  // watcher's job, not this one's: the arrival is permanent and the dim is not.
+  function reveal() {
+    Sound.choicesArriving(currentSceneId);   // the bed settles out into the beat
+    wrap.classList.remove("veiled");
+
+    let at = beats.hold;
+    if (prompt) {
+      revealTimer(() => prompt.classList.remove("veiled-item"), at);
+      at += beats.prompt;
+    }
+    buttons.forEach((b, i) => {
+      const t = at + i * beats.stagger;
+      revealTimer(() => b.classList.remove("veiled-item"), t);
+      revealTimer(() => b.setAttribute("aria-disabled", "false"), t + fade);
+    });
+  }
+
   appendBlock(wrap);
+  watch = watchChoice(wrap, reveal);
+  // Tabbed into before it was ever scrolled to — a keyboard player must be able
+  // to reach the block and have it open, which is also why the options are
+  // aria-disabled rather than disabled.
+  wrap.addEventListener("focusin", () => watch.take());
 }
 
 /* ─────────────────────────────────────────────────────────── the plate */
@@ -830,10 +996,6 @@ function renderExit(scene) {
       }
       renderContinue(() => advanceTo(choice.next));
     }, "branch" + (scene.branch.final ? " final" : ""));
-
-    // Both branch points that stop the bed do it on render, not on selection:
-    // the choice is made in silence.
-    Sound.branchRendered(scene.id);
   } else {
     renderContinue(() => advanceTo(scene.next));
   }

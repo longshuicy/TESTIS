@@ -372,6 +372,52 @@ the scene text. On click, expand inline to reveal the body text (and image, if p
 beneath the label. No overlay, no dismissal step, no interruption to reading rhythm. Toggling closed
 is optional and does not affect state. Add each clicked id to `examined` on first open.
 
+**Choices arrive; they do not sit there.** A choice block is built and appended when its scene paints,
+and it holds its full height from that moment — nothing below a choice ever shifts — but its prompt
+and options are *veiled* (`opacity: 0`) until the player has actually scrolled to it. Painting them
+visible up front meant nothing happened at the moment the player finished reading: they scrolled into
+more page, and the options at the bottom of it went unread. The reveal is the event.
+
+The trigger is a rect check on `scroll`/`resize`, rAF-throttled, firing when the block's top crosses
+62% of the viewport — deliberately **not** an `IntersectionObserver`, because an observer that quietly
+fails to fire leaves the options permanently invisible and there is no recovery from that. Then, in
+order:
+
+| Beat | Reactive block | Branch |
+|---|---|---|
+| Bed settles out, page dims, nothing else | 650ms | 900ms |
+| Prompt, then the first option | +340ms | +620ms |
+| Each further option | +400ms | +680ms |
+| An option becomes clickable, after its own fade | +460ms | +460ms |
+
+An option is inert until its fade finishes — `aria-disabled`, **not** `disabled`, since a disabled
+button is not focusable and a keyboard player has to be able to tab into the block to trigger it at
+all. The click handler returns early while `aria-disabled` is `"true"`; `disabled` is still what a
+resolved block uses. The prompt is `position: sticky` so a long branch cannot scroll its own question
+away.
+
+**The reveal is permanent; the dim is not.** One watcher per block drives both, and they are
+deliberately not the same lifetime:
+
+- **The reveal** fires once. The options arrived, and that is a thing that happened. Re-running a
+  2.6-second arrival on every scroll wobble reads as a glitch — and the bed is halted by then, so a
+  second arrival would look like the first and sound like nothing.
+- **The hold** — `choosing` on `.scene-content`, dropping everything already read to `opacity: 0.55`
+  — tracks scroll position and is released whenever the player scrolls back up away from the block.
+  Scrolling up is a *reading* action: a player going back for a line they half remember needs that
+  line at full strength, not held behind a question they are still thinking about. Answering releases
+  it for good.
+
+**Two thresholds, not one.** The block takes the page when its top crosses `REVEAL_LINE` (62%) and
+gives it back only when it falls past `RELEASE_LINE` (90%). A single line strobes the dim on any small
+scroll that happens to sit on it; the dead zone between them is what makes normal reading quiet.
+
+Reduced motion keeps the held beat and gives up only the stagger and the fades: the pause is the
+intent, the movement is not.
+
+Reveals in flight own timers and listeners, so **`clearReveals()` must run before any code discards
+rendered blocks** — a scene change and `reconsiderGates()` both do.
+
 **Text input (Scene 1 only):**
 ```html
 <input type="text" id="carve-input" maxlength="20" placeholder="Carve your name...">

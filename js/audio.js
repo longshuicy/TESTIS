@@ -85,9 +85,6 @@ const CLOCKS = {
 // Hotspots that stop the bed instead of sounding. Keyed by item id.
 const FULL_STOP_HOTSPOTS = { tally: true };
 
-// Branch points that render into silence.
-const SILENT_BRANCHES = { "scene-4": true, "scene-7": true };
-
 const DRIP_SRC = "assets/sound/drip-single.wav";
 
 // Morse, at a tempo you can actually count. Base intervals; each clock scales
@@ -579,19 +576,20 @@ const Sound = {
     if (CLOCKS[item.id]) stopMorseAudio();
   },
 
-  // Any choice has been answered — a reactive block or a branch. The bed
-  // settles out and stays out until the next scene brings its own. This is
-  // what removes the need to crossfade: by the time a scene ends, the music
-  // that belonged to it has already gone.
-  choiceMade() {
+  // A choice has arrived on screen and the page is holding a beat before it
+  // uncovers the options. The bed settles out *into* that beat and stays out
+  // until the next scene brings its own. This is the moment the music stops —
+  // the player reads the options, and decides, in silence.
+  choicesArriving(sceneId) {
     haltBed();
   },
 
-  // A branch is on screen. Two of them render into silence — before the
-  // choice rather than after it, which is what still marks them out now that
-  // every answered choice ends in silence too.
-  branchRendered(sceneId) {
-    if (SILENT_BRANCHES[sceneId]) silenceBed();
+  // A choice has been answered. The bed is already gone — the arrival took it —
+  // so this is a no-op on any bed that reached its choice normally. It stays as
+  // the backstop for the one path that skips an arrival: a scene whose only
+  // reactive block was gated away still has to leave silence behind it.
+  choiceMade() {
+    haltBed();
   },
 
   // A branch has been answered. Scene 4 answers with one low note.
