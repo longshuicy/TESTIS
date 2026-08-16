@@ -480,8 +480,13 @@ em { font-style: italic; color: #f7f2e6; }
 .tier2-panel p:last-child { margin-bottom: 0; }
 
 /* The examine-image frame: a gilt scrollwork border-image (decorative-frame-
-   border.png, an 8000×8000 gold-on-transparent plate) wraps the photo itself.
-   border-image-slice cuts a fixed 1600px corner out of each corner so the
+   border.webp, a 1000×1000 gold-on-transparent plate) wraps the photo itself.
+   Shipped at 1000px, not the 8000px master: the border draws at ~26px, so
+   8000² was ~256MB of decoded RGBA the moment a hotspot opened — enough to
+   kill the tab on mobile Safari and Chrome. 1000² decodes to ~4MB and is
+   still ~8× the drawn size. It is also the one image that keeps its alpha
+   channel; scripts/optimize_images.sh flattens every other asset.
+   border-image-slice cuts a fixed 200px corner out of each corner so the
    scrollwork stays crisp at its drawn size; the plain double-rule edges
    between corners stretch to fit whatever size the panel renders at.
    The frame art lives on ::before (its own opacity, dimmed a touch so the
@@ -502,8 +507,8 @@ em { font-style: italic; color: #f7f2e6; }
   z-index: 2;
   border-style: solid;
   border-width: 1.6rem;
-  border-image-source: url("../assets/images/decorative-frame-border.png");
-  border-image-slice: 1600;
+  border-image-source: url("../assets/images/decorative-frame-border.webp");
+  border-image-slice: 200;
   border-image-width: 1.6rem;
   border-image-repeat: stretch;
   opacity: 0.48;

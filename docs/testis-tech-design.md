@@ -72,7 +72,7 @@ One object per scene. `main.js` holds rendering logic only and never hardcodes n
 const SCENES = [
   {
     id: "scene-1",
-    background: "assets/images/scene-1-gate.png",
+    background: "assets/images/scene-1-gate.webp",
 
     // Array of paragraphs, not one blob. Lets the renderer control spacing and pacing.
     text: [
@@ -92,7 +92,7 @@ const SCENES = [
       {
         id: "sundial",
         label: "The sundial",
-        image: "assets/images/obj-sundial.png",   // optional; omit for text-only
+        image: "assets/images/obj-sundial.webp",   // optional; omit for text-only
         text: "A dial with no sun to read by..."
       },
       {
@@ -163,9 +163,9 @@ Only two scenes branch. Everything else uses `next`.
 ```js
 {
   id: "scene-4",
-  background: "assets/images/scene-4-reveal.png",
+  background: "assets/images/scene-4-reveal.webp",
   text: [ /* ... */ ],
-  tier2: [ { id: "eyes", image: "assets/images/obj-eyes-his.png", /* ... */ } ],
+  tier2: [ { id: "eyes", image: "assets/images/obj-eyes-his.webp", /* ... */ } ],
   reactive: [ { flagKey: "witness_reaction", options: [ /* A-D */ ] } ],
   branch: {
     flagKey: "looked_away",
@@ -206,7 +206,7 @@ const WITNESS_CALLBACK = {
 const ENDINGS = [
   {
     id: "ending-a",
-    background: "assets/images/ending-a.png",
+    background: "assets/images/ending-a.webp",
     baseOpening: "I let it happen...",
     conditionalMiddle: {
       keys: ["witness_reaction", "looked_away"],

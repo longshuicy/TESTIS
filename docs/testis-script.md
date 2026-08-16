@@ -122,9 +122,9 @@ clicks once and moves on.
 
 | Plate | Asset | Position | Job |
 |---|---|---|---|
-| Scene 2 opening | `char-copernicus-bound.png` | Before Scene 2's text | The jump. First sight of him, unannounced. |
-| Scene 4 closing | `char-copernicus-reveal.png` | After Scene 4's branch resolves | Carries the "ahead of my time" line. |
-| Scene 5 opening | `char-player-hands.png` | Before Scene 5's text | The seam and the wet fingers, held in silence. |
+| Scene 2 opening | `char-copernicus-bound.webp` | Before Scene 2's text | The jump. First sight of him, unannounced. |
+| Scene 4 closing | `char-copernicus-reveal.webp` | After Scene 4's branch resolves | Carries the "ahead of my time" line. |
+| Scene 5 opening | `char-player-hands.webp` | Before Scene 5's text | The seam and the wet fingers, held in silence. |
 
 **Why they exist.** These three moments are single images the player should sit inside rather than
 read past. Putting them in the scene body means they arrive competing with hotspots and choices; as
@@ -137,8 +137,8 @@ branch resolves, replacing the v2 `closingText` field. Suggested schema addition
 ```js
 {
   id: "scene-2",
-  plate: { position: "before", image: "images/char-copernicus-bound.png", text: [ /* paragraphs */ ] },
-  background: "images/scene-2-chapel.png",
+  plate: { position: "before", image: "images/char-copernicus-bound.webp", text: [ /* paragraphs */ ] },
+  background: "images/scene-2-chapel.webp",
   // ...rest unchanged
 }
 ```
@@ -154,7 +154,7 @@ appear with no fade at all, cutting straight in from Scene 1's last line.
 ## SCENE 1: The Gate
 *Function: curiosity. The place is expecting someone.*
 
-**IMAGE:** `scene-1-gate.png`
+**IMAGE:** `scene-1-gate.webp`
 
 **TEXT:**
 > I came to the gate the way one comes to a grave, without deciding to, and too late to turn back. The fog did not part for me. It had already been standing where I meant to walk.
@@ -212,7 +212,7 @@ image renders)*
 ## SCENE 2: The Chapel
 *Function: fascination, first wrongness. Not "who is he" but "why won't anyone say?"*
 
-**OPENING PLATE:** `char-copernicus-bound.png`
+**OPENING PLATE:** `char-copernicus-bound.webp`
 *Held image. Renders alone, before the scene proper. Advance on click.*
 
 > I had expected an empty room. I do not know why. Nothing about the night had promised me an empty room, and still, that was what I had prepared for.
@@ -223,7 +223,7 @@ image renders)*
 >
 > I stopped so hard I heard my own foot scrape the stone, and not one person in that room turned around.
 
-**IMAGE:** `scene-2-chapel.png`
+**IMAGE:** `scene-2-chapel.webp`
 
 **TEXT:**
 > He sat bound at the center of them, and the monks moved around his stillness the way tide moves around a stone. Patient. Certain. In no hurry to be cruel.
@@ -271,7 +271,7 @@ image renders)*
 ## SCENE 3: What They Believed
 *Function: suspicion into dread. The scene where the mystery turns.*
 
-**IMAGE:** `scene-3-tools.png`
+**IMAGE:** `scene-3-tools.webp`
 
 **TEXT:**
 > The instruments were wrong before I could say how. Steel too smooth for any forge I knew. A faint hum in them like trapped bees, or captured lightning.
@@ -373,7 +373,7 @@ image renders)*
 ## SCENE 4: He Sees Me ★
 *Function: revelation and horror. The scene the whole game is built around.*
 
-**IMAGE:** `scene-4-reveal.png`
+**IMAGE:** `scene-4-reveal.webp`
 
 **TEXT:**
 > The instrument found its place against his temple, and the room exhaled the way a held breath does. Not with violence. With relief.
@@ -409,7 +409,7 @@ image renders)*
 - **"I looked away."** → `true`
 - **"I kept watching."** → `false`
 
-**CLOSING PLATE:** `char-copernicus-reveal.png`
+**CLOSING PLATE:** `char-copernicus-reveal.webp`
 *Held image, rendered after the branch resolves. This text sits on the plate. Advance to Scene 5 on click.*
 
 > They were still asking him. Even then, even with the basin filling and the water going over the stone, the same question in the same unhurried voice, over and over, and he would not answer it.
@@ -435,7 +435,7 @@ image renders)*
 ## SCENE 5: Waking
 *Function: personal dread, and a failed attempt to dismiss it. The player checks, and the check confirms.*
 
-**OPENING PLATE:** `char-player-hands.png`
+**OPENING PLATE:** `char-player-hands.webp`
 *Held image. Renders alone, before the scene proper. Advance on click.*
 
 > I woke the way a candle wakes, not remembering it had ever been out.
@@ -446,7 +446,7 @@ image renders)*
 >
 > Not bleeding-wet. Something slower than blood, that clung the way old glue clings, half-dried and unwilling to let go of either surface it was meant to join. I brought my fingers down where I could see them and held them there a while, in the dark, not doing anything about it.
 
-**IMAGE:** `scene-5-waking.png`
+**IMAGE:** `scene-5-waking.webp`
 
 **TEXT:**
 > So I did the sensible thing. I went looking for the date.
@@ -565,7 +565,7 @@ image renders)*
 ## SCENE 6: The Chapel, Again
 *Function: recognition. How many times has this happened?*
 
-**IMAGE:** `scene-6-chapel-again.png`
+**IMAGE:** `scene-6-chapel-again.webp`
 
 **TEXT:**
 > The chapel had not moved, but I had. From the fog outside it to the chair at its center. The rope was old in the same place. The candle guttered at the same hour it always had, because it seemed this room did not keep time so much as repeat it, the way a copied page repeats an error until someone checks it against the original.
@@ -581,11 +581,11 @@ image renders)*
 > I could not see a face. Only the outline of someone watching the way one watches a thing they do not yet understand they will become responsible for. The monks did not turn to look at what I was looking at. Of course they didn't. I had not turned either, the first time.
 
 **TIER 2, examine your own hands:**
-*Image: `obj-hands-bound.png`*
+*Image: `obj-hands-bound.webp`*
 - if `looked_away == true`: *My hands were shaking the way his never had, as if he had spent his fear already and left me only the leftover of it.*
 - if `looked_away == false`: *My hands were steady. I had rehearsed this without knowing it, every time I refused to look away from his.*
 
-**TIER 2, examine the water-clock:** *(own image, `obj-water-clock-2.png` — not a reuse of Scenes 1
+**TIER 2, examine the water-clock:** *(own image, `obj-water-clock-2.webp` — not a reuse of Scenes 1
 and 3's `obj-water-clock`, since this is the same clock later, dry and failing)*
 > Nearly dry, the basin beneath it dark with old use, and beside it, I now noticed, a second empty basin, drier still, as though it had finished this same errand some while before I arrived to start mine.
 >
@@ -616,7 +616,7 @@ and 3's `obj-water-clock`, since this is the same clock later, dry and failing)*
 ## SCENE 7: The Choice
 *Function: moral dilemma. Does it continue, or end here?*
 
-**IMAGE:** `scene-7-choice.png`
+**IMAGE:** `scene-7-choice.webp`
 
 **TEXT:**
 > A monk knelt before me with the instrument that had opened him. Its cold light pulsed once, patient, unbothered by which century had summoned it.
@@ -674,7 +674,7 @@ gap. This is the last line of the game and the second payoff of a Scene 1 decisi
 ---
 
 ### Ending A: The Drained
-**IMAGE:** `ending-a.png`
+**IMAGE:** `ending-a.webp`
 
 **Base opening (always):**
 > I said nothing.
@@ -719,7 +719,7 @@ gap. This is the last line of the game and the second payoff of a Scene 1 decisi
 ---
 
 ### Ending B: The Kept Hour
-**IMAGE:** `ending-b.png`
+**IMAGE:** `ending-b.webp`
 
 **Base opening (always):**
 > I fought them, though I knew the rope would win.
@@ -753,7 +753,7 @@ gap. This is the last line of the game and the second payoff of a Scene 1 decisi
 ---
 
 ### Ending C: The Relay
-**IMAGE:** `ending-c.png`
+**IMAGE:** `ending-c.webp`
 
 **Base opening (always):**
 > I said his words back to them. "I'm ahead of my time."

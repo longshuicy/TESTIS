@@ -12,7 +12,7 @@ const SCENES = [
   {
     id: "scene-1",
     title: "The Gate",
-    background: "assets/images/scene-1-gate.png",
+    background: "assets/images/scene-1-gate.webp",
     // SOL STAT — fragment 1 of 3. Drives the drip; never decoded in-game.
     morse: "... --- .-.. / ... - .- -",
     text: [
@@ -24,30 +24,30 @@ const SCENES = [
       {
         id: "sundial",
         label: "The sundial",
-        image: "assets/images/obj-sundial.png",
+        image: "assets/images/obj-sundial.webp",
         text: "A dial with no sun to read by, and yet its shadow falls anyway, and falls precisely, as though the hour it names has nothing to do with the sky."
       },
       {
-        // Kept as its own hotspot (reusing obj-water-clock.png, per the art
+        // Kept as its own hotspot (reusing obj-water-clock.webp, per the art
         // doc's "reused in Scenes 1, 3") rather than merged into the sundial
         // paragraph. Text below is the v3 script's sundial passage, split at
         // the point where it turns from the dial to the water.
         id: "water-clock-1",
         label: "The water-clock behind the wall",
-        image: "assets/images/obj-water-clock.png",
+        image: "assets/images/obj-water-clock.webp",
         morse: "... --- .-.. / ... - .- -",
         text: "Beneath the wall the drip keeps its rhythm, patient, unhurried, the same figure over and over:\n\n{morse}\n\nI did not know then that it was saying anything. I only knew it was not random, and that things which are not random are usually addressed to someone."
       },
       {
         id: "latch",
         label: "The gate's iron latch",
-        image: "assets/images/obj-latch.png",
+        image: "assets/images/obj-latch.webp",
         text: "Cold under my palm, and wet, though nothing above it could have rained. My fingers came away with a film on them, thin as the skin on old milk.\n\nThe wet was on the inside face of the latch. Whoever touched it last had been leaving, not arriving."
       },
       {
         id: "threshold",
         label: "The worn threshold letters",
-        image: "assets/images/obj-threshold.png",
+        image: "assets/images/obj-threshold.webp",
         text: "Someone had carved letters here once. Time, or water, or both, had worn them back to suggestion.\n\nNot one name. Several, I thought, cut over each other at different depths, in different hands, across what must have been a great many years. The oldest were barely a roughness in the stone. The newest still had edges.\n\nBeneath them all, the stone was bare enough for another hand.",
         interaction: {
           type: "text_input",
@@ -91,9 +91,9 @@ const SCENES = [
   {
     id: "scene-2",
     title: "The Chapel",
-    background: "assets/images/scene-2-chapel.png",
+    background: "assets/images/scene-2-chapel.webp",
     openingPlate: {
-      image: "assets/images/char-copernicus-bound.png",
+      image: "assets/images/char-copernicus-bound.webp",
       text: [
         "I had expected an empty room. I do not know why. Nothing about the night had promised me an empty room, and still, that was what I had prepared for.",
         "He was six feet from me and facing my way and I did not see him until I had already walked in.",
@@ -111,25 +111,25 @@ const SCENES = [
       {
         id: "astrolabe",
         label: "The astrolabe at his neck",
-        image: "assets/images/obj-astrolabe.png",
+        image: "assets/images/obj-astrolabe.webp",
         text: "Tarnished, still around his throat, as though no one had thought to take a compass from a man no longer going anywhere.\n\nOr as though it was not his to take. It was worn at the chain in two places, unevenly, the way a thing wears when it has hung on more than one neck."
       },
       {
         id: "star-chart",
         label: "The star-chart under the chair",
-        image: "assets/images/obj-star-chart.png",
+        image: "assets/images/obj-star-chart.webp",
         text: "Circles within circles, and at the center, not the earth. I had been taught it wrong, or he had been taught it early.\n\nThe paper was old. Older than him, I thought, and then I put the thought down carefully, the way you put down something you have realized is hot."
       },
       {
         id: "books",
         label: "The confiscated books, spines to the wall",
-        image: "assets/images/obj-books.png",
+        image: "assets/images/obj-books.webp",
         text: "They had turned every spine to face the stone, as if a title left visible might argue back.\n\nOne volume had slipped enough to show a fragment of a diagram. The same circles. The same sun where the earth should be.\n\nThe binding was three centuries older than the man in the chair."
       },
       {
         id: "monk-murmuring",
         label: "The monk murmuring a name, not his own",
-        image: "assets/images/obj-monk-murmuring.png",
+        image: "assets/images/obj-monk-murmuring.webp",
         text: "A name, repeated like a rosary bead worn smooth. Not his.\n\nI assumed at first it was a saint's. Later I understood it was a question, phrased as a name, and that the monk was practicing it, the way one practices a difficult word before an examination."
       }
     ],
@@ -159,7 +159,7 @@ const SCENES = [
   {
     id: "scene-3",
     title: "What They Believed",
-    background: "assets/images/scene-3-tools.png",
+    background: "assets/images/scene-3-tools.webp",
     // TERRA MOVET — fragment 2 of 3.
     morse: "- . .-. .-. .- / -- --- ...- . -",
     text: [
@@ -174,26 +174,26 @@ const SCENES = [
       {
         id: "tool-glowing",
         label: "The humming instrument",
-        image: "assets/images/obj-tool-glowing.png",
+        image: "assets/images/obj-tool-glowing.webp",
         text: "A thin cold light lived inside it, the way a firefly holds its own small blasphemy.\n\nIt was not sharpened. Nothing about it was made for cutting. It ended in a smooth blunt cup, and the cup was ringed with a fine grille, and the grille was where the humming came from.\n\nIt was not built to open a man. It was built to listen to one."
       },
       {
         id: "tool-glass",
         label: "The dark glass surface among the tools",
-        image: "assets/images/obj-tool-glass.png",
+        image: "assets/images/obj-tool-glass.webp",
         text: "Black glass, smooth as still water, holding no image at all, and yet I had the distinct sense it was capable of one, the way an unlit room is capable of a lamp.\n\nWhen the monk's hand passed near it, something beneath the surface moved. Not a reflection. A <em>response</em>.\n\nIt was seated into the table. Not resting on it, not carried in and set down. Set into the wood, and the wood had swelled and darkened around its edges the way wood does after many years of holding something in place. Whatever this room was doing, it had not started doing it recently."
       },
       {
         id: "water-clock",
         label: "The second water-clock, half-hidden",
-        image: "assets/images/obj-water-clock.png",
+        image: "assets/images/obj-water-clock.webp",
         morse: "- . .-. .-. .- / -- --- ...- . -",
         text: "Same brass, same crack along its base, same slow patient drip, as though the room kept a spare in case the first one ever told the truth too plainly. I could not tell, looking at them side by side, which had been built first. They agreed with each other too perfectly for the question to matter.\n\nBut this one was faster. Not hurried. Insistent, the way a man repeats himself when he suspects he was not heard:\n\n{morse}"
       },
       {
         id: "tally",
         label: "The tally scratched under the table",
-        image: "assets/images/obj-tally.png",
+        image: "assets/images/obj-tally.webp",
         // The payoff. Second use of player_name — the name carved in Scene 1 is
         // already on the roster, struck through. The narrator never reacts.
         nameConditional: {
@@ -204,13 +204,13 @@ const SCENES = [
       {
         id: "letter",
         label: "A folded, unsent letter tucked beneath the tools",
-        image: "assets/images/obj-letter.png",
+        image: "assets/images/obj-letter.webp",
         text: "Addressed to no one. The hand that wrote it had crossed out more than it kept.\n\n<em>“I have kept this correct for thirty years,”</em> it read, in a script gone brittle at the folds. <em>“I no longer remember if I was protecting the world from it, or protecting it from the world. He did not tell me what it would cost to hold. I do not think he knew. I think he was only glad to set it down.”</em>\n\nThere was no signature. There did not need to be one.\n\nThe paper was dated seventy years before the man in the chair was born, and it was unmistakably his handwriting."
       },
       {
         id: "manuscript",
         label: "A single printed page, ink still faintly wet",
-        image: "assets/images/obj-manuscript.png",
+        image: "assets/images/obj-manuscript.webp",
         text: "A page, freshly pressed, smelling of iron and oil the way new print does before it has had time to become old. Diagrams. Circles around circles, and at the center, not what the room believed.\n\nIt was from his book. The book he had not finished. The book that would not be printed for years yet, that he would receive on the day he died, that no press in this country had yet been given a single page of.\n\nThe ink was still wet.\n\nI reached for it. A monk's hand closed over mine before I could lift it clear, and not roughly, the way you would stop a dying man from reaching for water he has already had enough of.\n\n“Later,” the monk said, in a tone that made it clear he meant never, said kindly."
       }
     ],
@@ -266,7 +266,7 @@ const SCENES = [
   {
     id: "scene-4",
     title: "He Sees Me",
-    background: "assets/images/scene-4-reveal.png",
+    background: "assets/images/scene-4-reveal.webp",
     text: [
       "The instrument found its place against his temple, and the room exhaled the way a held breath does. Not with violence. With relief.",
       "When the skin gave, no blood came. Only water, clear as the water in the clock, running past his ear onto the stone in a small patient psalm. He did not cry out. He did not seem to be in pain at all, only tired, the way a man is tired after a debate he has already lost the crowd on, or a book he finished decades before anyone agreed to print it.",
@@ -278,7 +278,7 @@ const SCENES = [
       {
         id: "eyes",
         label: "His eyes",
-        image: "assets/images/obj-eyes-his.png",
+        image: "assets/images/obj-eyes-his.webp",
         text: "In the wet dark of them, for just a moment, I saw something reflected that was not candlelight. A face.\n\nMine, I think, though I could not say afterward whether I had recognized it or only hoped I would.\n\nHe was not surprised to see it there. That was the part I could not get past, later. He looked at me the way you look at a face you have been expecting for thirty years and have privately dreaded arriving."
       }
     ],
@@ -321,7 +321,7 @@ const SCENES = [
     // Supersedes v2's closingText: the payoff is held on the plate, not appended
     // to a page the player has been reading all scene.
     closingPlate: {
-      image: "assets/images/char-copernicus-reveal.png",
+      image: "assets/images/char-copernicus-reveal.webp",
       text: [
         "They were still asking him. Even then, even with the basin filling and the water going over the stone, the same question in the same unhurried voice, over and over, and he would not answer it.",
         "He turned his head as far as the rope allowed. He looked at me while he said it, and I understood that the answer was not a name he was protecting.",
@@ -336,9 +336,9 @@ const SCENES = [
   {
     id: "scene-5",
     title: "Waking",
-    background: "assets/images/scene-5-waking.png",
+    background: "assets/images/scene-5-waking.webp",
     openingPlate: {
-      image: "assets/images/char-player-hands.png",
+      image: "assets/images/char-player-hands.webp",
       text: [
         "I woke the way a candle wakes, not remembering it had ever been out.",
         "My hand had already found my temple before my mind caught up to it, the way a tongue finds a broken tooth before the pain arrives to explain it. There was a seam there. Not a scar. A seam, the kind a thing has when it was made in two pieces and someone forgot to finish the joining.",
@@ -371,13 +371,13 @@ const SCENES = [
       {
         id: "seam",
         label: "The wetness itself",
-        image: "assets/images/obj-seam.png",
+        image: "assets/images/obj-seam.webp",
         text: "It dried slightly at the edges of the seam, the way a puddle dries at its shore first, leaving a faint ring like the stain a glass leaves on wood. The center stayed wet no matter how long I waited.\n\nIt was the same water. I want to be clear that I knew this immediately and without evidence, and that I have never since been able to explain how."
       },
       {
         id: "reflection",
         label: "Your reflection in the dark window",
-        image: "assets/images/obj-reflection.png",
+        image: "assets/images/obj-reflection.webp",
         text: "The glass gave back less a face than a suggestion of one, and for a moment the suggestion wore a collar I did not own, and a face older than mine by three centuries and several apologies.\n\nThen it was only me again. Or only tired, which in that light amounted to the same thing.\n\nThe reflection had turned its head slightly before I did."
       },
       {
@@ -418,7 +418,7 @@ const SCENES = [
   {
     id: "scene-6",
     title: "The Chapel, Again",
-    background: "assets/images/scene-6-chapel-again.png",
+    background: "assets/images/scene-6-chapel-again.webp",
     // EGO SOLU — fragment 3 of 3, cut short. The final ··· never comes.
     morse: ". --. --- / ... --- .-.. ..-",
     text: [
@@ -433,7 +433,7 @@ const SCENES = [
       {
         id: "hands",
         label: "Your own hands",
-        image: "assets/images/obj-hands-bound.png",
+        image: "assets/images/obj-hands-bound.webp",
         conditionalText: {
           key: "looked_away",
           cases: {
@@ -448,14 +448,14 @@ const SCENES = [
         // Its own image, not a reuse of Scene 1/3's obj-water-clock — the
         // basin is dry and a second empty basin sits beside it, so the shot
         // has to show wear the earlier two don't. See art doc, Scene 6.
-        image: "assets/images/obj-water-clock-2.png",
+        image: "assets/images/obj-water-clock-2.webp",
         morse: ". --. --- / ... --- .-.. ..-",
         text: "Nearly dry, the basin beneath it dark with old use, and beside it, I now noticed, a second empty basin, drier still, as though it had finished this same errand some while before I arrived to start mine.\n\nWhat was left of it was still trying. Slower now, with long gaps where a drip should have fallen and didn't, the way a voice goes when there isn't breath enough left to finish:\n\n{morse}\n\nThen nothing. Whatever it had been counting toward, it did not reach."
       },
       {
         id: "watcher",
         label: "The watcher in the dark",
-        image: "assets/images/obj-watcher.png",
+        image: "assets/images/obj-watcher.webp",
         text: "They did not move when I looked at them, which is its own kind of answer. I raised a hand, half a greeting, half a warning. I could not tell if they raised one back, or if I only wanted them to.\n\nI knew what they were waiting for. I had waited for it myself, in the same corner, wearing whatever face I had then, and I had not known I was waiting, and neither did they."
       }
     ],
@@ -489,7 +489,7 @@ const SCENES = [
   {
     id: "scene-7",
     title: "The Choice",
-    background: "assets/images/scene-7-choice.png",
+    background: "assets/images/scene-7-choice.webp",
     text: [
       "A monk knelt before me with the instrument that had opened him. Its cold light pulsed once, patient, unbothered by which century had summoned it.",
       "“Does it hurt to be ahead,” he asked me, not unkindly, “or only to be alone in it?”",
@@ -503,7 +503,7 @@ const SCENES = [
       {
         id: "rope",
         label: "The rope at your wrists",
-        image: "assets/images/obj-rope.png",
+        image: "assets/images/obj-rope.webp",
         text: "Soft with age. The same rope, I was almost certain, that had held him. It had not been replaced. Perhaps it never needed to be.\n\nThe fibers had gone shiny at two places, where wrists narrower than mine had worn them, and at two more where wrists wider had. I stopped counting the places. The rope had a longer memory than the room did."
       }
     ],

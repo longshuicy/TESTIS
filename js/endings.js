@@ -34,7 +34,7 @@ const ENDINGS = [
   {
     id: "ending-a",
     title: "The Drained",
-    background: "assets/images/ending-a.png",
+    background: "assets/images/ending-a.webp",
     baseOpening: "I said nothing.\n\nNot out of courage. I want to be honest about that. I had simply understood, somewhere between the chapel and the chair, that the answer they wanted was standing in the dark behind them, and that giving it would only move the marks on the table one line further down.\n\nThere is a particular quiet in choosing your own ending. Not peace exactly, but its patient cousin.",
     conditionalMiddle: {
       keys: ["witness_reaction", "looked_away"],
@@ -82,7 +82,7 @@ const ENDINGS = [
   {
     id: "ending-b",
     title: "The Kept Hour",
-    background: "assets/images/ending-b.png",
+    background: "assets/images/ending-b.webp",
     baseOpening: "I fought them, though I knew the rope would win.\n\nNot to escape. I understood by then that there was nowhere in this arrangement to escape <em>to</em>, that the door I had come in by opened onto the same fog it always had. I fought because a thing that has been done this many times, this smoothly, deserves at least once to be done badly.\n\nIt is a strange kind of dignity, choosing a fight you cannot survive. Not for victory. So that the losing has your fingerprints on it.",
     conditionalMiddle: {
       keys: ["tools_reaction", "looked_away"],
@@ -122,7 +122,7 @@ const ENDINGS = [
   {
     id: "ending-c",
     title: "The Relay",
-    background: "assets/images/ending-c.png",
+    background: "assets/images/ending-c.webp",
     baseOpening: "I said his words back to them. “I'm ahead of my time.”\n\nI knew it was not true when I said it. That was rather the point. He had known it was not true either, and had said it anyway, in this chair, to protect a person standing in the dark who had not done anything yet.\n\nI felt the words leave my mouth the way a coin leaves a hand thrown into water. Not lost, exactly. Given.",
     conditionalMiddle: {
       keys: ["identity_found", "seen_reaction"],

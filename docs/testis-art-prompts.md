@@ -11,7 +11,7 @@ any single image being ideal.
 **Total assets: 34.** 10 scene and ending backgrounds, 20 object shots, 4 character shots.
 
 **All of them live in `assets/images/`.** Filenames below are bare; the directory is implied and is
-what `scenes.js`, `endings.js`, and `style.css` reference (`assets/images/scene-1-gate.png`). Audio
+what `scenes.js`, `endings.js`, and `style.css` reference (`assets/images/scene-1-gate.webp`). Audio
 sits alongside in `assets/sound/` and belongs to `testis-sound-design.md`; `assets_backup/` and
 `assets_tint/` are art-pipeline working directories and are not shipped.
 
@@ -60,25 +60,25 @@ solo art set look assembled rather than authored.
 
 ## 1. SCENE BACKGROUNDS (10)
 
-**`scene-1-gate.png`**: The Gate
+**`scene-1-gate.webp`**: The Gate
 ```
 monastery gate at night, fog drifting through iron bars, one lit window high above, moon obscured
 by cloud, wide establishing shot, low angle looking up at the gate
 ```
 
-**`scene-2-chapel.png`**: The Chapel
+**`scene-2-chapel.webp`**: The Chapel
 ```
 dim chapel interior, hooded monks encircling a bound seated figure at the center, single candle as
 the only light source, composition echoing a Renaissance religious painting, wide shot
 ```
 
-**`scene-3-tools.png`**: What They Believed
+**`scene-3-tools.webp`**: What They Believed
 ```
 close-up of a monk's hands arranging gleaming surgical instruments on cloth beside a candle, the
 instruments too smooth and precise for the era, faintly luminous, unsettling stillness
 ```
 
-**`scene-4-reveal.png`**: He Sees Me ★
+**`scene-4-reveal.webp`**: He Sees Me ★
 *Highlight scene. Worth an extra generation pass.*
 ```
 bound elderly figure's head tilted back, a monk's hand pressing a smooth glowing instrument to his
@@ -86,39 +86,39 @@ temple, a thin stream of clear water running from the temple down past his ear, 
 turned directly toward the viewer, sorrowful and tired expression, calm, no pain, no wound, no blood
 ```
 
-**`scene-5-waking.png`**: Waking
+**`scene-5-waking.webp`**: Waking
 ```
 a hand touching a forehead in near-total darkness, minimal linework, mostly negative space, faint
 wet sheen along the fingertips, intimate close framing
 ```
 
-**`scene-6-chapel-again.png`**: The Chapel, Again
+**`scene-6-chapel-again.webp`**: The Chapel, Again
 ```
 same chapel composition and camera angle as scene 2, but the bound seated figure's face is blank and
 featureless, the monks now face forward toward the viewer instead of inward toward the chair, a faint
 indistinct human silhouette stands in the deep background shadow, unnoticed by the monks
 ```
 
-**`scene-7-choice.png`**: The Choice
+**`scene-7-choice.webp`**: The Choice
 ```
 first-person perspective, a monk kneeling and extending a glowing instrument toward the viewer, the
 viewer's own rope-bound wrists visible in the lower frame, a silhouetted figure standing just behind
 the monk's shoulder, watching, unacknowledged
 ```
 
-**`ending-a.png`**: The Drained
+**`ending-a.webp`**: The Drained
 ```
 an empty wooden chair with loose ropes fallen around its legs, a small pool of clear water on the
 stone floor beneath it, chapel otherwise empty, a single candle guttering, quiet aftermath
 ```
 
-**`ending-b.png`**: The Kept Hour
+**`ending-b.webp`**: The Kept Hour
 ```
 a snapped rope, an overturned wooden chair, chapel interior in disarray, a single candle still
 burning upright amid the wreckage
 ```
 
-**`ending-c.png`**: The Relay
+**`ending-c.webp`**: The Relay
 ```
 extreme close-up of a single human eye, composition mirroring the scene 4 eye shot exactly, a faint
 reflected figure visible in the wet dark of the pupil, this time it is the viewer being seen
@@ -131,125 +131,125 @@ reflected figure visible in the wet dark of the pupil, this time it is the viewe
 Used as tier2 examine images. Each corresponds to a specific examine hotspot in the script.
 
 ### Scene 1 (3)
-**`obj-sundial.png`**
+**`obj-sundial.webp`**
 ```
 a weathered stone sundial carved into an archway at night, its gnomon casting a shadow despite the
 absence of sun, isolated close-up
 ```
-**`obj-latch.png`**
+**`obj-latch.webp`**
 ```
 a cold wet iron gate latch, beaded with moisture, worn smooth by centuries of hands, isolated close-up
 ```
-**`obj-threshold.png`**
+**`obj-threshold.webp`**
 ```
 close-up of a stone threshold, carved letters worn nearly illegible by time and water, only the
 suggestion of a name remaining, bare uncarved stone beside them
 ```
 
 ### Scene 2 (4)
-**`obj-astrolabe.png`**
+**`obj-astrolabe.webp`**
 ```
 a tarnished brass astrolabe hanging on a chain against a bound man's chest, ornate engraved
 gradations, isolated close-up
 ```
-**`obj-star-chart.png`**
+**`obj-star-chart.webp`**
 ```
 a hand-drawn star chart on aged paper, concentric orbital circles with the sun at the center rather
 than the earth, half-tucked beneath a chair leg
 ```
-**`obj-books.png`**
+**`obj-books.webp`**
 ```
 a stack of confiscated books shelved with every spine deliberately turned to face the wall, one
 volume slipped forward revealing a fragment of an orbital diagram
 ```
-**`obj-monk-murmuring.png`**
+**`obj-monk-murmuring.webp`**
 ```
 a hooded monk in profile, lips parted mid-whisper, eyes lowered, hands worrying a rosary, close-up
 ```
 
 ### Scene 3 (6)
-**`obj-tool-glowing.png`**
+**`obj-tool-glowing.webp`**
 ```
 a smooth surgical instrument of impossibly precise manufacture, a thin cold light glowing within it,
 resting on dark cloth among antique implements, isolated close-up
 ```
-**`obj-tool-glass.png`**
+**`obj-tool-glass.webp`**
 ```
 a small rectangular slab of black glass lying among 16th century surgical tools, blank and faintly
 reflective, screen-like, isolated close-up
 ```
-**`obj-water-clock.png`**: *reused in Scenes 1, 3*
+**`obj-water-clock.webp`**: *reused in Scenes 1, 3*
 ```
 an antique brass water clock, a clepsydra, with a dripping basin beneath it, a hairline crack along
 its base, ornate but worn metalwork, isolated on dark stone
 ```
-**`obj-tally.png`**
+**`obj-tally.webp`**
 ```
 dozens of tally marks scratched into the rough underside of a wooden table, grouped in fives, each
 group struck through with a single unhurried line, shapes suggesting ruined names rather than numbers
 ```
-**`obj-letter.png`**
+**`obj-letter.webp`**
 ```
 a folded unsent letter on brittle paper, handwriting with more lines crossed out than kept, no
 signature, isolated close-up
 ```
 
-**`obj-manuscript.png`**
+**`obj-manuscript.webp`**
 ```
 a single freshly printed page of astronomical diagrams, circles within circles, ink appearing still
 wet, half covered by cloth, a monk's hand pressing down over another hand reaching for it
 ```
 
 ### Scene 4 (1)
-**`obj-eyes-his.png`**
+**`obj-eyes-his.webp`**
 ```
 extreme close-up of an elderly man's eye, sorrowful, a small indistinct human figure reflected in the
 wet dark of the pupil
 ```
-*Compose this and `ending-c.png` as a deliberate matched pair. The mirroring is the payoff.*
+*Compose this and `ending-c.webp` as a deliberate matched pair. The mirroring is the payoff.*
 
 ### Scene 5 (2)
-**`obj-seam.png`**
+**`obj-seam.webp`**
 ```
 close-up of a hairline seam across a human temple, not a wound, no blood, a faint wet sheen at its
 center and a dried ring at its edges like a water stain on wood
 ```
-**`obj-reflection.png`**
+**`obj-reflection.webp`**
 ```
 a dark window at night returning a faint partial reflection of a face, the reflection wearing an
 older man's collar that the viewer does not own, ambiguous and half-formed
 ```
 
 ### Scene 6 (3)
-**`obj-hands-bound.png`**
+**`obj-hands-bound.webp`**
 ```
 close-up of a pair of hands resting in a lap, wrists bound loosely by old rope, seen from above in
 the first-person seated position, the rope gone soft with age, isolated close framing
 ```
 *This is the player's own hands, seen from the chair. The same rope that held him. Compose it as a
-downward look — what you see when you glance at your own wrists mid-scene. Pairs with `obj-rope.png`
+downward look — what you see when you glance at your own wrists mid-scene. Pairs with `obj-rope.webp`
 from Scene 7, which shows the same wrists from a slightly different angle. Generate back to back.*
 
-**`obj-water-clock-2.png`**: *not a reuse — this is the same clock later, failing*
+**`obj-water-clock-2.webp`**: *not a reuse — this is the same clock later, failing*
 ```
 the same antique brass water clock, a clepsydra, its basin beneath it nearly dry, a second empty
 basin set beside it drier still, the hairline crack along its base more pronounced, ornate but worn
 metalwork, isolated on dark stone
 ```
 *Scene 6's clock is described as running down — a second empty basin, long gaps where a drip should
-have fallen and didn't — which `obj-water-clock.png` cannot show without contradicting Scenes 1 and 3,
+have fallen and didn't — which `obj-water-clock.webp` cannot show without contradicting Scenes 1 and 3,
 where the same clock is still keeping time. Same object, same metalwork and framing as
-`obj-water-clock.png` so the two read as one clock across the game, generated back to back with it
+`obj-water-clock.webp` so the two read as one clock across the game, generated back to back with it
 for consistency; the only change is the wear and the second basin.*
 
-**`obj-watcher.png`**: *reused in Scene 7*
+**`obj-watcher.webp`**: *reused in Scene 7*
 ```
 a still human silhouette standing at the edge of darkness, no facial features, posture suggesting
 quiet watchfulness rather than threat, minimal linework, mostly negative space
 ```
 
 ### Scene 7 (1)
-**`obj-rope.png`**
+**`obj-rope.webp`**
 ```
 old rope binding a pair of wrists to a wooden chair arm, fibers gone soft and frayed with age,
 isolated close-up
@@ -259,29 +259,80 @@ isolated close-up
 
 ## 3. CHARACTER SHOTS (4)
 
-**`char-copernicus-bound.png`**
+**`char-copernicus-bound.webp`**
 ```
 an elderly Renaissance man with a tired sorrowful face, wrists bound to a wooden chair, worn
 scholar's robes, dignified bearing despite restraint, three-quarter view, waist-up
 ```
 
-**`char-copernicus-reveal.png`**
+**`char-copernicus-reveal.webp`**
 ```
 the same elderly man, head tilted back, eyes open and turned toward the viewer, clear water running
 from his temple past his ear, calm and sorrowful, no wound, no blood, waist-up
 ```
 
-**`char-player-hands.png`**
+**`char-player-hands.webp`**
 ```
 a pair of hands touching a forehead, faint wet sheen on the fingertips, minimal background, close
 intimate framing
 ```
 
-**`char-witness-silhouette.png`**
+**`char-witness-silhouette.webp`**
 ```
 a featureless standing human silhouette seen from behind and slightly to the side, watching something
 out of frame, minimal linework
 ```
+
+---
+
+## 3b. UI ORNAMENT (1)
+
+Not a narrative image and not part of the 34 — a chrome asset consumed by CSS, not by
+`scenes.js`/`endings.js`.
+
+| File | What it is |
+|---|---|
+| `decorative-frame-border.webp` | Gilt scrollwork corner plate on transparent ground, used as the `border-image` around every examine-panel photo (`.tier2-frame::before`). |
+
+**Ship it at 1000×1000, not larger.** The border draws at roughly 26 CSS pixels; an 8000×8000 plate
+decodes to ~256MB of RGBA the moment a hotspot opens, which crashed the tab on mobile Safari and
+Chrome. If the plate is ever regenerated, keep `border-image-slice` at one-fifth the shipped edge
+(200 for a 1000px plate).
+
+This is also the **only** asset that keeps an alpha channel — it sits on transparent ground, and
+flattening it would fill the scrollwork's gaps with black and box every examine photo in a solid
+slab. Every other asset is fully opaque and ships flattened.
+
+---
+
+## 3c. SHIPPING THE ASSETS
+
+Generated art is a **master**, not a shipped file. Masters are PNG at whatever size the generator
+produced; they live in `assets_backup/images-png-master/` and are git-ignored. What ships is WebP,
+downscaled, produced by:
+
+```bash
+./scripts/optimize_images.sh
+```
+
+| Role | Shipped width | Alpha | Quality |
+|---|---|---|---|
+| Scene + ending backgrounds | 1600 | flattened | 82 |
+| Object + character shots | 800 | flattened | 82 |
+| `decorative-frame-border` | 1000 | kept | 90 |
+
+The script is idempotent — it always encodes from the masters, never from its own output, so
+re-running it does not stack generational loss. Current result: 37MB of PNG masters → 2.8MB of
+shipped WebP.
+
+**Why the downscale, and why it is not optional.** A decoded bitmap costs `width × height × 4` bytes
+of RAM regardless of file format, so pixel dimensions — not file size — are what crash a phone. At
+master resolution the full set decoded to roughly 537MB; `main.js` preloads a background for every
+branch target, so a three-way branch held ~73MB of backgrounds alone. WebP fixes transfer and does
+nothing for this. Downscaling is the part that fixes it, and it brought the set to ~142MB.
+
+Add a new asset by dropping its PNG master in `assets_backup/images-png-master/` and re-running the
+script — do not hand-convert, and do not commit a PNG to `assets/images/`.
 
 ---
 
@@ -293,7 +344,7 @@ out of frame, minimal linework
 2. **Lock a seed.** Once a test image has the right feel, note its seed and reuse it across the set.
    This is the single highest-leverage step for making 34 images look authored rather than assembled.
 3. **Scene backgrounds** in narrative order, so lighting and mood carry scene to scene.
-4. **The matched pair** (`obj-eyes-his.png` and `ending-c.png`) together, back to back, same seed.
+4. **The matched pair** (`obj-eyes-his.webp` and `ending-c.webp`) together, back to back, same seed.
    Their similarity is a narrative device; generate them as one job.
 5. **Object shots.** Fastest category. Consistent framing matters more than individual drama.
 6. **Character shots last**, once you've seen how the style renders faces in the backgrounds.
@@ -312,8 +363,8 @@ level below.
 |---|---|---|
 | All 18 object shots; render tier2 as text only | ~40% of art time | Low. Tier2 is primarily writing; the prose carries it. |
 | The 4 character shots; let backgrounds imply figures | ~15% | Low. Implied presence is a standard horror technique and often stronger. |
-| `ending-b.png` and `ending-c.png`; reuse `ending-a.png` | ~7% | Medium. Endings feel less distinct. |
-| `scene-6-chapel-again.png`; reuse `scene-2-chapel.png` | ~7% | **Do not cut.** The changed composition is the reveal that the player has become him. |
+| `ending-b.webp` and `ending-c.webp`; reuse `ending-a.webp` | ~7% | Medium. Endings feel less distinct. |
+| `scene-6-chapel-again.webp`; reuse `scene-2-chapel.webp` | ~7% | **Do not cut.** The changed composition is the reveal that the player has become him. |
 
 The absolute minimum viable set is **7 scene backgrounds plus 3 ending backgrounds**. Everything else
 is enhancement.

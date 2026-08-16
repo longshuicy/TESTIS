@@ -26,11 +26,15 @@ js/scenes.js     SCENES — all scene data
 js/endings.js    ENDINGS + WITNESS_CALLBACK
 js/audio.js      AUDIO state + the Sound facade
 js/main.js       state machine, rendering, events
-assets/images/   art, filenames per docs/testis-art-prompts.md
+assets/images/   art (WebP), filenames per docs/testis-art-prompts.md
 assets/sound/    audio, filenames per docs/testis-sound-design.md
 assets/widgets/  standalone HTML prototypes; not loaded by the game
+scripts/         asset pipeline; not loaded by the game
 ATTRIBUTIONS.txt required credits; maintained from sound doc §11
 ```
+
+Shipped art is WebP, downscaled from PNG masters by `scripts/optimize_images.sh`.
+Don't hand-edit `assets/images/` — see art doc §3c.
 
 Load order matters: `scenes.js`, `endings.js`, `audio.js`, then `main.js`.
 

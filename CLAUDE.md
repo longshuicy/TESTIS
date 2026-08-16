@@ -64,6 +64,11 @@ it there — don't let it leak into the wrong doc or drift the docs out of sync 
 - `assets_backup/` and `assets_tint/` are working directories for the art pipeline, not part of the
   shipped site — don't treat them as authoritative asset locations. Shipped assets are
   `assets/images/` (art) and `assets/sound/` (audio).
+- Shipped art is WebP, generated from the PNG masters in `assets_backup/images-png-master/` by
+  `scripts/optimize_images.sh`. Masters are git-ignored, so a fresh clone can't regenerate them —
+  the committed `.webp` files are the artifacts. Never hand-convert an image or commit a PNG to
+  `assets/images/`; add the master and re-run the script. Art doc §3c explains the widths and why
+  the downscale is load-bearing (decoded bitmap memory, not file size, is what crashes phones).
 - `assets/widgets/` holds standalone HTML prototypes. Nothing there is fetched at runtime — the
   shipped calendar is built in `main.js`, and fetching fragments would break `file://`.
 - `assets_sound_src/` holds the original 320kbps/24-bit audio masters, git-ignored like the other
