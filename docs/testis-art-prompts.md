@@ -8,7 +8,9 @@ Generate everything in one sitting, back to back, so style stays consistent. Pic
 prompt and move on. Do not re-roll chasing perfection; consistency across the set matters more than
 any single image being ideal.
 
-**Total assets: 34.** 10 scene and ending backgrounds, 20 object shots, 4 character shots.
+**Total assets: 34 specified, 33 shipping.** 10 scene and ending backgrounds, 20 object shots, 4
+character shots — of which `char-witness-silhouette.webp` has never been generated (see §3). The
+tally wall counts what ships, so it currently reads XXXIII.
 
 **All of them live in `assets/images/`.** Filenames below are bare; the directory is implied and is
 what `scenes.js`, `endings.js`, and `style.css` reference (`assets/images/scene-1-gate.webp`). Audio
@@ -277,7 +279,12 @@ a pair of hands touching a forehead, faint wet sheen on the fingertips, minimal 
 intimate framing
 ```
 
-**`char-witness-silhouette.webp`**
+**`char-witness-silhouette.webp`** — **NOT GENERATED, NOT SHIPPED.** The prompt is kept because the
+asset is still wanted, but no master exists in `assets_backup/images-png-master/`, nothing in
+`scenes.js`/`endings.js` references it, and it is not in `assets/images/`. It is the whole of the
+gap between this doc's "34" and the 33 plates that actually ship. Generate it and the tally wall
+picks it up on its own — the wall derives its catalogue from the scene and ending data, so the
+denominator moves from XXXIII to XXXIV with no code change. Until then, do not count it as shipped.
 ```
 a featureless standing human silhouette seen from behind and slightly to the side, watching something
 out of frame, minimal linework
@@ -320,6 +327,14 @@ downscaled, produced by:
 | Scene + ending backgrounds | 1600 | flattened | 82 |
 | Object + character shots | 800 | flattened | 82 |
 | `decorative-frame-border` | 1000 | kept | 90 |
+| Wall thumbnails (`thumbs/`) | 400 | flattened | 78 |
+
+The thumbnail tier exists for the tally wall (`js/gallery.js`), which shows every plate at once.
+Same reasoning as the downscale below, only sharper: at shipped widths that one grid would decode to
+roughly 110MB. 400px covers the largest wall cell (~225px) at 2× DPR, and the whole set of 33 costs
+569K on disk — less than three of the shipped background plates. The frame border has no wall cell
+and is skipped. Un-inked cells draw inline SVG and request no image at all, so a first-time visitor
+who has witnessed nothing downloads nothing.
 
 The script is idempotent — it always encodes from the masters, never from its own output, so
 re-running it does not stack generational loss. Current result: 37MB of PNG masters → 2.8MB of
@@ -333,6 +348,32 @@ nothing for this. Downscaling is the part that fixes it, and it brought the set 
 
 Add a new asset by dropping its PNG master in `assets_backup/images-png-master/` and re-running the
 script — do not hand-convert, and do not commit a PNG to `assets/images/`.
+
+---
+
+## 3d. PROVENANCE AND CREDIT
+
+Every image here is generated with **Midjourney** from the prompts in this doc, then taken into
+**Procreate** for post-generation drawing and editing before it becomes a master. The style is not
+the generator's: it derives from the author's own zodiac illustration series (see *Style anchors*),
+which is what the prompts and the hand-editing are both steering toward.
+
+This is a **disclosure, not a licence obligation** — which is why it does not live in
+`ATTRIBUTIONS.txt`. That file opens by saying every asset in it requires credit, and it is
+maintained from sound doc §11 for CC BY audio; adding voluntary credit to a compliance list dilutes
+what the list means. Whether Midjourney output carries an attribution requirement depends on the
+plan it was generated under, so check current terms before assuming either way.
+
+The line players actually see lives in `js/wall.js` (`WALL.credit`) and renders at the foot of the
+tally wall. The README carries the same statement. Keep all three saying the same thing:
+
+> Art generated with Midjourney from the author's prompts, with post-generation drawing and
+> editing in Procreate.
+
+One further note, not urgent: `LICENSE` is MIT over `Copyright (c) 2026 Chen Wang`, which covers the
+code cleanly. Purely AI-generated images may not be copyrightable in the US, so a blanket claim over
+the art is shakier ground — the Procreate editing pass is exactly the kind of human authorship that
+argument turns on. If asset licensing is ever split from code licensing, that is the reason.
 
 ---
 
