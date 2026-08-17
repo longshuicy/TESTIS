@@ -1350,6 +1350,98 @@ body.is-ending .scene-content { padding-top: 20vh; }
   text-align: center;
 }
 
+.wall-secret {
+  max-width: 24rem;
+  margin: 2rem auto 0;
+  text-align: center;
+}
+
+/* Inert until armSecret's observer uncovers it — mirrors .choice[aria-disabled],
+   but the whole plaque at once: there is only ever the one question here. */
+.wall-secret.veiled { pointer-events: none; }
+
+.wall-secret-prompt {
+  font-family: var(--label);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--paper-dim);
+  margin: 0 0 1rem;
+}
+
+.wall-secret-form { display: flex; justify-content: center; }
+
+.wall-secret-input {
+  width: 100%;
+  max-width: 18rem;
+  padding: 0.5rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--label);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+.wall-secret-input::placeholder { color: var(--paper-faint); }
+
+.wall-secret-input:focus {
+  outline: none;
+  border-color: var(--candle-dim);
+}
+
+.wall-secret-ask {
+  display: block;
+  margin: 0.9rem auto 0;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: var(--label);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--paper-faint);
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 300ms ease, color 300ms ease;
+}
+
+.wall-secret-ask:hover,
+.wall-secret-ask:focus-visible { opacity: 1; color: var(--candle-dim); }
+
+/* Same specificity as .wall-secret-ask's own opacity, so source order alone
+   would let this lose to it while still veiled. The extra class wins instead. */
+.wall-secret-ask.veiled-item { opacity: 0; }
+
+.wall-secret.is-revealed { animation: wall-secret-in 500ms ease; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .wall-secret-prompt, .wall-secret-form, .wall-secret-ask {
+    transition: opacity 460ms ease, transform 460ms ease;
+  }
+}
+
+.wall-secret-phrase {
+  font-family: var(--label);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--paper-dim);
+}
+
+.wall-secret-translation {
+  margin-top: 0.4rem;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--paper-faint);
+}
+
+@keyframes wall-secret-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* ── one plate at full size ── */
 
 .wall-box {
@@ -1447,6 +1539,11 @@ body.wall-open { overflow: hidden; }
   padding: 2.5rem 0 1rem;
   text-align: center;
 }
+
+/* Held back until the secret plaque above it has been answered or asked
+   for (js/gallery.js, revealBeginAgain) — the wall's one earned arrival. */
+.wall-again.wall-again-pending { display: none; }
+.wall-again.wall-again-in { animation: wall-secret-in 500ms ease; }
 
 @media (max-width: 760px) {
   .wall-grid.the-rooms   { grid-template-columns: 1fr; }
