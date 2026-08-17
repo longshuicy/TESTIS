@@ -49,6 +49,15 @@ W_BACKGROUND=1600
 W_OBJECT=800
 W_FRAME=1000
 
+# The tally wall (js/gallery.js) shows every plate at once. At shipped widths
+# that grid would decode to ~110MB — the same failure the examine panels had.
+# A separate thumbnail tier fixes it: 400px covers the largest wall cell
+# (~272px in a 62rem grid) at 2x DPR, and the whole set costs well under 1MB.
+# Written to a thumbs/ subdirectory of DEST; the frame border has no wall cell
+# and is skipped.
+W_THUMB=400
+QUALITY_THUMB=78
+
 QUALITY=82        # for photographic art
 QUALITY_FRAME=90  # line-art scrollwork; ringing shows up faster on hard edges
 
@@ -57,11 +66,11 @@ for bin in cwebp magick; do
 done
 [ -d "$SRC" ] || { echo "error: source dir '$SRC' not found" >&2; exit 1; }
 
-mkdir -p "$DEST"
+mkdir -p "$DEST" "$DEST/thumbs"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
-before=0; after=0
+before=0; after=0; thumbs=0
 
 for src in "$SRC"/*.png; do
   [ -e "$src" ] || { echo "error: no PNGs in '$SRC'" >&2; exit 1; }
@@ -85,6 +94,15 @@ for src in "$SRC"/*.png; do
     cwebp -q "$q" -alpha_q 100 -quiet "$tmp/$name.png" -o "$DEST/$name.webp"
   fi
 
+  # Wall thumbnail. Encoded from the master too, never from the shipped WebP,
+  # so this stays as generational-loss-free as everything else here.
+  if [ "$name" != "decorative-frame-border" ]; then
+    magick "$src" -resize "${W_THUMB}x>" -background black -alpha remove -alpha off -strip "$tmp/$name-thumb.png"
+    cwebp -q "$QUALITY_THUMB" -quiet "$tmp/$name-thumb.png" -o "$DEST/thumbs/$name.webp"
+    t=$(stat -f%z "$DEST/thumbs/$name.webp")
+    thumbs=$((thumbs + t))
+  fi
+
   b=$(stat -f%z "$src"); a=$(stat -f%z "$DEST/$name.webp")
   before=$((before + b)); after=$((after + a))
   dims=$(magick identify -format "%wx%h" "$DEST/$name.webp")
@@ -94,3 +112,5 @@ done
 echo
 printf "total: %sK -> %sK  (%s%% of original)\n" \
   "$((before/1024))" "$((after/1024))" "$((after * 100 / before))"
+printf "wall thumbs: %sK across %s files\n" \
+  "$((thumbs/1024))" "$(ls -1 "$DEST/thumbs" | wc -l | tr -d ' ')"

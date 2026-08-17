@@ -281,6 +281,7 @@ let currentBgSrc = null;
 function setBackground(src) {
   if (!src || src === currentBgSrc) return;   // already showing it; don't crossfade to itself
   currentBgSrc = src;
+  Gallery.saw(src);
   const next = activeBg === bgA ? bgB : bgA;
   const probe = new Image();
   probe.onload = () => swap(src);
@@ -571,6 +572,7 @@ function buildTier2Panel(panel, item) {
       img.classList.add("is-placeholder");
     });
     img.src = item.image;
+    Gallery.saw(item.image);
     frame.appendChild(img);
     panel.appendChild(frame);
   }
@@ -936,6 +938,7 @@ function renderPlate(rawSpec, onDone, sceneId) {
     backdrop.style.backgroundImage = `url("${ph}")`;
   });
   img.src = spec.image;
+  Gallery.saw(spec.image);
   backdrop.style.backgroundImage = `url("${spec.image}")`;
   figure.appendChild(img);
 
@@ -1071,11 +1074,15 @@ function renderEnding(id) {
     const label = el("p", "ending-label", e.title);
     content.appendChild(label);
 
+    // The ending does not offer to start over. It hands off to the wall, which
+    // is the last thing the game says: this run counted what it counted, and
+    // nothing is stored between loads, so that count exists here or nowhere.
+    // "Begin again" waits over there.
     const wrap = el("div", "continue-wrap");
-    const again = el("button", "continue", "Begin again");
-    again.type = "button";
-    again.addEventListener("click", () => window.location.reload());
-    wrap.appendChild(again);
+    const on = el("button", "continue", WALL.enter);
+    on.type = "button";
+    on.addEventListener("click", () => Gallery.open({ final: true }));
+    wrap.appendChild(on);
     content.appendChild(wrap);
   });
 }
@@ -1104,6 +1111,10 @@ function appendClosing(node, closing) {
 /* ──────────────────────────────────────────────────────── dev shortcut */
 // ?debug=ending-a&looked_away=true&witness_reaction=reached
 // ?debug=scene-4 also works. Strip or gate before release.
+//
+// ?all is the exception that stays: it opens the tally wall fully inked,
+// straight from the title screen, without claiming any of it was witnessed.
+// It is how the art gets shown to someone who is not here to play.
 
 function applyDebug() {
   const q = new URLSearchParams(window.location.search);
@@ -1133,6 +1144,7 @@ window.addEventListener("DOMContentLoaded", () => {
   Sound.titleShown();
   const begin = document.getElementById("begin");
   const title = document.getElementById("title-screen");
+  const query = new URLSearchParams(window.location.search);
 
   const enter = () => {
     title.classList.add("gone");
@@ -1140,5 +1152,11 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   begin.addEventListener("click", enter);
-  if (new URLSearchParams(window.location.search).has("debug")) enter();
+
+  if (query.has("all")) {
+    Gallery.setRevealAll(true);
+    Gallery.open();
+    return;
+  }
+  if (query.has("debug")) enter();
 });

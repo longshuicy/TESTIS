@@ -1104,7 +1104,11 @@ body.is-ending .scene-content { padding-top: 20vh; }
   position: fixed;
   top: 1.4rem;
   right: 1.4rem;
-  z-index: 40;
+  /* Above the tally wall (80) as well as plates and endings — sound doc §2
+     says always visible, and the wall is a page the player can sit on while
+     the ending's bed is still sounding. Below the wall's own lightbox (90),
+     which any click dismisses anyway. */
+  z-index: 85;
   width: 2.6rem;
   height: 2.6rem;
   display: flex;
@@ -1140,4 +1144,313 @@ body.is-ending .scene-content { padding-top: 20vh; }
 
 @media (max-width: 640px) {
   #sound-toggle { top: 0.9rem; right: 0.9rem; width: 2.3rem; height: 2.3rem; }
+}
+
+/* ──────────────────────────────────────────────────────── the tally wall */
+/* A record of every plate the game can show. Inked cells are the art, shown
+   plain — it is already black-and-white line work, so no filter is applied to
+   it anywhere here. Un-inked cells draw marks and request no image at all;
+   see js/gallery.js for why that matters on a phone. */
+
+/* Root font-size is 20px, so this is ~1000px, not the ~990 a 16px root would
+   give. Wider than this and the evidence grid stops reading as a wall. */
+.wall {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 0 0 1rem;
+}
+
+.wall-head { text-align: center; margin-bottom: 3.4rem; }
+
+.wall-head h2 {
+  font-family: var(--label);
+  font-weight: 400;
+  font-size: 0.78rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  margin: 0 0 1.4rem;
+}
+
+/* Roman numerals in the gothic display face are unreadable — XVII comes out a
+   smear. The typewriter face is also the right voice for a count. */
+.wall-count {
+  font-family: var(--cal-mono);
+  font-size: clamp(1.8rem, 5vw, 2.7rem);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: var(--candle);
+  margin: 0;
+}
+
+.wall-count .of { color: var(--candle-deep); }
+
+.wall-rule {
+  height: 1px;
+  width: 12rem;
+  margin: 1.6rem auto 0;
+  background: linear-gradient(to right, transparent, var(--candle-dim), transparent);
+}
+
+.wall-register { margin-bottom: 3.2rem; }
+
+.wall-register > h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  font-family: var(--label);
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--candle-dim);
+  margin: 0 0 1.3rem;
+}
+
+.wall-register > h3::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.wall-of {
+  font-family: var(--cal-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--paper-faint);
+}
+
+.wall-grid { display: grid; gap: 0.7rem; }
+.wall-grid.the-rooms   { grid-template-columns: repeat(2, 1fr); }
+.wall-grid.evidence    { grid-template-columns: repeat(5, 1fr); }
+.wall-grid.the-accused { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+.wall-cell {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  font: inherit;
+  color: inherit;
+  background: var(--ink-deep);
+  /* Louder than --rule: the plates are dark and edge-to-edge, and a 0.2-alpha
+     hairline lets them bleed into each other instead of reading as a wall of
+     framed things. */
+  border: 1px solid var(--candle-deep);
+  transition: border-color 300ms ease;
+}
+
+.wall-cell.seen:hover,
+.wall-cell.seen:focus-visible { border-color: var(--candle-dim); }
+
+.the-rooms   .wall-cell { aspect-ratio: 16 / 9; }
+.evidence    .wall-cell { aspect-ratio: 1 / 1; }
+.the-accused .wall-cell { aspect-ratio: 4 / 5; }
+
+.wall-cell.seen { cursor: pointer; }
+
+.wall-cell.seen img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.wall-cell.seen:hover img,
+.wall-cell.seen:focus-visible img { transform: scale(1.015); }
+
+/* Candlelight over the plate, so it sits in the room's light rather than on
+   top of it. This is a wash only — the art itself is never filtered, it is
+   already black and white. Lifts on hover so the plate comes up to meet you. */
+.wall-cell.seen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 45%,
+    rgba(201, 165, 95, 0.13), rgba(10, 9, 8, 0.42) 82%);
+  transition: opacity 300ms ease;
+}
+
+.wall-cell.seen:hover::after,
+.wall-cell.seen:focus-visible::after { opacity: 0.45; }
+
+.wall-cell.seen:focus-visible { outline: 1px solid var(--candle); outline-offset: 2px; }
+
+.wall-plate {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 1.5rem 0.55rem 0.45rem;
+  background: linear-gradient(to top, rgba(5, 5, 4, 0.94), transparent);
+  opacity: 0;
+  transition: opacity 260ms ease;
+  text-align: left;
+  pointer-events: none;
+}
+
+.wall-cell.seen:hover .wall-plate,
+.wall-cell.seen:focus-visible .wall-plate { opacity: 1; }
+
+.wall-plate .num {
+  display: block;
+  font-family: var(--cal-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  color: var(--candle-dim);
+}
+
+.wall-plate .name {
+  font-family: var(--label);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+}
+
+/* Marks scratched into the wall, in place of a plate not reached. */
+.wall-cell.unseen svg { display: block; width: 100%; height: 100%; }
+
+.wall-cell.unseen svg line {
+  stroke: var(--candle-deep);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+}
+
+.wall-veil {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--cal-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: transparent;
+  transition: color 220ms ease;
+}
+
+.wall-cell.unseen:hover .wall-veil { color: var(--paper-faint); }
+
+.wall-foot {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--label);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  line-height: 1.9;
+  color: var(--paper-faint);
+  text-align: center;
+}
+
+/* ── one plate at full size ── */
+
+.wall-box {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: rgba(5, 5, 4, 0.97);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  cursor: zoom-out;
+}
+
+.wall-box.visible { opacity: 1; }
+
+.wall-box img {
+  display: block;
+  max-width: min(94vw, 1400px);
+  max-height: 82vh;
+  border: 1px solid var(--candle-deep);
+}
+
+.wall-box-caption {
+  margin: 1.1rem 0 0;
+  text-align: center;
+  font-family: var(--label);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--paper-dim);
+}
+
+.wall-box-caption .num {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--cal-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: var(--candle-dim);
+}
+
+/* ── the wall as an overlay, from the title screen ── */
+
+.wall-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4.5rem 1.5rem 5rem;
+  background: var(--ink);
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.wall-overlay.visible { opacity: 1; }
+
+body.wall-open { overflow: hidden; }
+
+/* Sits beside the sound toggle, not under it — the toggle keeps the corner. */
+.wall-close {
+  position: fixed;
+  top: 1.4rem;
+  right: 4.8rem;
+  z-index: 2;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--body);
+  font-size: 1.4rem;
+  line-height: 1;
+  background: rgba(6, 6, 5, 0.55);
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--paper-faint);
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 300ms ease, color 300ms ease, border-color 300ms ease;
+}
+
+.wall-close:hover,
+.wall-close:focus-visible { opacity: 1; color: var(--candle); border-color: var(--candle-dim); }
+
+/* ── the wall as the page an ending arrives at ── */
+
+/* Opaque, and above everything the ending left on screen: this is its own
+   black page, not a panel over the ending. */
+.wall-overlay.is-final { background: var(--ink-deep); }
+
+.wall-again {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 2.5rem 0 1rem;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .wall-grid.the-rooms   { grid-template-columns: 1fr; }
+  .wall-grid.evidence    { grid-template-columns: repeat(2, 1fr); }
+  .wall-grid.the-accused { grid-template-columns: repeat(2, 1fr); }
+  .wall-overlay { padding: 4rem 1rem 3.5rem; }
 }

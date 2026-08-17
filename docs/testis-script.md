@@ -795,6 +795,48 @@ gap. This is the last line of the game and the second payoff of a Scene 1 decisi
 
 ---
 
+## THE TALLY WALL
+
+Where an ending leads. The ending itself no longer offers to start over — it offers *See what was
+counted*, and the wall is the black page that opens: a record of every image the game can show, with
+the ones this run witnessed inked in and the rest left as marks scratched into the wall. "Begin
+again" waits at the foot of it. (`?all` opens the same wall fully inked, outside the fiction.)
+
+It is the title screen's last line kept as a promise. *Something is already keeping count* — and
+what it turns out to have been counting is pictures of the thing that happened, which is the same
+move Scene 3's tally makes when the player finds their own name already carved among the ruined
+ones. The wall is not a completion meter. Nothing rewards filling it, no ending is gated behind it,
+and it is gone on refresh like everything else here.
+
+**Copy that belongs to this doc** (implemented in `js/wall.js`):
+
+| Element | Text |
+|---|---|
+| Heading | Something is already keeping count |
+| Register I | The Rooms |
+| Register II | Evidence |
+| Register III | The Accused |
+| Un-inked cell | Not seen |
+| Plate label | Plate — followed by a Roman numeral |
+| Ending's last button | See what was counted |
+| Foot of the wall | Begin again |
+
+"Not seen" is deliberate, and deliberately not *Locked* or *???*. The wall is a witness's record;
+the honest word for a plate you did not reach is that you were not there. The register names carry
+the same voice as the rest of the proceeding: rooms, evidence, the accused.
+
+Putting the count *after* the ending rather than under it matters: the ending gets to finish on its
+own last line, and the tally is the thing that outlives it by one screen. There is no way back to
+the ending text from the wall — the only exit is beginning again, which loses the count. That is the
+same bargain the title screen states, arrived at from the other side.
+
+Every **caption** on the wall is derived at runtime from data already in this doc — scene and ending
+titles, and the tier-2 examine labels — so no plate description exists in two places. Adding an
+examine hotspot or a scene names its own wall cell automatically; renaming one here renames it
+there. Do not add a parallel caption list.
+
+---
+
 ## STATUS
 
 **Narrative content is complete.** No placeholders.

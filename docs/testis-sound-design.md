@@ -89,7 +89,8 @@ bed out of the way of the next one, 1200ms for a bed fading up at the top of a s
 
 ## 2. Toggle
 
-Speaker icon, fixed position, top right, always visible including on plates and endings.
+Speaker icon, fixed position, top right, always visible including on plates, endings and the tally
+wall.
 
 - **On by default**, and the player can turn it off at any time.
 - **On by default cannot mean sounding on page load.** Browsers refuse playback until the player has
@@ -105,6 +106,12 @@ Speaker icon, fixed position, top right, always visible including on plates and 
 - Icon states: `speaker-on` (default), `speaker-off`. Two inline SVGs, no icon library.
 - Keyboard reachable, `aria-pressed`, `aria-label="Sound on/off"`.
 - Fade in over 800ms when enabled rather than snapping to full volume.
+- **It has to outrank the tally wall.** The wall is a full-screen layer at `z-index: 80` and the
+  player can sit on it for as long as they like with an ending's bed still sounding, so the toggle
+  is `z-index: 85` — above the wall, below the wall's own lightbox (90), which any click dismisses.
+  The wall's close button steps aside to `right: 4.8rem` rather than sharing the corner. If a new
+  full-screen layer is ever added, it goes below 85 or the toggle goes above it; "always visible"
+  is the rule, and a layer that covers it is a bug.
 
 ```js
 const AUDIO = {
@@ -172,6 +179,15 @@ pitch-corrects and the slow-down stops being a pitch-down, which is the whole po
 **Ending beds do not loop.** The doc originally said this of Ending A only; it is true of all three.
 B ends in a silence that a loop would step on, and C is held open rather than circular. All three are
 `loop: false` in `BEDS`.
+
+**The ending's bed carries into the tally wall, uncut and un-restarted.** The wall is where an ending
+leads (script doc, *The Tally Wall*), and it opens as a layer over the same live page — so the bed
+that was sounding keeps sounding, at the same volume, from wherever it had got to. This needs no
+call site and has none: `Gallery.open()` touches nothing in `Sound`, which is exactly why it works.
+Do not "fix" this by starting a bed for the wall, and do not loop the ending beds so the wall has
+something under it. If the track runs out while the player is still reading the wall, that silence
+is the one the ending earned — A is specified to end and not return, B to break off into a silence
+that is not peace. The wall inherits that, deliberately.
 
 **The title screen borrows Scene 5's bed.** Not a file of its own — `Sound.titleShown()` calls
 `playBed("scene-5", …)` directly, the same `BEDS` entry Scene 5 uses later. The grandfather clock is
