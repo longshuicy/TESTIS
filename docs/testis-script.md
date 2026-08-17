@@ -176,7 +176,7 @@ image renders)*
 > I did not know then that it was saying anything. I only knew it was not random, and that things which are not random are usually addressed to someone.
 
 > **Build note, Morse fragment 1 of 3.** Decodes to **SOL STAT**, "the sun stands still." Three
-> water-clocks in Scenes 1, 3, and 6 carry one sentence: **SOL STAT / TERRA MOVET / EGO SOLUS.**
+> water-clocks in Scenes 1, 3, and 6 carry one sentence: **SOL STAT / TERRA MOVET / EGO PRAECEDENS.**
 > Scene 6's clock is `obj-water-clock-2`, not a reuse — the same clock, failing, and its own image so
 > the wear can show.
 >
@@ -591,13 +591,16 @@ and 3's `obj-water-clock`, since this is the same clock later, dry and failing)*
 >
 > What was left of it was still trying. Slower now, with long gaps where a drip should have fallen and didn't, the way a voice goes when there isn't breath enough left to finish:
 >
-> `· ——· ——— / ··· ——— ·—·· ··—`
+> `· ——· ——— / ·——· ·—· ·— · —·—· · —·· · —·`
 >
 > Then nothing. Whatever it had been counting toward, it did not reach.
 
-> **Build note, Morse fragment 3 of 3.** Decodes to **EGO SOLU**, cut short. The full word is **EGO
-> SOLUS**, "I am alone," and the final `···` never comes because the clock runs out. The sentence
-> completes only in the player's head. The truncation is deliberate; do not add the missing letter.
+> **Build note, Morse fragment 3 of 3.** Decodes to **EGO PRAECEDEN**, cut short. The full word is
+> **EGO PRAECEDENS**, "I am ahead of my time" — the same claim, almost word for word, as Ending A's
+> closing line ("I'm ahead of my time," said to no one). The clock reaches for the thing the narrator
+> will later say aloud and runs out one letter short of it. The final `···` never comes because the
+> clock runs out. The sentence completes only in the player's head. The truncation is deliberate; do
+> not add the missing letter.
 
 **TIER 2, examine the watcher in the dark:**
 > They did not move when I looked at them, which is its own kind of answer. I raised a hand, half a greeting, half a warning. I could not tell if they raised one back, or if I only wanted them to.
@@ -820,10 +823,37 @@ and it is gone on refresh like everything else here.
 | Plate label | Plate — followed by a Roman numeral |
 | Ending's last button | See what was counted |
 | Foot of the wall | Begin again |
+| Secret plaque, the question | Bonus: what was the water clock trying to tell you? |
+| Secret plaque, input placeholder | — |
+| Secret plaque, ask-outright link | Show it to me anyway |
+| Secret plaque, revealed phrase | SOL STAT. TERRA MOVET. EGO PRAECEDENS. |
+| Secret plaque, revealed translation | the sun stands still. the earth moves. I am ahead of my time. |
 
 "Not seen" is deliberate, and deliberately not *Locked* or *???*. The wall is a witness's record;
 the honest word for a plate you did not reach is that you were not there. The register names carry
 the same voice as the rest of the proceeding: rooms, evidence, the accused.
+
+**The secret plaque** sits below the credit line, at the foot of the wall, built on the same held-beat
+mechanism a scene's choice uses: it holds nothing until the player actually scrolls to it (or tabs
+into it), then asks its one question — *Bonus: what was the water clock trying to tell you?* — and
+sounds the same prompt-notification cue every in-scene choice sounds as its question arrives. The
+"Bonus" is doing real work: it's the only word on the whole wall that steps outside the fiction,
+flagging this one plaque as the exception it is (see "the Morse is never decoded," below) rather than
+another thing the wall witnessed. Below the question, one unlabeled input,
+and under that, a quiet second way in for a player who would rather be told than guess. Typing the
+completed Morse sentence (any punctuation or spacing; comparison strips everything but letters) or
+clicking the ask-outright link both do the same thing: the plaque grows the phrase and a plain
+translation fragment beneath it, sounds the same confirmation an answered choice gets, and stays that
+way for the rest of the session. A wrong guess does nothing at all — no error, no shake — the same
+restraint the rest of the game gives a wrong answer. This is the one deliberate exception to "the
+Morse is never decoded" (Deliberate Decisions, below): out of the fiction, not in it.
+
+**"Begin again" waits for it.** On the wall an ending arrives at, the button is not there to see until
+the plaque has been answered or asked for — it fades in once it has been. Nothing about the ending
+itself, the wall's count, or any flag changes as a result; the plaque is a courtesy, not a reward. But
+the run's last screen does not hand back its one way out until the player has done something with the
+one thing on it they haven't already seen. `?all` never shows the button at all (it closes instead),
+so this only applies to the wall an ending actually leads to.
 
 Putting the count *after* the ending rather than under it matters: the ending gets to finish on its
 own last line, and the tally is the thing that outlives it by one screen. There is no way back to
@@ -882,7 +912,12 @@ identical to v2, so **all existing art and the tech design doc remain valid.**
 - **Three flags are local-only** (`gate_action`, `tally_reaction`, `waking_reaction`). Not a bug.
 - **Scene 4 has exactly one tier2 object.** It is the emotional peak; more clickables dilute it.
 - **The narrator never reacts to seeing their own name** in the tally. The player gets there first.
-- **The Morse is never decoded.** SOL STAT / TERRA MOVET / EGO SOLUS across Scenes 1, 3, 6, the last
-  cut off mid-word. No translation, no hint, no completing the truncation.
+- **The Morse is never decoded — in the fiction.** SOL STAT / TERRA MOVET / EGO PRAECEDENS across
+  Scenes 1, 3, 6, the last cut off mid-word. No translation, no hint, no completing the truncation,
+  and Scene 6's clock still stops at `EGO PRAECEDEN`. **One deliberate exception, out of the fiction
+  entirely:** the tally wall carries a small plaque (below) that hands the completed phrase back to
+  a player who already has it, or who asks for it outright. The game itself still explains nothing
+  to a player who hasn't reached the plaque — the exception is a courtesy for outside effort (or
+  outside patience), not a narrated hint.
 - **The monks are never individuated or named.** One collective. The Institution has no face.
 - **No persistence.** Refresh restarts. Correct for a 15-minute playtime.

@@ -27,6 +27,19 @@ const WALL = {
 
   plateWord: "Plate",
 
+  // The wall's one hidden thing: a place to hand back the sentence the three
+  // water-clocks were dripping out, if you already have it. The game itself
+  // never translates the Morse (script doc, Deliberate Decisions) — this
+  // plaque only answers a player who solved it outside the fiction, or who
+  // would rather be told. Comparison strips everything but letters, so
+  // punctuation and spacing never matter; the canonical phrase below is also
+  // the only copy of it, normalized at compare time rather than duplicated.
+  secretPrompt: "Bonus: what was the water clock trying to tell you?",
+  secretLabel: "—",
+  secretReveal: "Show it to me anyway",
+  secretPhrase: "SOL STAT. TERRA MOVET. EGO PRAECEDENS.",
+  secretTranslation: "the sun stands still. the earth moves. I am ahead of my time.",
+
   // The ending hands off to the wall rather than straight back to the start:
   // the count is the last thing the game says, and "begin again" waits there.
   enter: "See what was counted",

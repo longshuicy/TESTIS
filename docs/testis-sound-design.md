@@ -269,7 +269,7 @@ code or in an editor to the actual pattern:
 
 - Scene 1: `··· ——— ·—·· / ··· — ·— —` (SOL STAT)
 - Scene 3: `— · ·—· ·—· ·— / —— ——— ···— · —` (TERRA MOVET)
-- Scene 6: `· ——· ——— / ··· ——— ·—·· ··—` (EGO SOLU, cut off)
+- Scene 6: `· ——· ——— / ·——· ·—· ·— · —·—· · —·· · —·` (EGO PRAECEDEN, cut off)
 
 Timing: dit 200ms, dah 600ms, gap between elements 200ms, between letters 600ms, between words
 1400ms. Scene 3 runs at roughly 0.7× those intervals. Scene 6 runs at 1.4× with two or three
@@ -288,7 +288,7 @@ necessarily the same phrase, because they are the same string. Per-scene options
 |---|---|---|
 | `water-clock-1` | 1 | `{ rate: 1.0, repeat: 2 }` — the full phrase, twice through |
 | `water-clock` | 3 | `{ rate: 0.7 }` — every interval shortened |
-| `water-clock-6` | 6 | `{ rate: 1.4, drop: [4, 7, 11] }` — slower, three beats that keep their timing and make no sound |
+| `water-clock-6` | 6 | `{ rate: 1.4, drop: [6, 10, 15] }` — slower, three beats that keep their timing and make no sound |
 
 A dropped beat holds its place in the sequence and plays nothing, so the gap falls where a drip
 should have. The sequence simply ends after its last element; the missing final `···` needs no code.
@@ -482,8 +482,8 @@ everywhere, and the sample is short enough that the format costs nothing.
 
 | Filename | Moment | Description |
 |---|---|---|
-| `prompt-notification.mp3` | The end of every choice's held beat, as the question becomes readable | Marks the arrival of a question. Played at **0.26** — it lands in the gap the bed left, and does not need volume to be heard. 4.03s as delivered, against a stagger that finishes in under three, so it is faded out at 220ms whenever the answer, a plate, or a new scene arrives on top of it. |
-| `confirmation.mp3` | Every choice answered, and a name carved at the Scene 1 gate | The answer going in. Played at **0.34**. 1.31s. On Scene 4's branch it sounds under the low note. Not played when the player declines to carve: leaving the stone as they found it is a decision that is meant to cost nothing and make no noise. |
+| `prompt-notification.mp3` | The end of every choice's held beat, as the question becomes readable, and the tally wall's secret plaque uncovering | Marks the arrival of a question. Played at **0.26** — it lands in the gap the bed left, and does not need volume to be heard. 4.03s as delivered, against a stagger that finishes in under three, so it is faded out at 220ms whenever the answer, a plate, or a new scene arrives on top of it. |
+| `confirmation.mp3` | Every choice answered, a name carved at the Scene 1 gate, and the tally wall's secret plaque | The answer going in. Played at **0.34**. 1.31s. On Scene 4's branch it sounds under the low note. Not played when the player declines to carve, or guesses the wall's phrase wrong: both are moments meant to cost nothing and make no noise. |
 
 Neither file needs an attribution block; they are not credited assets. §11 and `ATTRIBUTIONS.txt`
 stay as they are.
@@ -626,6 +626,8 @@ bookkeeping that must survive being switched on mid-scene (which bed is current,
 | `Sound.promptShown(sceneId)` | `renderChoices`, at the end of the held beat | Sounds the prompt cue. Every choice, no exceptions |
 | `Sound.choiceMade()` | `renderChoices`, on any pick | Stops any prompt cue still ringing, then the same halt as a backstop for the one path with no arrival (see below), then the confirmation. Every choice, no exceptions. Called **before** the pick's own handler, so a branch that starts the next bed (Scene 7) is not stopped by it |
 | `Sound.nameCarved()` | the Scene 1 gate interaction, on a name actually carved | The confirmation. Declining sounds nothing |
+| `Sound.secretPrompted()` | the tally wall's secret plaque, once, when the player scrolls (or tabs) to it | The prompt cue — the same one every in-scene choice sounds as its question arrives |
+| `Sound.secretRevealed()` | the tally wall's secret plaque, on a matching guess or the ask-outright link | The confirmation. A wrong guess sounds nothing |
 | `Sound.branchChosen(sceneId, nextId)` | `renderExit`, on selection | Scene 4 sounds the low note. Scene 7 sounds nothing |
 
 `sceneId` on a plate is the scene the plate **belongs to** — the arriving scene for an opening plate,

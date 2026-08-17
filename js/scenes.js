@@ -419,8 +419,8 @@ const SCENES = [
     id: "scene-6",
     title: "The Chapel, Again",
     background: "assets/images/scene-6-chapel-again.webp",
-    // EGO SOLU — fragment 3 of 3, cut short. The final ··· never comes.
-    morse: ". --. --- / ... --- .-.. ..-",
+    // EGO PRAECEDEN — fragment 3 of 3, cut short. The final ··· never comes.
+    morse: ". --. --- / .--. .-. .- . -.-. . -.. . -.",
     text: [
       "The chapel had not moved, but I had. From the fog outside it to the chair at its center. The rope was old in the same place. The candle guttered at the same hour it always had, because it seemed this room did not keep time so much as repeat it, the way a copied page repeats an error until someone checks it against the original.",
       "The monks looked at me now. All of them at once, the way a held breath is finally released.",
@@ -449,7 +449,7 @@ const SCENES = [
         // basin is dry and a second empty basin sits beside it, so the shot
         // has to show wear the earlier two don't. See art doc, Scene 6.
         image: "assets/images/obj-water-clock-2.webp",
-        morse: ". --. --- / ... --- .-.. ..-",
+        morse: ". --. --- / .--. .-. .- . -.-. . -.. . -.",
         text: "Nearly dry, the basin beneath it dark with old use, and beside it, I now noticed, a second empty basin, drier still, as though it had finished this same errand some while before I arrived to start mine.\n\nWhat was left of it was still trying. Slower now, with long gaps where a drip should have fallen and didn't, the way a voice goes when there isn't breath enough left to finish:\n\n{morse}\n\nThen nothing. Whatever it had been counting toward, it did not reach."
       },
       {

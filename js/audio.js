@@ -80,7 +80,7 @@ const STINGS = {
 const CLOCKS = {
   "water-clock-1": { rate: 1.0, repeat: 2 },        // patient, the phrase twice
   "water-clock":   { rate: 0.7 },                   // insistent, not hurried
-  "water-clock-6": { rate: 1.4, drop: [4, 7, 11] }  // failing, gaps, then nothing
+  "water-clock-6": { rate: 1.4, drop: [6, 10, 15] }  // failing, gaps, then nothing
 };
 
 // Hotspots that stop the bed instead of sounding. Keyed by item id.
@@ -655,6 +655,21 @@ const Sound = {
   // choice gets, because that is what this is — the one the player typed.
   // Declining carves nothing and sounds like nothing.
   nameCarved() {
+    cue = playFx(CUE_CONFIRM, CUE_CONFIRM_VOL);
+  },
+
+  // The wall's secret plaque becoming readable, once the player has scrolled
+  // to it — the same prompt-notification every choice in the game sounds as
+  // its question arrives. Fires once per session, whether or not the player
+  // ever answers it.
+  secretPrompted() {
+    cue = playFx(CUE_PROMPT, CUE_PROMPT_VOL);
+  },
+
+  // The wall's hidden phrase has landed — typed correctly, or simply asked
+  // for. Both are an answer going in, so both get the same confirmation
+  // every other answer gets. A wrong guess gets nothing: it isn't an answer.
+  secretRevealed() {
     cue = playFx(CUE_CONFIRM, CUE_CONFIRM_VOL);
   },
 

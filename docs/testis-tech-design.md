@@ -285,6 +285,11 @@ Examining both clues only unlocks the *choice*; the player can still decline, wh
 Do not shortcut this by setting the flag when the second clue is examined. The distinction between
 "never looked" and "looked and refused" is thematically load-bearing.
 
+**The wall's secret plaque state is deliberately not in `flags`.** `secretRevealed` lives as a
+closure-local in `gallery.js` (§7, The tally wall) because nothing outside the wall reads it — no
+ending, no routing, no other copy depends on it. Keeping wall-only state out of the shared flags
+object is intentional, not an omission.
+
 ---
 
 ## 6. Render loop
@@ -502,6 +507,77 @@ scratches. Wide (16:9) cells get three groups and square cells one — a lone cl
 reads as a broken image rather than a mark. Use unsigned shifts (`>>>`) in that hash: `>>` is signed,
 and any value above 2^31 comes back negative, yielding a negative modulo and a cell with no marks
 inside a negative-width viewBox.
+
+**The secret plaque.** One deliberate exception to "the Morse is never decoded" (script doc,
+Deliberate Decisions) — out of the fiction, not in it. Lives at the foot of the wall, below the
+credit line, rendered by `Gallery` alongside the rest of the wall.
+
+State is two closure-local booleans in `gallery.js`, `secretRevealed` and `secretPrompted` — not
+`flags` entries (§5), because nothing outside the wall reads either one and neither changes any
+routing, ending, or other copy. Session-only like every other piece of wall state, and gone on
+refresh with everything else.
+
+*Veiled until scrolled to, same shape as a scene's choice.* Built on the same idea as
+`renderChoices`'s held beat (see "the held beat before a choice" in `main.js`): the plaque holds its
+question and its answer at `opacity: 0` until the player actually reaches it, then uncovers with a
+prompt cue. It cannot reuse `watchChoice` directly — that watcher listens on `window` scroll, and
+the wall scrolls inside its own overlay (`overflow-y: auto`), not the window — so `armSecret(wrap,
+root)` is a small IntersectionObserver against the overlay instead, plus a `focusin` fallback for a
+keyboard player who tabs in without scrolling:
+
+```js
+function armSecret(wrap, root) {
+  if (secretPrompted || secretRevealed) return;
+  // ...on first intersection (or focusin): disconnect, set secretPrompted,
+  // Sound.secretPrompted(), remove "veiled" from wrap, then stagger-remove
+  // "veiled-item" from its children (prompt, form, ask-link).
+}
+```
+
+Both the wrapping `.veiled` class and each child's `.veiled-item` class have to be cleared — the
+wrap's class only gates `pointer-events`; the fade is carried by the children. Dropping the child
+pass here silently reproduces the exact bug this shipped with once already: the wrap looks "revealed"
+in the DOM while its contents stay invisible.
+
+Two ways to answer, same result: submitting the input with a matching guess, or clicking the
+ask-outright link. Both call one function that flips `secretRevealed`, fires `Sound.secretRevealed()`,
+swaps the input block for the revealed phrase + translation (both strings owned by `wall.js`, §
+above — `WALL.secretPhrase` / `WALL.secretTranslation`, never duplicated into `gallery.js`), and then
+reveals "Begin again" (below).
+
+Comparison normalizes both sides the same way — uppercase, strip everything but `A–Z` — against
+`WALL.secretPhrase` itself, so the canonical phrase exists in exactly one place and can't drift out
+of sync with its own comparison key:
+
+```js
+function secretNormalized(s) {
+  return String(s || "").toUpperCase().replace(/[^A-Z]/g, "");
+}
+// guess === secretNormalized(WALL.secretPhrase)
+```
+
+The input's `keydown` also checks for Enter directly rather than relying solely on the form's
+implicit submission (one field, no submit button) to fire a `submit` event — belt and braces, since
+that native behavior is exactly the kind of thing a test harness's synthetic key events can fail to
+reproduce even when every real keyboard triggers it fine.
+
+A non-matching guess does nothing — no error state, no shake, no sound. This mirrors the rest of
+the game's silence-on-wrong-answer restraint (sound doc §2) and means the plaque needs no "try
+again" copy at all.
+
+**"Begin again" is gated behind it, on the final wall only.** `open()` gives the button's wrap a
+`wall-again-pending` class (`display: none`) whenever `secretRevealed` is still false at open time;
+`revealBeginAgain()` — called from the same function that reveals the phrase — clears it and adds a
+fade-in class instead. `?all` never creates this wrap at all (no `final`, no button), so the gate only
+applies to the wall an ending actually hands off to.
+
+**Focus, on open, never targets the "Begin again" button.** The previous version focused
+`.wall-close, .continue`, and `.continue` sits at the very foot of a long page — focusing an
+off-screen element scrolls it into view by default, which silently undid the `overlay.scrollTop = 0`
+set two lines above it and opened the wall already scrolled to its own end. Fixed two ways: the
+focus target no longer includes `.continue` at all (falls back to the overlay itself when there is no
+close button), and every focus call here now passes `{ preventScroll: true }` regardless, so this
+class of bug can't recur if the target list changes again later.
 
 ---
 

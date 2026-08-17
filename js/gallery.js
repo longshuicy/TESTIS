@@ -34,6 +34,13 @@ const Gallery = (function () {
   // Set by ?all — reveals the whole wall without pretending it was witnessed.
   let revealAll = false;
 
+  // Whether the wall's hidden phrase has been handed back yet, solved or
+  // just asked for, and whether the plaque has already sounded its prompt.
+  // Session-only like everything else here: closure state, not a flag,
+  // because it belongs to the wall and nothing else reads it.
+  let secretRevealed = false;
+  let secretPrompted = false;
+
   function idOf(src) {
     return String(src || "").split("/").pop().replace(/\.[a-z0-9]+$/i, "");
   }
@@ -215,7 +222,132 @@ const Gallery = (function () {
     foot.innerHTML = WALL.credit.map(esc).join("<br>");
     wall.appendChild(foot);
 
+    wall.appendChild(secretBlock());
+
     return wall;
+  }
+
+  /* ─────────────────────────────────────────────────────── the secret plaque
+
+     Built on the same mechanism a scene's choice uses (main.js, the held
+     beat before a choice): veiled until the player actually scrolls to it,
+     then a prompt cue as the question uncovers, then an answer. Adapted
+     rather than shared outright — the wall scrolls inside its own overlay,
+     not the window, so this uses a plain IntersectionObserver against that
+     overlay instead of watchChoice's window-scroll watcher.
+
+     One phrase, handed back if the player already has it — or handed over,
+     for anyone who would rather be told than guess. Either way plays the
+     same confirmation every other answer in the game gets (see audio.js,
+     Sound.secretRevealed); a wrong guess gets nothing, same as everywhere
+     else a wrong answer isn't actually an answer. Correct or asked-for, it
+     also unhides "Begin again" (§ open), which stays hidden until this
+     plaque has been dealt with one way or the other. */
+
+  function secretNormalized(s) {
+    return String(s || "").toUpperCase().replace(/[^A-Z]/g, "");
+  }
+
+  function secretBlock() {
+    const wrap = document.createElement("div");
+    wrap.className = "wall-secret" + (secretRevealed ? "" : " veiled");
+
+    if (secretRevealed) {
+      renderSecretRevealed(wrap);
+      return wrap;
+    }
+
+    const prompt = document.createElement("p");
+    prompt.className = "wall-secret-prompt veiled-item";
+    prompt.textContent = WALL.secretPrompt;
+    wrap.appendChild(prompt);
+
+    const form = document.createElement("form");
+    form.className = "wall-secret-form veiled-item";
+    form.setAttribute("autocomplete", "off");
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "wall-secret-input";
+    input.placeholder = WALL.secretLabel;
+    input.setAttribute("aria-label", WALL.secretPrompt);
+    form.appendChild(input);
+
+    function trySubmit() {
+      const guess = secretNormalized(input.value);
+      if (guess && guess === secretNormalized(WALL.secretPhrase)) revealSecret(wrap);
+    }
+    form.addEventListener("submit", e => { e.preventDefault(); trySubmit(); });
+    // Belt and braces: native implicit submission (one field, no submit
+    // button) should already fire the handler above on Enter, but this
+    // does not depend on that behavior landing the same way everywhere.
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); trySubmit(); }
+    });
+    wrap.appendChild(form);
+
+    const ask = document.createElement("button");
+    ask.type = "button";
+    ask.className = "wall-secret-ask veiled-item";
+    ask.textContent = WALL.secretReveal;
+    ask.addEventListener("click", () => revealSecret(wrap));
+    wrap.appendChild(ask);
+
+    return wrap;
+  }
+
+  // Uncovers the plaque once the player has actually scrolled to it (or
+  // tabbed into it) — the reveal itself, a prompt cue, once, same as any
+  // choice's question arriving. Does nothing if the phrase is already
+  // revealed; there is no question left to prompt.
+  function armSecret(wrap, root) {
+    if (secretPrompted || secretRevealed) return;
+    let done = false;
+
+    function trigger() {
+      if (done) return;
+      done = true;
+      io.disconnect();
+      wrap.removeEventListener("focusin", trigger);
+      secretPrompted = true;
+      Sound.secretPrompted();
+      wrap.classList.remove("veiled");
+      // The prompt, then the answer a beat after — same shape as a choice's
+      // question arriving before its options (main.js, REVEAL_REACTIVE).
+      wrap.querySelectorAll(".veiled-item").forEach((node, i) => {
+        setTimeout(() => node.classList.remove("veiled-item"), 260 + i * 260);
+      });
+    }
+
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) trigger();
+    }, { root: root, threshold: 0.6 });
+    io.observe(wrap);
+    wrap.addEventListener("focusin", trigger);
+  }
+
+  function revealSecret(wrap) {
+    if (secretRevealed) return;
+    secretRevealed = true;
+    Sound.secretRevealed();
+    wrap.classList.remove("veiled");
+    wrap.innerHTML = "";
+    renderSecretRevealed(wrap);
+    revealBeginAgain();
+  }
+
+  function renderSecretRevealed(wrap) {
+    wrap.classList.add("is-revealed");
+
+    const phrase = document.createElement("p");
+    phrase.className = "wall-secret-phrase";
+    phrase.textContent = WALL.secretPhrase;
+    wrap.appendChild(phrase);
+
+    const translation = document.createElement("p");
+    translation.className = "wall-secret-translation";
+    translation.textContent = WALL.secretTranslation;
+    wrap.appendChild(translation);
   }
 
   function inked(item, plate) {
@@ -332,6 +464,11 @@ const Gallery = (function () {
   // no way back; without it (?all) the wall is a dismissable overlay instead.
   let overlay = null;
 
+  // "Begin again", when this is the final wall. Hidden until the secret
+  // plaque has been dealt with (see revealBeginAgain) — null the rest of
+  // the time, including on a non-final (?all) open, where it never exists.
+  let againWrap = null;
+
   function open(opts) {
     if (overlay) return;
     const final = !!(opts && opts.final);
@@ -353,7 +490,8 @@ const Gallery = (function () {
 
     if (final) {
       const wrap = document.createElement("div");
-      wrap.className = "continue-wrap wall-again";
+      wrap.className = "continue-wrap wall-again" +
+        (secretRevealed ? "" : " wall-again-pending");
       const again = document.createElement("button");
       again.type = "button";
       again.className = "continue";
@@ -361,6 +499,9 @@ const Gallery = (function () {
       again.addEventListener("click", () => window.location.reload());
       wrap.appendChild(again);
       overlay.appendChild(wrap);
+      againWrap = wrap;
+    } else {
+      againWrap = null;
     }
 
     document.body.appendChild(overlay);
@@ -368,8 +509,28 @@ const Gallery = (function () {
     void overlay.offsetHeight;
     overlay.classList.add("visible");
     overlay.scrollTop = 0;
-    (overlay.querySelector(".wall-close, .continue") || overlay).focus();
+
+    const secretEl = overlay.querySelector(".wall-secret");
+    if (secretEl) armSecret(secretEl, overlay);
+
+    // Never the "Begin again" button here: in the final wall it starts
+    // hidden (above), and even once visible it sits at the very foot of a
+    // long page — focusing it scrolls the overlay there, undoing the
+    // scrollTop reset just above and opening the wall already at its own
+    // ending. `preventScroll` guards the close button too, on principle.
+    (overlay.querySelector(".wall-close") || overlay).focus({ preventScroll: true });
     if (!final) document.addEventListener("keydown", onOverlayKey);
+  }
+
+  // Called once the secret plaque has been answered or asked for. A no-op
+  // outside the final wall, and a no-op if it was already revealed when
+  // this wall opened (nothing to uncover).
+  function revealBeginAgain() {
+    if (!againWrap || !againWrap.classList.contains("wall-again-pending")) return;
+    againWrap.classList.remove("wall-again-pending");
+    againWrap.classList.add("wall-again-in");
+    const btn = againWrap.querySelector(".continue");
+    if (btn) btn.focus({ preventScroll: true });
   }
 
   function onOverlayKey(e) {
@@ -384,6 +545,7 @@ const Gallery = (function () {
     document.body.classList.remove("wall-open");
     const dying = overlay;
     overlay = null;
+    againWrap = null;
     setTimeout(() => dying.remove(), 400);
   }
 
