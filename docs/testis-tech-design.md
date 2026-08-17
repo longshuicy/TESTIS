@@ -493,6 +493,10 @@ put on screen — `setBackground`, the tier-2 examine frame, and `renderPlate` �
 was displayed rather than inferring it from scene ids, and a plate the player never reached cannot
 appear inked. Refreshing clears it, exactly as "refreshing begins again" says.
 
+The wall is `z-index: 80`, its lightbox 90, and the sound toggle 85 — the toggle stays reachable on
+the wall while an ending's bed plays out, per sound doc §2, and the wall's close button moves out of
+the corner rather than under it.
+
 Un-inked cells draw tally marks from a hash of the asset id, so a given plate always wears the same
 scratches. Wide (16:9) cells get three groups and square cells one — a lone cluster in a wide box
 reads as a broken image rather than a mark. Use unsigned shifts (`>>>`) in that hash: `>>` is signed,

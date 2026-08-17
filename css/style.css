@@ -1104,7 +1104,11 @@ body.is-ending .scene-content { padding-top: 20vh; }
   position: fixed;
   top: 1.4rem;
   right: 1.4rem;
-  z-index: 40;
+  /* Above the tally wall (80) as well as plates and endings — sound doc §2
+     says always visible, and the wall is a page the player can sit on while
+     the ending's bed is still sounding. Below the wall's own lightbox (90),
+     which any click dismisses anyway. */
+  z-index: 85;
   width: 2.6rem;
   height: 2.6rem;
   display: flex;
@@ -1406,10 +1410,11 @@ body.is-ending .scene-content { padding-top: 20vh; }
 
 body.wall-open { overflow: hidden; }
 
+/* Sits beside the sound toggle, not under it — the toggle keeps the corner. */
 .wall-close {
   position: fixed;
-  top: 1.2rem;
-  right: 1.2rem;
+  top: 1.4rem;
+  right: 4.8rem;
   z-index: 2;
   width: 2.6rem;
   height: 2.6rem;
