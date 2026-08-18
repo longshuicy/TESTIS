@@ -1,10 +1,10 @@
 # TESTIS
 
-**Beta — v0.2.0-beta.** Playable start to finish, all three endings reachable.
-
-A short narrative web game. Plain HTML/CSS/JS, no build step, no backend, no persistence.
+**v1.0.0.** A short narrative web game. Plain HTML/CSS/JS, no build step, no backend, no persistence.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**Play it: <https://longshuicy.github.io/TESTIS/>**
 
 ## Run it
 
@@ -36,23 +36,29 @@ scripts/         asset pipeline; not loaded by the game
 ATTRIBUTIONS.txt required credits; maintained from sound doc §11
 ```
 
-Shipped art is WebP, downscaled from PNG masters by `scripts/optimize_images.sh`.
-That script also writes the 400px `assets/images/thumbs/` tier the tally wall uses.
-Don't hand-edit `assets/images/` — see art doc §3c.
+Load order matters: `scenes.js`, `endings.js`, `wall.js`, `audio.js`, `gallery.js`, then `main.js`.
 
 ## Art
 
-Art generated with Midjourney from the author's prompts, with post-generation
-drawing and editing in Procreate. The style derives from the author's own zodiac
-illustration series; prompts and style rules live in
-[docs/testis-art-prompts.md](docs/testis-art-prompts.md).
+Art generated with Midjourney from the author's prompts, with post-generation drawing and editing
+in Procreate. The style derives from the author's own zodiac illustration series; prompts and style
+rules live in [docs/testis-art-prompts.md](docs/testis-art-prompts.md).
 
-Every plate can be seen in-game on the tally wall, the page an ending leads to —
-inked with whatever that run witnessed, with the rest left as tally marks. Open
-it complete with `?all`.
+Every plate can be seen in-game on the tally wall, the page an ending leads to — inked with whatever
+that run witnessed, with the rest left as tally marks. Open it complete with `?all`.
 
-Load order matters: `scenes.js`, `endings.js`, `wall.js`, `audio.js`, `gallery.js`,
-then `main.js`.
+Shipped art is WebP, downscaled from PNG masters by `scripts/optimize_images.sh`. That script also
+writes the 400px `assets/images/thumbs/` tier the tally wall uses. Masters are git-ignored; don't
+hand-edit `assets/images/` — see art doc §3c.
+
+## Music
+
+Beds, stings, and the Morse drip are licensed tracks and Freesound recordings, re-encoded from
+git-ignored 320kbps/24-bit masters by `scripts/optimize_audio.sh` (never edited in place). Shipped
+format is mostly AAC (`.m4a`); `bed-scene-5.wav` and `drip-single.wav` stay uncompressed for
+gapless looping and trigger latency. See
+[docs/testis-sound-design.md](docs/testis-sound-design.md) for the full cue list, the three earned
+silences, and the toggle.
 
 ## The docs
 
@@ -67,6 +73,12 @@ then `main.js`.
 For implementation detail on plates, morse, the calendar widget, and debug jumps, read the
 corresponding code directly (`js/main.js`, `js/audio.js`).
 
+## Attributions
+
+Every licensed asset (music, sound effects) requires credit — see [ATTRIBUTIONS.txt](ATTRIBUTIONS.txt),
+maintained from sound doc §11. Fonts are served from Google Fonts under the SIL Open Font License
+and aren't listed individually.
+
 ## Debug jumps
 
 A URL parameter seeds flags and jumps straight to a scene or ending:
@@ -76,4 +88,4 @@ A URL parameter seeds flags and jumps straight to a scene or ending:
 ?debug=scene-4&examined=tally,astrolabe
 ```
 
-See `applyDebug` in `js/main.js`. Strip or gate this before release.
+See `applyDebug` in `js/main.js`.
