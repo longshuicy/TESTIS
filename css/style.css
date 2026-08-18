@@ -924,7 +924,10 @@ em { font-style: italic; color: #f7f2e6; }
    blurred copy of itself fills the room behind it.
    ────────────────────────────────────────────────────────────────────── */
 
-body.plate-open { overflow: hidden; }
+/* position: fixed (not just overflow: hidden) so a touch-scroll gesture on
+   iOS Safari can't rubber-band the page under the plate; js/main.js pins the
+   exact scroll offset here and restores it when the plate closes. */
+body.plate-open { position: fixed; width: 100%; overflow: hidden; }
 
 .plate {
   position: fixed;
@@ -936,6 +939,8 @@ body.plate-open { overflow: hidden; }
   justify-content: center;
   gap: 2rem;
   padding: 5vh 1.5rem 4vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background: #030303;
   cursor: pointer;
   opacity: 0;
@@ -1034,6 +1039,35 @@ body.plate-open { overflow: hidden; }
   .plate { gap: 1.5rem; padding: 4vh 1.25rem 3vh; }
   .plate-figure img { max-height: 50vh; }
   .plate-text { font-size: 1rem; }
+}
+
+/* Wide-and-shorter-than-tall reads as "a computer", not just "a big phone" —
+   min-aspect-ratio keeps a portrait tablet on the stacked mobile layout above
+   even though it's wider than 640px. Side by side: art left, text right. */
+@media (min-width: 641px) and (min-aspect-ratio: 1/1) {
+  .plate {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    padding: 4vh 5vw;
+  }
+
+  .plate-figure { order: 1; }
+  .plate-figure img { max-height: 72vh; max-width: 40vw; }
+
+  .plate-text {
+    order: 2;
+    max-width: 26rem;
+    text-align: left;
+  }
+
+  /* The hint stays a single line under both columns rather than squeezed
+     beside them — flex-basis: 100% forces it onto its own wrapped row. */
+  .plate-hint { order: 3; flex-basis: 100%; text-align: center; }
+
+  .plate.silent .plate-figure img { max-width: min(70vw, 44rem); }
 }
 
 /* ───────────────────────────────────────────────────────── endings */
