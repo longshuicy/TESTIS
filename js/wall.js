@@ -14,10 +14,14 @@ const WALL = {
   // Registers are matched against the asset's filename prefix, in order. An
   // asset that matches nothing is not shown — that is how the decorative frame
   // border stays off the wall without being special-cased anywhere else.
+  // `plate-` sits with `char-` rather than with `scene-`: a held plate is a
+  // portrait of whoever is in the room, not a picture of the room. Matching on
+  // "scene-" alone would also miss it — the prefixes are tested with
+  // startsWith, and "plate-scene-7" does not begin with "scene-".
   registers: [
     { numeral: "I",   label: "The Rooms",   prefix: ["scene-", "ending-"] },
     { numeral: "II",  label: "Evidence",    prefix: ["obj-"] },
-    { numeral: "III", label: "The Accused", prefix: ["char-"] }
+    { numeral: "III", label: "The Accused", prefix: ["char-", "plate-"] }
   ],
 
   // Shown on an un-inked cell. Deliberately not "locked" or "???" — the wall

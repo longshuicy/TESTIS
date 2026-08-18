@@ -66,12 +66,33 @@ const BEDS = {
 };
 
 // Plate stings. Each of these scenes has exactly one plate, so the scene id is
-// enough to name the sting.
+// enough to name the sting. A bare string is a one-shot at fxVolume that lifts
+// with the plate on the usual STING_FADE_MS; an object overrides that.
+//
+// `loop` is for a sting that is a texture rather than an event — it has to
+// still be there when a slow reader finally clicks, and going quiet under a
+// held plate would be louder than the sound is. `fadeOut` lets that texture
+// hand over to the scene's bed instead of getting out of its way.
 const STINGS = {
   "scene-2": "assets/sound/plate-scene-2.m4a",   // opening plate, the jump
   "scene-4": "assets/sound/plate-scene-4.m4a",   // closing plate, water on stone
-  "scene-5": "assets/sound/plate-scene-5.m4a"    // opening plate, wet and close
+  "scene-5": "assets/sound/plate-scene-5.m4a",   // opening plate, wet and close
+  // Opening plate, the monk's face too close. Air through glass: breath and
+  // emptiness at once. It was already sounding before he knelt down, it does
+  // not react to the question being read, and it does not end — it is replaced.
+  "scene-7": {
+    src: "assets/sound/plate-scene-7.m4a",
+    loop: true,
+    volume: 0.2,      // present, not announcing itself
+    fadeOut: 1200     // hands over to bed-scene-7 rather than clearing out
+  }
 };
+
+function stingSpec(sceneId) {
+  const s = STINGS[sceneId];
+  if (!s) return null;
+  return typeof s === "string" ? { src: s } : s;
+}
 
 // The only hotspots that make a sound: the same water-clock, three times,
 // degrading. Keyed by tier2 item id (unique across scenes). `rate` scales
@@ -296,10 +317,14 @@ function resumeBed(fadeMs) {
 
 const fxPool = new Map();
 
-function playFx(src, volume) {
+function playFx(src, volume, loop) {
   if (!AUDIO.enabled || !src) return null;
   let el = fxPool.get(src);
   if (!el) { el = new Audio(src); fxPool.set(src, el); }
+  // Elements are pooled and reused, so this has to be set every time rather
+  // than once at construction — a looping sting and a one-shot could otherwise
+  // inherit each other's setting.
+  el.loop = !!loop;
   el.volume = volume != null ? volume : AUDIO.fxVolume;
   try { el.currentTime = 0; } catch (e) { /* not seekable yet; play from head */ }
   start(el);
@@ -312,12 +337,20 @@ function playFx(src, volume) {
 // over the next scene's bed, which is exactly the overlap this design is
 // trying not to have. Faded rather than cut so the stop is not a click, and
 // timed to be gone before the plate has finished lifting.
+//
+// A sting with its own `fadeOut` is the exception: it is meant to overlap the
+// incoming bed rather than clear out ahead of it. `stingFadeOut` carries that
+// figure from the spec to the stop, which happens later and elsewhere.
 let sting = null;
+let stingFadeOut = null;
 
 function stopSting(ms) {
   if (!sting) return;
   const el = sting;
+  const own = stingFadeOut;
   sting = null;
+  stingFadeOut = null;
+  if (ms == null && own != null) ms = own;
   fadeTo(el, 0, ms != null ? ms : STING_FADE_MS, () => el.pause());
 }
 
@@ -592,11 +625,19 @@ const Sound = {
     stopCue(0);           // a plate's sting lands alone or it does not land
     stopSting(0);
     if (AUDIO.bed && !AUDIO.bed.paused) silenceBed(null, 200);
-    sting = playFx(STINGS[sceneId]);
+    const spec = stingSpec(sceneId);
+    if (!spec) return;
+    // No fade in, on any of them. A plate's sound arrives with its image or it
+    // arrives late, and late reads as a reaction to the picture rather than a
+    // condition of it.
+    sting = playFx(spec.src, spec.volume, spec.loop);
+    stingFadeOut = spec.fadeOut != null ? spec.fadeOut : null;
   },
 
   // The plate is being dismissed. Its sting goes with it — nothing a plate
-  // started is allowed to carry into the scene behind it.
+  // started is allowed to carry into the scene behind it. A sting carrying its
+  // own `fadeOut` still goes, only slowly enough that the scene's bed comes up
+  // through it rather than after it.
   plateClosed() {
     stopSting();
   },

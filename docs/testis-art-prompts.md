@@ -8,9 +8,9 @@ Generate everything in one sitting, back to back, so style stays consistent. Pic
 prompt and move on. Do not re-roll chasing perfection; consistency across the set matters more than
 any single image being ideal.
 
-**Total assets: 34 specified, 33 shipping.** 10 scene and ending backgrounds, 20 object shots, 4
-character shots — of which `char-witness-silhouette.webp` has never been generated (see §3). The
-tally wall counts what ships, so it currently reads XXXIII.
+**Total assets: 35 specified, 34 shipping.** 10 scene and ending backgrounds, 20 object shots, 5
+character and plate shots — of which `char-witness-silhouette.webp` has never been generated (see
+§3). The tally wall counts what ships, so it currently reads XXXIV.
 
 **All of them live in `assets/images/`.** Filenames below are bare; the directory is implied and is
 what `scenes.js`, `endings.js`, and `style.css` reference (`assets/images/scene-1-gate.webp`). Audio
@@ -259,7 +259,24 @@ isolated close-up
 
 ---
 
-## 3. CHARACTER SHOTS (4)
+## 3. CHARACTER SHOTS (5)
+
+Four are named `char-`; one is named `plate-`. Both prefixes land in Register III of the tally wall
+(see `js/wall.js`), so the naming is about what the image *is* rather than where it hangs — a `char-`
+shot is a person the story has a name or a role for, a `plate-` shot is a held image that belongs to
+one specific plate and would mean nothing outside it.
+
+**`plate-scene-7.webp`**: Scene 7 opening plate — the question, asked too close
+```
+extreme close-up of a monk's face in near-total darkness, hood drawn forward so only the lower
+half is visible, lips parted mid-question, candlelight catching the jaw and throat only, everything
+above the nose in shadow, the glowing instrument held just below frame, its cold light casting
+upward onto the chin, intimate and inescapable distance
+```
+*The framing should feel too close — closer than you'd let a stranger stand. This is the only image
+in the game that crops a face rather than composing one, and the crop is the point: the player never
+gets to see who is asking. Do not reveal the eyes. Do not widen it to make the composition
+comfortable; discomfort is the brief.*
 
 **`char-copernicus-bound.webp`**
 ```
@@ -281,10 +298,10 @@ intimate framing
 
 **`char-witness-silhouette.webp`** — **NOT GENERATED, NOT SHIPPED.** The prompt is kept because the
 asset is still wanted, but no master exists in `assets_backup/images-png-master/`, nothing in
-`scenes.js`/`endings.js` references it, and it is not in `assets/images/`. It is the whole of the
-gap between this doc's "34" and the 33 plates that actually ship. Generate it and the tally wall
-picks it up on its own — the wall derives its catalogue from the scene and ending data, so the
-denominator moves from XXXIII to XXXIV with no code change. Until then, do not count it as shipped.
+`scenes.js`/`endings.js` references it, and it is not in `assets/images/`. It is the whole of the gap
+between this doc's "35" and the 34 plates that actually ship. Generate it and the tally wall picks it
+up on its own — the wall derives its catalogue from the scene and ending data, so the denominator
+moves from XXXIV to XXXV with no code change. Until then, do not count it as shipped.
 ```
 a featureless standing human silhouette seen from behind and slightly to the side, watching something
 out of frame, minimal linework
@@ -331,8 +348,8 @@ downscaled, produced by:
 
 The thumbnail tier exists for the tally wall (`js/gallery.js`), which shows every plate at once.
 Same reasoning as the downscale below, only sharper: at shipped widths that one grid would decode to
-roughly 110MB. 400px covers the largest wall cell (~225px) at 2× DPR, and the whole set of 33 costs
-569K on disk — less than three of the shipped background plates. The frame border has no wall cell
+roughly 110MB. 400px covers the largest wall cell (~225px) at 2× DPR, and the whole set of 34 costs
+656K on disk — less than three of the shipped background plates. The frame border has no wall cell
 and is skipped. Un-inked cells draw inline SVG and request no image at all, so a first-time visitor
 who has witnessed nothing downloads nothing.
 

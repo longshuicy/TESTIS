@@ -72,12 +72,16 @@ it there — don't let it leak into the wrong doc or drift the docs out of sync 
 - `assets/widgets/` holds standalone HTML prototypes. Nothing there is fetched at runtime — the
   shipped calendar is built in `main.js`, and fetching fragments would break `file://`.
 - `assets_sound_src/` holds the original 320kbps/24-bit audio masters, git-ignored like the other
-  working directories. Shipped audio is re-encoded from there, never edited in place. `drip.wav`
-  lives there too: the game loads `drip-single.wav`, one drip cut out of it. See sound doc §10.
+  working directories. Shipped audio is re-encoded from there by `scripts/optimize_audio.sh`, never
+  edited in place — the audio counterpart to `scripts/optimize_images.sh`, same masters-are-truth
+  bargain. `drip.wav` lives there too: the game loads `drip-single.wav`, one drip cut out of it (a cut
+  the script does not make). See sound doc §10.
 - Shipped audio is mixed `.m4a` and `.wav` — `bed-scene-5.wav` and `drip-single.wav` are
   deliberately uncompressed (loop gaplessness and trigger latency). Never assume one extension;
-  sound doc §7 explains both exceptions.
-- Audio still ships over the sound doc's 8MB budget (~33MB, down from ~127MB). The remaining gap is
+  sound doc §7 explains both exceptions. `plate-scene-7.m4a` loops and is *not* a third exception:
+  AAC's padding lands inside silence its recording already ends with. That was checked, not assumed —
+  the question is whether the seam falls in sound or in silence, not whether the file loops.
+- Audio still ships over the sound doc's 8MB budget (~31MB, down from ~127MB). The remaining gap is
   bed *length*, not bitrate, and closing it means trimming the music to loops — an editorial call
   that has not been made. See sound doc §7 before "fixing" it.
 

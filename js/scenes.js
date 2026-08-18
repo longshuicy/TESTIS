@@ -490,11 +490,16 @@ const SCENES = [
     id: "scene-7",
     title: "The Choice",
     background: "assets/images/scene-7-choice.webp",
+    openingPlate: {
+      image: "assets/images/plate-scene-7.webp",
+      text: [
+        "A monk knelt before me with the instrument that had opened him. Its cold light pulsed once, patient, unbothered by which century had summoned it.",
+        "“Does it hurt to be ahead,” he asked me, not unkindly, “or only to be alone in it?”",
+        "And then, in the same even voice, the question he had asked the man in this chair a hundred times and never once been answered:",
+        "“Who gave it to you?”"
+      ]
+    },
     text: [
-      "A monk knelt before me with the instrument that had opened him. Its cold light pulsed once, patient, unbothered by which century had summoned it.",
-      "“Does it hurt to be ahead,” he asked me, not unkindly, “or only to be alone in it?”",
-      "And then, in the same even voice, the question he had asked the man in this chair a hundred times and never once been answered:",
-      "“Who gave it to you?”",
       "Past his shoulder, they were still there. Closer now than in the chapel. Near enough that I understood, with the strange calm of a fact arriving too late to be useful, that they were not going to intervene. They had not come to save me. They had come the way you come to a bedside, not to change what is happening, only to make sure it is not unwitnessed.",
       "I found, oddly, that this was the closest thing to mercy the room had offered me all night.",
       "And I understood what he had been protecting, at the end, when he lied and called himself early. Not a name. A <em>person</em>. The one standing in the dark, who had not done it yet, who would not understand they had done it until they were sitting here being asked."

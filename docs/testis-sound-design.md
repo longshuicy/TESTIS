@@ -361,13 +361,18 @@ Two files stay WAV on purpose:
   player rarely reaches the loop point.
 - **`drip-single.wav`** is 60KB and is fired dozens of times in a row with tight timing. Nothing to
   gain by compressing it, and decode latency to lose.
+**`plate-scene-7.m4a` looks like it should be a third exception and is not.** It loops, so the
+`bed-scene-5` rule appears to apply — but that rule needs a loop whose head meets its tail, and this
+recording fades to digital silence 1.15s before it ends. AAC's padding (measured at 64ms) lands
+inside silence the recording already has. Checked, not assumed, and the check is the point: *does the
+seam fall in sound or in silence* is the question, not *does it loop*.
 
 **Size, and where it went:**
 
 | | Original delivery | Shipped | Target |
 |---|---|---|---|
 | Beds | 3.6MB – 21MB each | 1.0MB – 6.0MB each | ≤1.5MB each |
-| Effects | 60KB – 7.4MB | 56KB – 116KB | ≤50KB each |
+| Effects | 60KB – 7.4MB | 56KB – 117KB | ≤50KB each |
 | Total | ~127MB | **~31MB** | <8MB |
 
 The effects are now within sight of their target; the beds are not, and they are the entire
@@ -470,13 +475,50 @@ tables are scene ids and tier2 hotspot ids, so a renamed scene or hotspot must b
 it ever needs to change. Keep it mono 16-bit: 24-bit WAV playback in `<audio>` is not reliable
 everywhere, and the sample is short enough that the format costs nothing.
 
-### Plates (3)
+### Plates (4)
 
 | Filename | Plate | Description | Search keywords |
 |---|---|---|---|
 | `plate-scene-2.m4a` | Scene 2 opening, `char-copernicus-bound` | **Piano Jump Scare Stinger** by TheSoundFXGuy_YT. Download from https://freesound.org/s/534218/ — License: Attribution 4.0. Credit must appear in the game's credits or attributions file. |
 | `plate-scene-4.m4a` | Scene 4 closing, `char-copernicus-reveal` | Water on stone and nothing else | `water pouring onto stone`, `liquid drip echo`, `whisper reverb distant` |
 | `plate-scene-5.m4a` | Scene 5 opening, `char-player-hands` | Wet, tacky, intimate. Recorded close, no reverb. **6.0s, cut from the 87-second source** at 46.75s — the point where the texture swells out of near-silence, peaks, and settles — with an 8ms fade in and a 1.2s fade out. Trimmed copy kept as `assets_sound_src/plate-scene-5-trimmed.wav` | `sticky wet fingers`, `skin friction close mic`, `viscous liquid slow` |
+| `plate-scene-7.m4a` | Scene 7 opening, `plate-scene-7` | **Blowing into a small glass bottle - Low** by Wastefield. Download from https://freesound.org/s/692098/ — License: Creative Commons 0, no attribution required. 8.55s, mono. Not a drone but a single breath: 4s swell, 2.5s sustain around −20 dBFS, 1s decay, then 1.15s of digital silence. See the note below — this is the only plate sound that **loops**, and that shape is what looping it means. |
+
+> **`plate-scene-7` is a presence, not an event, and it is the only plate sound that loops.** The
+> other three are stings: they land with the image, mark it, and are gone. This one enters with the
+> image at **0.2**, no fade in, does not react to the question being read, and is still there
+> whenever the player finally clicks. The hollow resonance of air through glass reads as breath and
+> emptiness at once, patient and without urgency. It was already sounding before the monk knelt down.
+>
+> It does not end; it is **replaced**. On advance it fades over **1200ms** while `bed-scene-7` comes
+> up under it, so the two overlap rather than hand off — the only crossfade in the game, and it is
+> between a plate and a bed rather than between two beds (beds still never cross, see §5). In
+> `js/audio.js` this is a `STINGS` entry with `loop`, `volume` and `fadeOut` rather than a bare
+> filename; the bare-string form still means "one-shot at `fxVolume`, gone on `STING_FADE_MS`".
+>
+> **What looping it actually sounds like, measured from the master.** The recording is not a steady
+> drone. It is one breath: a 4-second swell up from −55 dBFS, about 2.5 seconds of sustain around
+> −20, a 1-second decay, and then **1.15 seconds of digital silence** before the file ends. Its first
+> and last samples are both zero, so there is no click at the seam — but looped raw, what the player
+> hears is a breath every 8.55 seconds with a second of nothing between them, and each breath
+> arriving as a crescendo.
+>
+> **That is a live editorial question, not a settled one.** "Breath and emptiness" is arguably exactly
+> what that shape is, and the swell gives a held plate somewhere to go. But a crescendo that restarts
+> every 8.5 seconds is a sound that *changes*, and a full second of silence between passes can read as
+> the audio having stopped rather than having exhaled. The two fixes, if it comes to it, are: trim the
+> dead tail in `assets_sound_src/` so the breaths cycle without dead air, or cut to the sustain
+> (≈3.9–6.3s) and loop that for a flat presence. Both are trims to the master and a re-run of
+> `scripts/optimize_audio.sh` — neither is a code change.
+>
+> **On the format: it loops and still ships as AAC, deliberately.** §7's rule is that a seamless loop
+> stays WAV, because lossy encoders add padding a loop turns into an audible seam — the entire reason
+> `bed-scene-5.wav` is a WAV. AAC does pad this file too, measured: encoded at 128kbps it reports
+> **8.615s** in the browser against the master's **8.550s**, so 64ms is real. It is also inaudible
+> here, because it lands inside the 1.15s of silence the recording already ends with. The rule needs a
+> loop whose head meets its tail; this one does not have one, so it stays 117KB instead of 740KB.
+> **If the tail is ever trimmed away, re-check this** — a trim that removes the silence is exactly
+> what would make the padding audible, and then `plate-scene-7` belongs in `STING_LOOP`.
 
 ### Interface cues (2)
 
@@ -510,14 +552,30 @@ assets/sound/                 assets_sound_src/     (git-ignored originals)
   plate-scene-2.m4a             plate-scene-2.wav
   plate-scene-4.m4a             plate-scene-4.wav
   plate-scene-5.m4a             plate-scene-5.wav
+  plate-scene-7.m4a             plate-scene-7.wav (Float32)
   prompt-notification.mp3       —  (delivered as shipped)
 ```
 
-15 shipped files. **Mixed `.m4a`, `.wav` and `.mp3` — load each by its exact filename.** Do not
+16 shipped files. **Mixed `.m4a`, `.wav` and `.mp3` — load each by its exact filename.** Do not
 assume a single extension and do not derive one from the scene id; the two WAVs are WAVs and the two
-cues are MP3s for the reasons in §7. Alphabetical order matches Finder and most file browsers.
+cues are MP3s for the reasons in §7.
+Alphabetical order matches Finder and most file browsers.
 
-The re-encode, reproducible from `assets_sound_src/` with the encoder that ships with macOS:
+The re-encode is a script, not a command to retype:
+
+```sh
+./scripts/optimize_audio.sh
+```
+
+It is the audio counterpart to `scripts/optimize_images.sh` and keeps the same bargain: it always
+encodes from the masters in `assets_sound_src/`, never from its own output, so re-running it does not
+stack generational loss, and it never edits a shipped file in place. The rules it implements are the
+ones above — beds to AAC 96k, stings to AAC 128k, `bed-scene-5` down to 16-bit WAV, looping stings to
+16-bit WAV if listed in `STING_LOOP`. It skips the two delivered-as-shipped cues and `drip-single.wav`
+(which is a cut this script does not make, see §10). Masters that are Float32 are brought down to
+16-bit even when they stay WAV: 32-bit float playback in `<audio>` is not reliable across browsers.
+
+Underneath, it is these three `afconvert` calls, which ship with macOS and need no install:
 
 ```sh
 afconvert -f m4af -d aac -b 96000  bed-scene-1.mp3   bed-scene-1.m4a     # beds
@@ -601,6 +659,12 @@ https://freesound.org/s/337163/
 Licensed under Creative Commons 0
 https://creativecommons.org/publicdomain/zero/1.0/
 
+"Blowing into a small glass bottle - Low"
+Wastefield
+https://freesound.org/s/692098/
+Licensed under Creative Commons 0
+https://creativecommons.org/publicdomain/zero/1.0/
+
 > Add further credits here as assets are locked. One block per asset, same format.
 > The `ATTRIBUTIONS.txt` file should be copy-pasteable from this section without editing.
 
@@ -618,8 +682,8 @@ bookkeeping that must survive being switched on mid-scene (which bed is current,
 | `Sound.titleShown()` | `DOMContentLoaded`, right after `init` | Brings up Scene 5's bed under the title screen (see §3). Cut over the normal way when Scene 1's bed starts — no special-casing |
 | `Sound.sceneStarted(id)` | `renderScene`, inside the fade | Brings that scene's bed up from silence (cutting any bed still sounding first, never across it), clears `halted`, warms the next bed, stops any morse |
 | `Sound.endingStarted(id)` | `renderEnding` | Brings up the ending's bed, cutting any interface cue the final choice left ringing. The only place an ending's bed begins |
-| `Sound.plateOpened(sceneId)` | `renderPlate`, once visible | Cuts a still-sounding bed over 200ms and fires that plate's sting |
-| `Sound.plateClosed()` | `renderPlate`, on dismiss | Fades that sting out with the plate, so nothing a plate started carries into the scene behind it |
+| `Sound.plateOpened(sceneId)` | `renderPlate`, once visible | Cuts a still-sounding bed over 200ms and starts that plate's sound — one-shot, or looping at its own volume if the `STINGS` entry says so |
+| `Sound.plateClosed()` | `renderPlate`, on dismiss | Fades that sound out with the plate, so nothing a plate started carries into the scene behind it. A sting with its own `fadeOut` still goes, only slowly enough that the next bed comes up through it (Scene 7) |
 | `Sound.hotspotOpened(sceneId, item)` | tier2 accordion, on open | Water-clocks start their morse; the tally sets `AUDIO.dim` and stops the bed; everything else is silent |
 | `Sound.hotspotClosed(sceneId, item)` | tier2 accordion, on close | Stops the morse; brings the bed back after the tally, quieter — unless a choice has since halted it |
 | `Sound.choicesArriving(sceneId)` | `renderChoices`, when a choice block uncovers itself | Settles the bed out and halts it until the next scene. **This is where the music stops** |

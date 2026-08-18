@@ -621,7 +621,9 @@ and 3's `obj-water-clock`, since this is the same clock later, dry and failing)*
 
 **IMAGE:** `scene-7-choice.webp`
 
-**TEXT:**
+**OPENING PLATE:** `plate-scene-7.webp`
+*Held image. Renders alone, before the scene proper. Advance on click.*
+
 > A monk knelt before me with the instrument that had opened him. Its cold light pulsed once, patient, unbothered by which century had summoned it.
 >
 > "Does it hurt to be ahead," he asked me, not unkindly, "or only to be alone in it?"
@@ -629,7 +631,19 @@ and 3's `obj-water-clock`, since this is the same clock later, dry and failing)*
 > And then, in the same even voice, the question he had asked the man in this chair a hundred times and never once been answered:
 >
 > "Who gave it to you?"
+
+> **Writer's note.** These four paragraphs were the head of Scene 7's body text in v3. Moving them
+> onto a held plate is not a reformat — it changes what the player is doing while they read them.
+> On the page, the question arrived as one more paragraph in a scene they were already scrolling
+> through, and the watcher, the rope, and the choice all crowded in behind it. Held, it is the only
+> thing on screen, and the player has to click to leave it. The question gets its own beat, and
+> everything after it is a response to a question already asked rather than a paragraph that happens
+> to follow one.
 >
+> The plate is the monk's face cropped too close (see the art doc) — the player never sees who is
+> asking, which is the same withholding the whole game runs on.
+
+**TEXT:**
 > Past his shoulder, they were still there. Closer now than in the chapel. Near enough that I understood, with the strange calm of a fact arriving too late to be useful, that they were not going to intervene. They had not come to save me. They had come the way you come to a bedside, not to change what is happening, only to make sure it is not unwitnessed.
 >
 > I found, oddly, that this was the closest thing to mercy the room had offered me all night.
@@ -833,6 +847,14 @@ and it is gone on refresh like everything else here.
 the honest word for a plate you did not reach is that you were not there. The register names carry
 the same voice as the rest of the proceeding: rooms, evidence, the accused.
 
+**Which register a plate hangs in is decided by its filename prefix** (`js/wall.js`), so a new asset
+joins a register by being named for what it is: `scene-`/`ending-` are rooms, `obj-` is evidence,
+`char-`/`plate-` are the accused. An asset matching no prefix is silently left off the wall, which is
+how the decorative frame border stays off it without being special-cased — and is also the trap to
+remember when adding art. Scene 7's `plate-scene-7` needed `plate-` added to Register III before the
+wall would count it; the prefixes are tested with `startsWith`, so it did not fall into The Rooms on
+the strength of the "scene-7" in the middle of its name.
+
 **The secret plaque** sits below the credit line, at the foot of the wall, built on the same held-beat
 mechanism a scene's choice uses: it holds nothing until the player actually scrolls to it (or tabs
 into it), then asks its one question — *Bonus: what was the water clock trying to tell you?* — and
@@ -889,7 +911,7 @@ identical to v2, so **all existing art and the tech design doc remain valid.**
 | Item | Count |
 |---|---|
 | Scenes | 7 |
-| Plates (held character images) | 3 (Scenes 2, 4, 5) |
+| Plates (held images) | 4 (Scene 2 opening, Scene 4 closing, Scene 5 opening, Scene 7 opening) |
 | Endings | 3 |
 | Tier 2 examine objects | 22 (20 dedicated images; `obj-water-clock` reused across Scenes 1 and 3, Scene 6's clock is its own `obj-water-clock-2`; Scene 5 "calendar" is an HTML widget) |
 | Reactive blocks (non-branching) | 8 |
