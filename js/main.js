@@ -916,6 +916,25 @@ function normalizePlate(spec) {
   return typeof spec === "string" ? { image: spec, text: null } : spec;
 }
 
+// `body.plate-open` alone (overflow: hidden) doesn't stop touch scrolling on
+// iOS Safari — the page can still rubber-band under a fixed overlay. Pinning
+// the body in place with a negative offset, then restoring the exact scrollY
+// on the way out, is the standard workaround. Without it, a scroll gesture
+// made while one plate is open could bleed into the position of the next.
+let plateScrollY = 0;
+
+function lockScrollForPlate() {
+  plateScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.top = `-${plateScrollY}px`;
+  document.body.classList.add("plate-open");
+}
+
+function unlockScrollAfterPlate() {
+  document.body.classList.remove("plate-open");
+  document.body.style.top = "";
+  window.scrollTo(0, plateScrollY);
+}
+
 // `sceneId` is the scene the plate belongs to (the arriving scene for an
 // opening plate, the departing one for a closing plate) — it names the plate's
 // sting; see the STINGS table in audio.js.
@@ -952,7 +971,11 @@ function renderPlate(rawSpec, onDone, sceneId) {
   plate.appendChild(caption);
   plate.appendChild(hint);
   document.body.appendChild(plate);
-  document.body.classList.add("plate-open");
+  lockScrollForPlate();
+  // A tall plate (long caption, or the side-by-side desktop layout) can be its
+  // own scroll container — see .plate's overflow-y in the CSS. Whatever got
+  // scrolled reading the *previous* plate must not carry into this one.
+  plate.scrollTop = 0;
 
   void plate.offsetHeight;
   plate.classList.add("visible");
@@ -965,7 +988,7 @@ function renderPlate(rawSpec, onDone, sceneId) {
     done = true;
     Sound.plateClosed();      // the sting lifts with the plate
     plate.classList.remove("visible");
-    document.body.classList.remove("plate-open");
+    unlockScrollAfterPlate();
     document.removeEventListener("keydown", onKey);
     setTimeout(() => { plate.remove(); onDone(); }, 500);
   }
