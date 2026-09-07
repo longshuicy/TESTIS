@@ -166,6 +166,26 @@ of them will break that scene.
 | `interaction` | Scene 1 | The name-carving text input. The only free-text entry in the game. |
 | `closingText` | Scene 4 | Text that must render *after* the branch choice resolves, before advancing. |
 
+### Chapter II uses this schema unchanged
+
+`testis-chapter-2-script.md` needs **no schema additions**. It is strictly simpler than Chapter I:
+no plates, no `interaction` (there is no free-text entry), no `requiresExamined` gating, no morse, no
+calendar widget, and no scene-level `conditionalText`. What it does use already exists:
+
+| Chapter II needs | Existing field |
+|---|---|
+| Every scene's CONTINUATION block | `text` paragraphs, or `closingText` for Scene 4's (it follows the branch) |
+| One branch (`turned_back`), one final branch (`final_choice`) | Branch scenes, below |
+| Scene 5's "examine the conversation" hotspot, which has no art | `tier2[].image` is optional — omit for text-only |
+| Six local/consumed flags plus two Scene 7 flags | `flags`, §5 |
+| Three endings assembled base + conditional middle + shared callback + closing | Ending schema, §4 |
+
+The one open question is not schema but **module layout**: two chapters' worth of `SCENES`/`ENDINGS`
+cannot both be globals under the same names given §1's no-ES-modules constraint. Decide that when
+Chapter II is actually built — the likely answer is a per-chapter file pair loaded in place of
+Chapter I's, or namespaced constants — and record it here then. Nothing about the scene shape changes
+either way.
+
 ### Branch scenes
 
 Only two scenes branch. Everything else uses `next`.

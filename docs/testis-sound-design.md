@@ -203,6 +203,43 @@ which the retry catches a beat before the click handler fires, so the clock has 
 before Scene 1's bed cuts it over. It only really sounds for a player who lingers and interacts with
 the page first — the sound toggle, a keypress — before pressing on.
 
+### Chapter II beds — slots to source
+
+Chapter II (`testis-chapter-2-script.md`) needs its own beds and **nothing else new**: the drip, the
+plate stings, the hotspot effects, the choice cues and the toggle are all reused unchanged, and §1's
+three earned silences apply to Chapter II exactly as written. Only these ten `BEDS` keys are missing,
+listed with the mood the scene asks for. Filenames follow the existing convention
+(`bed-c2-scene-1.m4a`, `ending-c2-unrecorded.m4a`).
+
+| Key | Scene | Mood the script asks for |
+|---|---|---|
+| `c2-scene-1` | The Drop-Off | Ordinary daytime interior. Car cabin, low road noise. Nothing that signals significance. |
+| `c2-scene-2` | The Station | Cold, open, a little wind. Sparse. |
+| `c2-scene-3` | The Bottle | Flat afternoon daylight. The least musical bed in the chapter. |
+| `c2-scene-4` | The Street | Mild, almost pleasant. This is the only scene where someone is glad to see her. |
+| `c2-scene-5` | Noise | Crowd and room tone rather than music. **Must be able to cut hard** — see the transition below. |
+| `c2-scene-6` | The Road Home | Small, thin, slightly childlike. Should feel less produced than the adult scenes. |
+| `c2-scene-7` | The Pool | Water. The first bed permitted to sound deliberate. |
+| `c2-ending-unrecorded` | Ending A | Settles and stops. `loop: false`. |
+| `c2-ending-kept-word` | Ending B | Accumulates, repeats, does not resolve. `loop: false`. |
+| `c2-ending-testimony` | Ending C | Held open rather than circular. `loop: false`. |
+
+Two structural notes, both from the script rather than the music:
+
+**Scene 5 contains a cut, not a crossfade.** The script's transition ("the sound peaks, then cuts")
+moves from a loud bar into a quieter argument in a different year — *Different place. Different year.
+No music.* The bar bed has to stop dead there. Do not source a track whose ending needs a fade, and
+do not fade this one; the silence on the far side of the cut is the point, and it is the same
+mechanism as §1's earned silences.
+
+**Scene 6 → 7 is the chapter's one long transition.** The art doc gives it 3–5 seconds of match-cut
+ripples before the pool opens out. Audio should arrive *with* the pool rather than under the
+ripples — `c2-scene-6` runs out, the cuts happen close to dry, and `c2-scene-7` starts on the reveal.
+
+**Ending beds behave exactly as Chapter I's do**, including carrying into the tally wall uncut and
+un-restarted, and including running out mid-read if the player lingers. Nothing above changes the
+`Sound` interface in §12; these are `BEDS` entries, not new call sites.
+
 ---
 
 ## 4. Plate stings

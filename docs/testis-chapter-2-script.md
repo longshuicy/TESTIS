@@ -7,7 +7,9 @@ A short narrative web-game chapter. First person, past tense. Black-and-white li
 
 Tone: intimate, ordinary, melancholy, slightly surreal. The surrealism should arrive slowly. The first six scenes must feel like memories that returned for no obvious reason, not like a collection of farewells.
 
-**Companion doc:** `testis-chapter-2-art-prompts.md`  
+**Companion docs:** `testis-chapter-2-art-prompts.md` (art), `testis-tech-design.md` (build —
+Chapter II needs no schema change, see §3), `testis-sound-design.md` (audio — Chapter II adds ten bed
+slots and reuses everything else, see §3).  
 This file is the single source of truth for Chapter II narrative content.
 
 ---
@@ -92,53 +94,57 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 >
 > I don't remember why.
 >
-> There had been a plan before that, I think. Lunch, perhaps. An errand. Somewhere we had meant to go and either did or didn't. Memory had kept the destination and thrown away the route.
+> There had been a plan before that. Lunch, maybe. Some errand. We had meant to go somewhere and either went or didn't. I remember the plan existing. I don't remember what it was.
 >
-> We were talking in the car. That much remained.
+> The heater was on too high. I remember reaching over to turn it down and not turning it down.
 >
-> Something about blood pressure.
->
-> I can still hear a sentence beginning, absurdly clear at the edges and missing its center:
+> We were talking about blood pressure.
 >
 > *“If you're worried about your blood pressure, you should really check out—”*
 >
-> Check out what, I couldn't say. A doctor. A test. A number. A website. Perhaps I wasn't the one saying it. The sentence had survived better than its owner.
+> That is where it stops. Check out what, I can't say. A doctor. A test. Some number you are supposed to stay under. It's possible I wasn't the one saying it.
 >
 > He reached for the door.
 
 **TIER 2, examine the dashboard clock:**
 
-> The numbers were legible in the way numbers in dreams are legible until you look directly at them. I knew the hour had once been there. I also knew I had never considered it worth learning.
+> Green digits. I looked at them directly and couldn't read them, the way you can't read a sign in a dream.
+>
+> The hour had been there. I never learned it. There was no reason to.
 
 **TIER 2, examine the passenger seat:**
 
-> A shallow crease in the fabric where his weight had been. For several seconds after he stood, the seat remembered him more accurately than I did.
+> A shallow crease in the fabric where he had been sitting. It stayed after he stood up. Ten seconds, maybe fifteen. Then the foam did whatever foam does.
 
 **TIER 2, examine the cup holder:**
 
-> A receipt, folded twice, damp at one corner from condensation. I turned it over expecting a place-name to return the day to me. Most of the ink had become a gray weather system. One item remained strangely legible: the name of a gas station, forty miles from anywhere we had reason to be.
+> A receipt, folded twice, damp in one corner where the cup had sweated on it. I turned it over expecting a place name to bring the day back. Most of the ink had gone gray and spread.
 >
-> A gas station. Of course memory had kept that.
+> One line was still readable. A gas station, forty miles from anywhere we had reason to be.
 >
-> Whatever else we had done that day had gone missing, but apparently the gas station was prepared to testify.
+> A gas station. That is what got kept.
+>
+> I held it for a while and then put it back in the cup holder.
 
 **TIER 2, examine the workplace entrance:**
 
-> Automatic glass doors. A badge reader. A strip of fluorescent light. Nothing in the architecture suggested a threshold worth remembering.
+> Automatic glass doors. A badge reader on a post. A strip of fluorescent light inside.
+>
+> A door into a building where a person went five days a week. There was nothing else to say about it.
 
 **REACTIVE, what are you trying to recover?** *(sets `dropoff_focus`)*
 
-- **A. “What was the plan that day?”** → *It seemed reasonable to begin with logistics. If I could recover the itinerary, perhaps the rest would attach itself obediently, like receipts to an expense report.* → `"plan"`
-- **B. “What were we talking about?”** → *The blood pressure sentence surfaced again and stopped in exactly the same place. Memory can be very consistent about its failures.* → `"conversation"`
-- **C. “Why did this day come back at all?”** → *That question felt premature. The memory had not yet told me what it wanted. I disliked giving memories intentions, but this one had arrived with the confidence of an appointment I had forgotten making.* → `"return"`
+- **A. “What was the plan that day?”** → *Start with the logistics. Where we went, what for, in what order. If I could get the itinerary back, maybe the rest would come with it.* → `"plan"`
+- **B. “What were we talking about?”** → *The sentence came back and stopped in the same place. It stops there every time. I have tried it from several directions.* → `"conversation"`
+- **C. “Why did this day come back at all?”** → *Too early to ask. The memory hadn't told me what it wanted yet. It had shown up the way someone shows up for an appointment you don't remember making, and stood there.* → `"return"`
 
 **CONTINUATION:**
 
 > He got out.
 >
-> I think one of us lifted a hand.
+> One of us raised a hand. I think it was me.
 >
-> The door shut with the ordinary padded sound of a car door shutting correctly.
+> The door shut with that padded sound a car door makes when it shuts properly.
 >
 > Then I drove away.
 
@@ -154,11 +160,11 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 
 > The next memory arrived with weather.
 >
-> A small station in a town whose name has blurred with time. The kind of place a train acknowledges briefly before returning to more important places.
+> A small station in a town whose name has blurred. The kind of place a train stops at briefly on its way somewhere else.
 >
-> He came to see me off. Thanksgiving break was ending; we had already settled on Christmas, only weeks off, as if the next meeting were already scheduled and therefore hardly worth mourning.
+> He came to see me off. Thanksgiving break was ending. We had already settled on Christmas, a few weeks out, nothing that needed confirming.
 >
-> We hugged. I remember the pressure of the coat between us more clearly than whatever either of us said into the other's shoulder.
+> We hugged. I remember the pressure of the coat between us. I don't remember what either of us said into the other's shoulder.
 >
 > Then he turned back toward the station.
 >
@@ -166,17 +172,19 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 >
 > I boarded.
 >
-> From inside the train I saw him again through the glass. He was still there, waiting while the train waited, as though leaving required both parties to remain in place until the machinery made the decision for them.
+> From inside the train I saw him again through the glass. He was still standing there, waiting while the train waited.
 >
-> When the train finally moved, my phone lit in my hand.
+> When the train finally moved, my phone lit up in my hand.
 
 **TIER 2, examine the departure board:**
 
-> City names. Times. Delays measured in minutes. The board possessed a confidence about sequence that I envied. One thing would happen after another. A platform would become a train. A train would become distance. Nothing on the board admitted that a minute could grow larger years later.
+> City names. Times. Delays measured in minutes.
+>
+> One thing after another. A platform becomes a train. A train becomes distance. The board was certain about all of it.
 
 **TIER 2, examine the station glass:**
 
-> My reflection lay faintly over his figure, so that for an instant we occupied the same patch of glass from opposite sides. Then the train shifted and separated us without ceremony.
+> My reflection lay faintly over his figure, so that for a moment we were on the same patch of glass from opposite sides. Then the train shifted and we came apart.
 
 **TIER 2, examine the phone:**
 
@@ -192,11 +200,11 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 
 > A middle-aged man had taken the seat across the aisle and decided, unprompted, that I would want to hear about his daughter. She was, he told me twice, exactly my age. He had photographs. He had opinions about her boyfriend. He talked the way people talk when a phone has no signal and a stranger hasn't yet worked out how to look busy enough to be excused from listening.
 >
-> I don't remember one word of what he said about her. I remember only that he never once ran out of things to say, and that I was, at the time, faintly relieved someone in that carriage still had a future worth discussing out loud.
+> I don't remember one word of what he said about her. I remember that he never ran out of things to say.
 
 **REACTIVE, which detail feels most trustworthy?** *(sets `station_anchor`)*
 
-- **A. “The hug.”** → *Bodies are poor stenographers, but they keep pressure well. I trusted the coat, the arms, the slight awkwardness of releasing someone before either person knows who should release first.* → `"hug"`
+- **A. “The hug.”** → *The coat, the arms, the small awkwardness of letting go before either person knows who should let go first. Bodies keep pressure. I trusted that much.* → `"hug"`
 - **B. “That he stayed until the train moved.”** → *I had been wrong once already in the memory: I had thought he'd gone. The correction mattered to me more than I understood.* → `"waiting"`
 - **C. “The message on the phone.”** → *A written thing should have been safer. I looked for the words and found only the fact that there had been words.* → `"message"`
 
@@ -206,7 +214,7 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 >
 > Or I did.
 >
-> The distinction seemed important only to the person staying still.
+> From inside the train there was no way to tell.
 
 → Scene 3
 
@@ -222,11 +230,11 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 >
 > He was moving away that day.
 >
-> His car was packed with the competent ugliness of departure: bags fitted into gaps, soft things pressed around hard things, a life translated into shapes that could survive highway speed.
+> His car was packed the way cars are packed for a move: bags fitted into gaps, soft things pressed around hard things, everything wedged so it would hold at highway speed.
 >
 > I had left a water bottle at his place.
 >
-> Of all the things there were to settle before he drove away, this had remained actionable.
+> Of everything still unsettled before he drove away, this was the part that could be handled.
 >
 > He asked me to meet him in the parking lot at work so he could give it back.
 >
@@ -238,27 +246,29 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 
 > Scratched plastic. A bite mark on the straw. A little water still moving at the bottom, though neither of us had touched it for several seconds.
 >
-> An object returned to its owner. Perfectly resolved.
+> An object returned to its owner.
 >
-> I don't remember, now, what became of it afterward. Whether it rode home with me and sat in a cupboard for a year before I finally recycled it. Whether I left it in the car and it simply stopped being mine the way objects do when no one claims them for long enough. I could not tell you how long ago any of this was, only that it was long enough that the not-knowing itself had become a kind of fact.
+> I don't remember what became of it after that. Whether it came home with me and sat in a cupboard for a year before I recycled it. Whether I left it in the car. I can't tell you how long ago any of this was.
 
 **TIER 2, examine the packed car:**
 
-> I could see bedding through the rear window. A lamp wedged sideways. His cello case, upright between two boxes, took up more room than anything else he owned.
+> I could see bedding through the rear window. A lamp wedged sideways. His cello case, upright between two boxes, taking up more room than anything else he owned.
 >
-> He used to play for me sometimes, badly, he always said, though I never once believed him, while I sat with a glass of wine and pretended the two of us were somewhere more expensive than his apartment. Standing in that parking lot, I could not remember the last thing he had played.
+> He used to play for me sometimes. Badly, he said, though I never believed him. I would sit with a glass of wine and we would pretend the apartment was somewhere more expensive than it was.
 >
-> Something red I couldn't identify. The car looked less like a vehicle than a sentence compressed until all the spaces were gone.
+> Standing in that parking lot, I could not remember the last thing he had played.
+>
+> Something red I couldn't identify was pressed against the glass.
 
 **TIER 2, examine the parking stripe between you:**
 
-> A white line, badly painted, thickening where the roller had slowed. We stood on opposite sides of it by accident. Memory, which has no shame, would later try to make this symbolic.
+> A white line, badly painted, thickening where the roller had slowed. We stood on opposite sides of it. Neither of us had chosen where to stand.
 
 **REACTIVE, what do you do with the bottle?** *(sets `bottle_reaction`, local only)*
 
 - **A. “Keep holding it.”** → *I held it through the rest of the conversation, if there was a rest of the conversation, as though the object had given my hands an assignment and might complain if I finished early.* → `"object"`
 - **B. “Look at his hand after he lets go.”** → *His hand dropped to his side. Empty. Mine did not. I noticed this and immediately distrusted myself for noticing it.* → `"gesture"`
-- **C. “Put it in your bag.”** → *The bottle disappeared with embarrassing ease. Some things can be put away before the moment containing them knows what has happened.* → `"leave"`
+- **C. “Put it in your bag.”** → *The bottle went into my bag without any trouble at all. I zipped it shut and we kept talking.* → `"leave"`
 
 **CONTINUATION:**
 
@@ -266,7 +276,7 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 >
 > I know we spoke.
 >
-> The bottle survives the memory with better documentation than the conversation.
+> I have the bottle and not the conversation.
 >
 > Then his car pulled out of the lot.
 
@@ -282,7 +292,7 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 
 > A street came next.
 >
-> We hadn't seen each other in a few years. Long enough that I had quietly assumed we simply wouldn't again, not from any falling out I could name, just the ordinary erosion of two people who stop making the effort and never examine why.
+> We hadn't seen each other in a few years. Long enough that I had assumed we wouldn't again — no falling out, nothing I could point to, just two people who had stopped making the effort.
 >
 > Then I ran into him by accident.
 >
@@ -290,25 +300,25 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 >
 > Instead he smiled.
 >
-> Not cruelly. Not sadly. Not with the careful face people wear when they have prepared to encounter someone difficult.
+> Not cruelly. Not sadly. Not with the careful face people wear when they have prepared to run into someone difficult.
 >
-> He simply looked pleased to see me.
+> He looked pleased to see me.
 >
-> He told me he'd just adopted a dog. Some rescue mutt with a name he seemed delighted by, and an invitation, half-serious, to come meet it sometime, as though sometime were still a category of time we shared.
+> He told me he'd just adopted a dog. A rescue, some mutt with a name he was clearly delighted by. He said I should come meet it sometime.
 >
-> I answered. Something about being glad for him. I meant it.
+> I said something about being glad for him. I meant it.
 >
-> For a minute, perhaps less, we stood on the sidewalk speaking like two people for whom speaking had never become complicated.
+> For a minute, maybe less, we stood on the sidewalk and talked like two people for whom talking had never become complicated.
 
 **TIER 2, examine the puddle beside the curb:**
 
-> His reflection smiled a fraction later than he did. A bus passed and broke the face into black water. When the surface settled, he was still standing there, whole again, as though interruption had never been a serious threat.
+> His reflection smiled a fraction later than he did. A bus went past and broke the face into black water. When the surface settled he was still standing there, whole again.
 
 **TIER 2, examine his shirt:**
 
 > A graphic tee, faded at the collar. He owned a rotation of them, dozens deep, each printed with some band or joke or cartoon I could still individually picture if asked, the one with the cracked egg, the one from the aquarium gift shop, the one so old the design had gone illegible.
 >
-> I could see every shirt he had ever worn to meet me. I could not, for the life of me, tell you which one this was.
+> I could picture every shirt he had ever worn to meet me. I could not tell you which one he was wearing.
 
 **REAL BRANCH, after you pass each other, do you turn around?** *(sets `turned_back`)*
 
@@ -321,7 +331,7 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 - **B. “Keep walking.”** → `turned_back: false`
   > I kept walking.
   >
-  > It did not feel like a decision. Most decisions don't, until time has had a chance to annotate them.
+  > It didn't feel like a decision.
 
 **CONTINUATION:**
 
@@ -853,6 +863,20 @@ No visible headers or seams in-game.
 - **The first six scenes are not presented as a sequence of exes or relationships.** The people may be different people; the game should not label relationship categories unless a scene requires it (Scene 4 is deliberately ambiguous — years apart, no stated cause — rather than a named breakup; Scene 5 explicitly mentions a long-distance girlfriend).
 - **No canonical missing sentence exists.** The blood pressure fragment, bar sentence, argument, station speech, etc. must remain unresolved. Ending B may generate plausible fragments, but the script never certifies them as true.
 - **Ordinariness is essential.** Avoid cinematic farewell language, crying-at-the-platform clichés, dramatic sunset staging, or music that tells the player a scene is important before Scene 7.
+- **The prose voice is testimony, not epigram — and this is structural, not taste.** Scenes 1–6 state
+  what is remembered with physical precision, state the gaps plainly, and **draw no conclusions**.
+  Concretely: no paragraph ends on an aphorism about memory or time; nothing backfills a plausible
+  reason after the narrator says she doesn't remember something; dry understatement is allowed,
+  authorial verdict is not. The reason is the reveal — an aphorism is a *conclusion*, and a narrator
+  who concludes has already understood, which contradicts the whole architecture. Scene 5's
+  `I remember the volume. […] I do not remember what any of the things were.` and Scene 6's name tag
+  (`I can tell you the color of the thread. I cannot tell you the name.`) are the reference register;
+  Scenes 1–4 were brought into line with them.
+- **Scene 7 and the endings are the one place interpretation is earned.** She has just understood, so
+  the aphoristic register that is forbidden earlier is correct there — Ending B's conditional rows in
+  particular. The register shift is itself part of the reveal: a narrator who refused to draw a
+  conclusion for six scenes finally draws one. Do not flatten the endings to match Scenes 1–6, and do
+  not let the aphorisms migrate back up into Scenes 1–6.
 - **Water accumulates without explanation.** It is atmosphere in Scenes 1–6 and becomes structural only at the Scene 6→7 transition.
 - **Ending A is surrender without erasure.** The protagonist lets the transcript go, not the people.
 - **Ending B is resistance without certainty.** The protagonist knowingly chooses reconstruction even though reconstruction contaminates memory.
