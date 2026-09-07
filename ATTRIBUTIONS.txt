@@ -1,7 +1,7 @@
-TESTIS — Attributions
+SUPERSTES — Attributions
 
 Every asset below requires credit. This file is maintained from section 11 of
-docs/testis-sound-design.md; when an asset is added or replaced, add its block
+docs/superstes-sound-design.md; when an asset is added or replaced, add its block
 there first and copy it here, one block per asset, same format.
 
 Fonts are served from Google Fonts under the SIL Open Font License and are not

@@ -1,4 +1,4 @@
-// TESTIS — sound. Implements docs/testis-sound-design.md.
+// SUPERSTES — sound. Implements docs/superstes-sound-design.md.
 //
 // Audio is optional enhancement: the game is fully playable and coherent with
 // sound off. It is on by default and the player can turn it off at any time.

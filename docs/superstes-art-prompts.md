@@ -1,7 +1,7 @@
-# TESTIS Art Prompt List
+# SUPERSTES Art Prompt List
 
-Companion to `testis-script.md` (narrative), `testis-tech-design.md` (build), and
-`testis-sound-design.md` (audio).
+Companion to `superstes-script.md` (narrative), `superstes-tech-design.md` (build), and
+`superstes-sound-design.md` (audio).
 **This doc is the single source of truth for art direction and asset filenames.**
 
 Generate everything in one sitting, back to back, so style stays consistent. Pick best-of-two per
@@ -14,7 +14,7 @@ character and plate shots — of which `char-witness-silhouette.webp` has never 
 
 **All of them live in `assets/images/`.** Filenames below are bare; the directory is implied and is
 what `scenes.js`, `endings.js`, and `style.css` reference (`assets/images/scene-1-gate.webp`). Audio
-sits alongside in `assets/sound/` and belongs to `testis-sound-design.md`; `assets_backup/` and
+sits alongside in `assets/sound/` and belongs to `superstes-sound-design.md`; `assets_backup/` and
 `assets_tint/` are art-pipeline working directories and are not shipped.
 
 ---

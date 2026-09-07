@@ -1,4 +1,4 @@
-// TESTIS — the tally wall.
+// SUPERSTES — the tally wall.
 //
 // A record of every plate the game can show, in story order, with the ones you
 // actually witnessed inked in and the rest left as marks scratched on the wall.

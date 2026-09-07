@@ -1,5 +1,5 @@
-// TESTIS — ending data.
-// Transcribed from docs/testis-script.md v3. Assembly order is fixed:
+// SUPERSTES — ending data.
+// Transcribed from docs/superstes-script.md v3. Assembly order is fixed:
 // baseOpening → conditionalMiddle → WITNESS_CALLBACK → manuscriptCallback (C only) → closing.
 //
 // NOTE: `looked_away` and `identity_found` are real booleans in both flags and match rows.

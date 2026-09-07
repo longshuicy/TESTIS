@@ -1,5 +1,5 @@
-// TESTIS — scene data.
-// Narrative content transcribed from docs/testis-script.md v3 (source of truth).
+// SUPERSTES — scene data.
+// Narrative content transcribed from docs/superstes-script.md v3 (source of truth).
 // No logic in this file.
 //
 // Tokens usable inside any body text, each on its own paragraph:

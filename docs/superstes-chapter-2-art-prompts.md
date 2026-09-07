@@ -1,6 +1,6 @@
-# TESTIS — CHAPTER II ART PROMPTS
+# SUPERSTES — CHAPTER II ART PROMPTS
 
-Companion to `testis-chapter-2-script.md`.
+Companion to `superstes-chapter-2-script.md`.
 
 **Internal chapter title:** *The Last Word*  
 **Spoiler rule:** filenames and this internal document may use the title; **player-facing art must not contain readable text or imagery that reveals the “last words” pattern before Scene 7.**
@@ -13,7 +13,7 @@ This document is the single source of truth for Chapter II visual direction and 
 
 Chapter II should look like **ordinary memories drawn after some of their information has already washed away**.
 
-The first six scenes are contemporary / recent-memory realism rendered in the same TESTIS family as Chapter I: black-and-white line illustration, sparse cross-hatching, quiet negative space, restrained surrealism.
+The first six scenes are contemporary / recent-memory realism rendered in the same SUPERSTES family as Chapter I: black-and-white line illustration, sparse cross-hatching, quiet negative space, restrained surrealism.
 
 The art must resist making the departures look important. The visual reveal belongs to Scene 7, not earlier.
 
@@ -519,7 +519,7 @@ The chapter works only if the player first believes these are **ordinary memorie
 
 Before accepting a generated image, verify:
 
-- [ ] Does it still look like the established TESTIS black-and-white line-art family?
+- [ ] Does it still look like the established SUPERSTES black-and-white line-art family?
 - [ ] Does the scene feel ordinary before Scene 7?
 - [ ] Is there no readable generated text?
 - [ ] Is water present only at the intended level of emphasis?

@@ -1,4 +1,4 @@
-// TESTIS — the tally wall's own copy.
+// SUPERSTES — the tally wall's own copy.
 //
 // Every caption on the wall is derived at runtime from scenes.js / endings.js
 // (scene and ending titles, tier-2 examine labels), so nothing here restates
@@ -6,7 +6,7 @@
 // wall itself needs and nothing else does: its heading, its register names,
 // and the words for a plate you have not reached.
 //
-// See docs/testis-script.md § The Tally Wall.
+// See docs/superstes-script.md § The Tally Wall.
 
 const WALL = {
   heading: "Something is already keeping count",

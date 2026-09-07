@@ -4,7 +4,7 @@ Guidance for Claude Code (or any agent) working in this repo.
 
 ## What this is
 
-TESTIS is a short narrative web game. Plain HTML/CSS/JS, no build step, no backend, no persistence.
+SUPERSTES is a short narrative web game. Plain HTML/CSS/JS, no build step, no backend, no persistence.
 See [README.md](README.md) for how to run it.
 
 ## The four docs — read this before touching anything
@@ -15,10 +15,10 @@ in sync is more important than any individual edit.
 
 | Doc | Domain | Owns |
 |---|---|---|
-| [docs/testis-script.md](docs/testis-script.md) | **Story** | All narrative content: scene text, dialogue, object descriptions, flag/state logic tied to story meaning, branch points, endings, theme, tone. Where the four docs disagree, **this one wins.** |
-| [docs/testis-art-prompts.md](docs/testis-art-prompts.md) | **Art** | Image generation prompts, style/negative-prompt boilerplate, asset filenames, what each asset depicts. |
-| [docs/testis-tech-design.md](docs/testis-tech-design.md) | **Tech** | Stack choices, file structure, the state machine, data shapes (SCENES/ENDINGS schema), constraints (no framework, no build step, `file://`-safe). Deliberately contains **no narrative content** — code examples with story text are illustrative only, never the real strings. |
-| [docs/testis-sound-design.md](docs/testis-sound-design.md) | **Sound** | Beds, stings, the morse drip, the toggle, volume behavior, audio filenames, and the `Sound` interface `main.js` calls. Audio filenames live in `js/audio.js`, never in `scenes.js`/`endings.js`. |
+| [docs/superstes-script.md](docs/superstes-script.md) | **Story** | All narrative content: scene text, dialogue, object descriptions, flag/state logic tied to story meaning, branch points, endings, theme, tone. Where the four docs disagree, **this one wins.** |
+| [docs/superstes-art-prompts.md](docs/superstes-art-prompts.md) | **Art** | Image generation prompts, style/negative-prompt boilerplate, asset filenames, what each asset depicts. |
+| [docs/superstes-tech-design.md](docs/superstes-tech-design.md) | **Tech** | Stack choices, file structure, the state machine, data shapes (SCENES/ENDINGS schema), constraints (no framework, no build step, `file://`-safe). Deliberately contains **no narrative content** — code examples with story text are illustrative only, never the real strings. |
+| [docs/superstes-sound-design.md](docs/superstes-sound-design.md) | **Sound** | Beds, stings, the morse drip, the toggle, volume behavior, audio filenames, and the `Sound` interface `main.js` calls. Audio filenames live in `js/audio.js`, never in `scenes.js`/`endings.js`. |
 
 ### Routing rule for new content
 

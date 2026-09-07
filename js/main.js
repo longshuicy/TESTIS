@@ -1,4 +1,4 @@
-// TESTIS — state machine, rendering, event handling.
+// SUPERSTES — state machine, rendering, event handling.
 // No narrative content lives in this file. All strings come from scenes.js / endings.js.
 
 /* ────────────────────────────────────────────────────────────── state */

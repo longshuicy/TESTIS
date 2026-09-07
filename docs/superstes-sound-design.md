@@ -1,7 +1,7 @@
-# TESTIS — Sound Design
+# SUPERSTES — Sound Design
 
-Companion to `testis-script.md` (narrative), `testis-art-prompts.md` (art), and
-`testis-tech-design.md` (build).
+Companion to `superstes-script.md` (narrative), `superstes-art-prompts.md` (art), and
+`superstes-tech-design.md` (build).
 
 Audio is optional enhancement. **The game must be fully playable and coherent with sound off.**
 Nothing in the writing depends on hearing anything.
@@ -205,7 +205,7 @@ the page first — the sound toggle, a keypress — before pressing on.
 
 ### Chapter II beds — slots to source
 
-Chapter II (`testis-chapter-2-script.md`) needs its own beds plus **one plate sting**. Everything else
+Chapter II (`superstes-chapter-2-script.md`) needs its own beds plus **one plate sting**. Everything else
 is reused unchanged: the drip, the hotspot effects, the choice cues and the toggle, and §1's three
 earned silences apply to Chapter II exactly as written. Filenames follow the existing convention
 (`bed-c2-scene-1.m4a`, `ending-c2-unrecorded.m4a`).

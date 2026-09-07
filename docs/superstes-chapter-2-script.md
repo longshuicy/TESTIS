@@ -1,14 +1,14 @@
-# TESTIS — CHAPTER II
+# SUPERSTES — CHAPTER II
 
 **Internal title:** *The Last Word*  
-**Player-facing title before Scene 7:** **TESTIS — II** only. Do **not** reveal the chapter subtitle, the phrases “last word,” “last words,” “last conversation,” “final conversation,” or the shared nature of the memories before Scene 7.
+**Player-facing title before Scene 7:** **SUPERSTES — II** only. Do **not** reveal the chapter subtitle, the phrases “last word,” “last words,” “last conversation,” “final conversation,” or the shared nature of the memories before Scene 7.
 
 A short narrative web-game chapter. First person, past tense. Black-and-white line illustration.
 
 Tone: intimate, ordinary, melancholy, slightly surreal. The surrealism should arrive slowly. The first six scenes must feel like memories that returned for no obvious reason, not like a collection of farewells.
 
-**Companion docs:** `testis-chapter-2-art-prompts.md` (art), `testis-tech-design.md` (build —
-Chapter II needs no schema change, see §3), `testis-sound-design.md` (audio — Chapter II adds ten bed
+**Companion docs:** `superstes-chapter-2-art-prompts.md` (art), `superstes-tech-design.md` (build —
+Chapter II needs no schema change, see §3), `superstes-sound-design.md` (audio — Chapter II adds ten bed
 slots and reuses everything else, see §3).  
 This file is the single source of truth for Chapter II narrative content.
 
@@ -27,7 +27,7 @@ Threads running through every scene:
 - **The myth of last words:** We imagine final words as deliberate, weighted, backward-looking statements. In reality, people usually speak as though there will be more time, because they do not know there will not be.
 - **Time edits labels:** The future reaches backward and renames an ordinary car ride “the last car ride,” a random street encounter “the last conversation,” a walk home from school “the last walk home.” The event itself did not know what it was.
 - **Memory is not an archive:** Memory keeps useless details and drops the sentence history later demands. This is not a failure of attention; the witness did not know which evidence would one day be requested.
-- **Witness vs. record:** TESTIS means witness. A witness can truthfully say *I was there* without being able to reproduce a transcript. Testimony is not the same thing as perfect recall.
+- **Witness vs. record:** SUPERSTES means witness — and specifically the one who outlived the thing. Latin separates the bystander who happened to be present (*testis*) from the survivor who came out the other side and can still speak, and the game is named for the second. A witness can truthfully say *I was there* without being able to reproduce a transcript. Testimony is not the same thing as perfect recall.
 - **Water as time:** Water is present quietly in every memory—condensation, station glass, a water bottle, a street puddle, a spilled drink, cleaning water. In Scene 7 these separate waters pool together. Time, like water, obeys a direction while the people inside it do not know where it is carrying them.
 - **Importance arrived later:** The memories were not “important moments” when they happened. Their importance was conferred afterward. That is why they were not memorized as monuments.
 
@@ -922,7 +922,7 @@ No visible headers or seams in-game.
 - **Water accumulates without explanation.** It is atmosphere in Scenes 1–6 and becomes structural only at the Scene 6→7 transition.
 - **Ending A is surrender without erasure.** The protagonist lets the transcript go, not the people.
 - **Ending B is resistance without certainty.** The protagonist knowingly chooses reconstruction even though reconstruction contaminates memory.
-- **Ending C is TESTIS's relay equivalent.** What is carried forward is not a recovered quote but honest testimony: “I was there; this happened.”
+- **Ending C is SUPERSTES's relay equivalent.** What is carried forward is not a recovered quote but honest testimony: “I was there; this happened.”
 - **The line “Importance arrived later.” is a thematic anchor.** Preserve it unless a later rewrite finds something clearly stronger.
 - **The line “I hadn't forgotten their last words. I had never known I was hearing them.” is the reveal hinge.** Do not foreshadow it too explicitly.
 
