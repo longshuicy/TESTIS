@@ -205,11 +205,12 @@ the page first — the sound toggle, a keypress — before pressing on.
 
 ### Chapter II beds — slots to source
 
-Chapter II (`testis-chapter-2-script.md`) needs its own beds and **nothing else new**: the drip, the
-plate stings, the hotspot effects, the choice cues and the toggle are all reused unchanged, and §1's
-three earned silences apply to Chapter II exactly as written. Only these ten `BEDS` keys are missing,
-listed with the mood the scene asks for. Filenames follow the existing convention
+Chapter II (`testis-chapter-2-script.md`) needs its own beds plus **one plate sting**. Everything else
+is reused unchanged: the drip, the hotspot effects, the choice cues and the toggle, and §1's three
+earned silences apply to Chapter II exactly as written. Filenames follow the existing convention
 (`bed-c2-scene-1.m4a`, `ending-c2-unrecorded.m4a`).
+
+These ten `BEDS` keys are missing, listed with the mood the scene asks for.
 
 | Key | Scene | Mood the script asks for |
 |---|---|---|
@@ -237,8 +238,21 @@ ripples before the pool opens out. Audio should arrive *with* the pool rather th
 ripples — `c2-scene-6` runs out, the cuts happen close to dry, and `c2-scene-7` starts on the reveal.
 
 **Ending beds behave exactly as Chapter I's do**, including carrying into the tally wall uncut and
-un-restarted, and including running out mid-read if the player lingers. Nothing above changes the
-`Sound` interface in §12; these are `BEDS` entries, not new call sites.
+un-restarted, and including running out mid-read if the player lingers.
+
+**One plate sting: `plate-c2-pool`.** Chapter II has exactly one plate (Scene 7's opening — script
+doc, THE PLATE), so it gets exactly one one-shot over the bed, and §4 governs it unchanged: 4–7
+seconds, no loop, faded out over 300ms the moment the player dismisses the plate, with `sceneStarted`
+as the second guard. Do not deliver a long tail here — §4's cautionary example was an 87-second sting
+that had to be cut to 6.
+
+The plate is the destination of the Scene 6→7 match-cut, and the note above about staying near-dry
+through the ripples is what makes room for this sting: `c2-scene-6` has run out, the cuts happen in
+near-silence, the sting sounds as the plate fades up, and `c2-scene-7` starts only when the player
+clicks through. That ordering is the whole effect — a sting into silence, not a sting over a bed.
+
+Nothing above changes the `Sound` interface in §12; these are `BEDS` and plate-sting entries, not new
+call sites.
 
 ---
 

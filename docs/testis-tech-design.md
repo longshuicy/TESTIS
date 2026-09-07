@@ -168,17 +168,22 @@ of them will break that scene.
 
 ### Chapter II uses this schema unchanged
 
-`testis-chapter-2-script.md` needs **no schema additions**. It is strictly simpler than Chapter I:
-no plates, no `interaction` (there is no free-text entry), no `requiresExamined` gating, no morse, no
-calendar widget, and no scene-level `conditionalText`. What it does use already exists:
+`testis-chapter-2-script.md` needs **no schema additions**. It is simpler than Chapter I: no
+`interaction` (there is no free-text entry), no `requiresExamined` gating, no morse, no calendar
+widget, and no scene-level `conditionalText`. What it does use already exists:
 
 | Chapter II needs | Existing field |
 |---|---|
 | Every scene's CONTINUATION block | `text` paragraphs, or `closingText` for Scene 4's (it follows the branch) |
 | One branch (`turned_back`), one final branch (`final_choice`) | Branch scenes, below |
 | Scene 5's "examine the conversation" hotspot, which has no art | `tier2[].image` is optional — omit for text-only |
+| **Scene 7's opening plate** (its only one) | `plate` with `position: "before"` — same field Chapter I's Scenes 2 and 5 use |
 | Six local/consumed flags plus two Scene 7 flags | `flags`, §5 |
 | Three endings assembled base + conditional middle + shared callback + closing | Ending schema, §4 |
+
+Note that `plate` is on Chapter I's own outstanding tech-doc work item (its script doc's *Remaining
+work*), so it is specified but not yet implemented. Chapter II does not add a requirement here; it
+adds a second consumer of the same one.
 
 The one open question is not schema but **module layout**: two chapters' worth of `SCENES`/`ENDINGS`
 cannot both be globals under the same names given §1's no-ES-modules constraint. Decide that when

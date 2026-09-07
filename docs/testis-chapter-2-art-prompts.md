@@ -127,6 +127,17 @@ Before Scene 7, do not make the water glow, behave supernaturally, or attract vi
 | O221 | `obj-graphic-tshirt.png` | faded graphic tee (Scene 4) |
 | O222 | `obj-doorway-sign.png` | unreadable sign, bar or restaurant (Scene 5) |
 
+### Plate (1)
+
+| ID | Filename | Plate |
+|---|---|---|
+| P201 | `plate-c2-pool.png` | Scene 7 opening — the arrival |
+
+The `plate-` prefix is load-bearing, not cosmetic: in Chapter I it is what files a held image into
+Register III of the tally wall (`js/wall.js` matches on prefix with `startsWith`). Keep it if Chapter
+II ever gets a wall of its own. The `c2-` segment avoids colliding with Chapter I's
+`plate-scene-7.webp`, which is a different image in a different chapter.
+
 ### Ending images
 
 | ID | Filename | Ending |
@@ -135,7 +146,7 @@ Before Scene 7, do not make the water glow, behave supernaturally, or attract vi
 | E202 | `ending-kept-word.png` | The Kept Word |
 | E203 | `ending-testimony.png` | The Testimony |
 
-**Total generated assets:** 32 (7 scenes + 22 objects + 3 endings). Scene 5's "examine the
+**Total generated assets:** 33 (7 scenes + 22 objects + 1 plate + 3 endings). Scene 5's "examine the
 conversation" hotspot is text-only, no image, the same convention as Chapter I's calendar widget.  
 If generation budget is tight, see Section 9 for cuts.
 
@@ -222,6 +233,29 @@ If generation budget is tight, see Section 9 for cuts.
 > impossible shallow pool uniting fragments of several ordinary places without becoming fantasy spectacle: workplace glass doors, small train station window, parking lot stripe, city streetlamp, bar table, middle-school classroom windows, objects submerged just below clear water including reusable bottle receipt train ticket drinking glass broom, several people of different ages positioned around the distant edge doing ordinary leaving or waiting actions, protagonist implied standing ankle-deep in foreground, reflections overlap across incompatible spaces, quiet realization rather than horror, black and white pen-and-ink line illustration, delicate graphite wash, sparse cross-hatching, high-contrast negative space, quiet melancholic contemporary realism, slightly dreamlike but not fantasy, elegant thin linework, restrained facial detail, soft film-grain texture, no color, no photorealism, no 3D render, no anime, no comic speech bubbles, no readable text, no logos, no watermark, symbolic but restrained, surrealism emerging from ordinary objects, cinematic horizontal composition, 16:9, no horror imagery
 
 **Reveal note:** This is the first image allowed to look intentionally symbolic.
+
+---
+
+## P201 — `plate-c2-pool.png`
+
+**Usage:** Scene 7 **opening plate**. Held full screen, alone, with the plate's text over it and one
+advance control. See the script doc's THE PLATE section.
+
+**Prompt:**
+
+> first-person downward view of one's own feet standing ankle-deep in a shallow impossible pool, ordinary shoes and trouser hems soaked, water only a few inches deep and perfectly clear, ordinary objects resting just beneath the surface within reach: a scratched reusable water bottle, a folded damp receipt, a cello case, a small cloth name tag, a train ticket, reflected on the surface above them the architecture of several incompatible places at once — automatic glass doors, a small station window, a painted parking stripe, a streetlamp, a bar table, tall classroom windows — all held still in the same water under a light belonging to none of them, no other people, no horror, quiet impossible stillness, black and white pen-and-ink line illustration, delicate graphite wash, sparse cross-hatching, high-contrast negative space, quiet melancholic contemporary realism, slightly dreamlike but not fantasy, elegant thin linework, restrained facial detail, soft film-grain texture, no color, no photorealism, no 3D render, no anime, no comic speech bubbles, no readable text, no logos, no watermark, symbolic but restrained, surrealism emerging from ordinary objects, cinematic horizontal composition, 16:9, no horror imagery
+
+**Composition brief.** This is the counterpart to S207, not a duplicate of it: **the plate looks
+down, the scene looks out.** The plate is intimate and first-person, holds the objects and the
+impossible reflections, and contains **no other people**. S207 is the wide view with the seven
+figures around the edge. Generate the two back to back so the water reads as the same water.
+
+Unlike a scene background, this image is never overlaid with hotspots — but it *does* carry the
+plate's paragraphs, so keep the upper half open enough to hold five short paragraphs of text. The
+objects and the standing feet belong in the lower two-thirds.
+
+**Avoid:** a deep or dark pool; anything that could read as drowning, a grave, or a baptism; glowing
+or supernatural water; visible faces or figures; making the objects float rather than rest.
 
 ---
 
@@ -386,6 +420,10 @@ This is the major visual transformation of the chapter.
 
 Target: 3–5 seconds. Slow enough to register, not a cutscene.
 
+**The pull-back lands on the plate (P201), not on the scene.** Fade up slowly out of the final
+ripple — do not cut in hard. The plate then holds until the player clicks, and S207 is what they
+arrive at afterward.
+
 ### Scene 7
 - Very subtle independent ripples under each memory fragment.
 - On title reveal, do **not** flash or glitch. Let the words appear plainly.
@@ -416,9 +454,10 @@ If generating all 29 images is too expensive, use this order.
 5. S205 Noise
 6. S206 Road Home
 7. S207 Pool
-8. E201 The Unrecorded
-9. E202 The Kept Word
-10. E203 The Testimony
+8. P201 The plate — pool arrival *(generate with S207)*
+9. E201 The Unrecorded
+10. E202 The Kept Word
+11. E203 The Testimony
 
 ## Tier 2 — strongest inspectables
 
@@ -448,9 +487,10 @@ If generating all 29 images is too expensive, use this order.
 - O221 graphic t-shirt
 - O222 doorway sign
 
-**Minimum viable art set:** 10 images (7 scenes + 3 endings).  
-**Recommended set:** 20 images (Tier 1 + Tier 2).  
-**Full set:** 32 images.
+**Minimum viable art set:** 11 images (7 scenes + the plate + 3 endings). The plate is not optional —
+it is the chapter's one held image and the reveal is staged on it.  
+**Recommended set:** 21 images (Tier 1 + Tier 2).  
+**Full set:** 33 images.
 
 ---
 

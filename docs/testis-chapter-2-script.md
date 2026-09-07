@@ -84,6 +84,57 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 
 ---
 
+## THE PLATE
+
+Chapter II has **exactly one** plate: Scene 7's opening. Same mechanism as Chapter I's — a held image
+rendering alone, full screen, with its own text and a single advance control. No examine hotspots, no
+choices, nothing to click but *continue*.
+
+| Plate | Asset | Position | Job |
+|---|---|---|---|
+| Scene 7 opening | `plate-c2-pool.png` | Before Scene 7's text | The arrival. First image allowed to be symbolic, and the seam where the voice changes. |
+
+**Why only one, and why here.** Scene 7 otherwise has to carry the pool, the seven figures arriving
+one by one, the reveal, the title, three inspectables, a reactive block *and* the three-way final
+branch. On the page the reveal arrives as one more paragraph in something the player is already
+scrolling, with hotspots and choices crowding in behind it. Held, the arrival is the only thing on
+screen and the player has to click to leave it — so the reveal that follows lands in a scene the
+player has *entered* rather than scrolled into.
+
+It also does structural work the other six scenes can't. Scenes 1–6 are deliberately flat and
+unsymbolic (see *Deliberate design decisions*); the plate is where that stops. It is the first held
+image, the first permitted symbolism, and the first time the narrator interprets anything. The format
+change is the drama — after six small ordinary rooms, one full-screen image with nothing to click.
+Do not add a second plate to Scenes 1–6 to "balance" it; the singularity is the effect.
+
+**The plate must not reveal the pattern.** It carries the arrival only. The seven figures, the
+*nothing came after any of these conversations* line, and the title card all belong to the scene body,
+after the click. The spoiler rule applies to the plate exactly as it applies everywhere before the
+reveal.
+
+**PLATE TEXT:**
+
+> I stood ankle-deep in all of it.
+>
+> The water was not deep enough to drown in. That made it worse.
+>
+> Everything was lying just under the surface, close enough to pick up. The bottle. The gas station receipt. A cello case. A name tag I still couldn't read. A train ticket I don't remember keeping.
+>
+> And above them, reflections of places that had never shared a sky. Glass doors. A station window. A parking stripe. A streetlamp. A bar table. Classroom windows. All of it holding still in four inches of water, in a light that belonged to none of them.
+>
+> I stood there with my shoes ruined and understood that I was not going to be allowed to call this a dream.
+
+**Pacing.** The Scene 6→7 transition is a 3–5 second match-cut sequence that ends on *Then they did.*
+The plate is what that sequence lands on, so it wants a slow fade up out of the last ripple — **not**
+Chapter I's Scene 2 trick of cutting in hard. The art doc's transition note calls this the camera
+pulling back; the plate is the destination of the pull-back. Longer fade in and out than a scene, and
+no hover effect on the advance control.
+
+**Build.** Uses the `plate` field with `position: "before"`, already specified for Chapter I (see that
+script doc's PLATES section and the tech doc's scene schema). No new schema.
+
+---
+
 # SCENE 1: The Drop-Off
 
 **IMAGE:** ordinary car stopped outside a workplace entrance on an unremarkable day; passenger about to get out; no dramatic farewell composition
@@ -509,26 +560,14 @@ The local-only bottle flag is intentional. It gives the player a moment of agenc
 
 # SCENE 7: The Pool ★ REVEAL
 
+**OPENING PLATE:** `plate-c2-pool.png`
+*Held image. Renders alone, before the scene proper. Advance on click. Text and rationale in THE
+PLATE, above — the arrival happens there, and the scene body picks up with the figures.*
+
 **IMAGE:** impossible shallow pool combining fragments of all prior places; train glass, workplace doors, parking stripe, streetlamp, bar table, schoolroom windows; seven ordinary figures at different distances moving away or attending to their own business; no horror
 
 **TEXT:**
 
-> I stood ankle-deep in all of it.
->
-> The water was not deep enough to drown in. That made it worse. I could see every object lying beneath the surface.
->
-> The bottle.
->
-> The receipt.
->
-> A train ticket I did not remember keeping.
->
-> The bar glass.
->
-> A broom.
->
-> Reflections of places that had never shared a sky.
->
 > Around the edge of the pool, the people from the memories appeared one by one.
 >
 > No one faced me as though summoned.
@@ -846,6 +885,7 @@ No visible headers or seams in-game.
 | Item | Count |
 |---|---:|
 | Scenes | 7 |
+| Plates (held images) | 1 (Scene 7 opening) |
 | Distinct real-world memory episodes | 7 (Scene 5 contains two) |
 | Endings | 3 |
 | Tier-2 inspectables | 26 (22 dedicated object-art assets; Scene 7's 3 and Scene 5's "the conversation" are text/scene-art only) |
@@ -872,6 +912,8 @@ No visible headers or seams in-game.
   `I remember the volume. […] I do not remember what any of the things were.` and Scene 6's name tag
   (`I can tell you the color of the thread. I cannot tell you the name.`) are the reference register;
   Scenes 1–4 were brought into line with them.
+- **Chapter II has one plate and it is Scene 7's.** See THE PLATE. Adding plates to Scenes 1–6 would
+  destroy the effect — the format change is what makes the arrival land, and it only works once.
 - **Scene 7 and the endings are the one place interpretation is earned.** She has just understood, so
   the aphoristic register that is forbidden earlier is correct there — Ending B's conditional rows in
   particular. The register shift is itself part of the reveal: a narrator who refused to draw a
