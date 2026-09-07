@@ -92,59 +92,72 @@ Before Scene 7, do not make the water glow, behave supernaturally, or attract vi
 
 | ID | Filename | Scene |
 |---|---|---|
-| S201 | `scene-01-dropoff.png` | The Drop-Off |
-| S202 | `scene-02-station.png` | The Station |
-| S203 | `scene-03-bottle.png` | The Bottle |
-| S204 | `scene-04-street.png` | The Street |
-| S205 | `scene-05-noise.png` | Noise |
-| S206 | `scene-06-road-home.png` | The Road Home |
-| S207 | `scene-07-pool.png` | The Pool / reveal |
+| S201 | `scene-01-dropoff.webp` | The Drop-Off |
+| S202 | `scene-02-station.webp` | The Station |
+| S203 | `scene-03-bottle.webp` | The Bottle |
+| S204 | `scene-04-street.webp` | The Street |
+| S205 | `scene-05-noise.webp` | Noise |
+| S206 | `scene-06-road-home.webp` | The Road Home |
+| S207 | `scene-07-pool.webp` | The Pool / reveal |
 
 ### Tier-2 object art
 
 | ID | Filename | Object |
 |---|---|---|
-| O201 | `obj-dashboard-clock.png` | dashboard clock |
-| O202 | `obj-passenger-seat.png` | empty passenger seat |
-| O203 | `obj-cup-receipt.png` | damp receipt / cup holder |
-| O204 | `obj-workplace-doors.png` | workplace entrance |
-| O205 | `obj-departure-board.png` | train departure board |
-| O206 | `obj-station-glass.png` | overlapping reflections in station glass |
-| O207 | `obj-phone-message.png` | glowing phone with unreadable message |
-| O208 | `obj-empty-train-seat.png` | empty train seat |
-| O209 | `obj-water-bottle.png` | returned reusable bottle |
-| O210 | `obj-packed-car.png` | packed moving car |
-| O211 | `obj-parking-stripe.png` | white parking stripe between two pairs of shoes |
-| O212 | `obj-street-puddle.png` | smiling reflection in curb puddle |
-| O213 | `obj-bar-glass.png` | melting ice / spreading drink ring |
-| O214 | `obj-mouth-noise.png` | lower face speaking in noisy room |
-| O215 | `obj-argument-doorway.png` | empty hallway beyond argument |
-| O216 | `obj-name-tag.png` | school uniform name tag |
-| O217 | `obj-mop-bucket.png` | cloudy cleaning water |
-| O218 | `obj-schoolbag.png` | heavy middle-school bag |
-| O219 | `obj-road-home.png` | ordinary residential walking route |
-| O220 | `obj-train-neighbor.png` | chatty stranger on the train (Scene 2) |
-| O221 | `obj-graphic-tshirt.png` | faded graphic tee (Scene 4) |
-| O222 | `obj-doorway-sign.png` | unreadable sign, bar or restaurant (Scene 5) |
+| O201 | `obj-dashboard-clock.webp` | dashboard clock |
+| O202 | `obj-passenger-seat.webp` | empty passenger seat |
+| O203 | `obj-cup-receipt.webp` | damp receipt / cup holder |
+| O204 | `obj-workplace-doors.webp` | workplace entrance |
+| O205 | `obj-departure-board.webp` | train departure board |
+| O206 | `obj-station-glass.webp` | overlapping reflections in station glass |
+| O207 | `obj-phone-message.webp` | glowing phone with unreadable message |
+| O208 | `obj-empty-train-seat.webp` | empty train seat |
+| O209 | `obj-water-bottle.webp` | returned reusable bottle |
+| O210 | `obj-packed-car.webp` | packed moving car |
+| O211 | `obj-parking-stripe.webp` | white parking stripe between two pairs of shoes |
+| O212 | `obj-street-puddle.webp` | smiling reflection in curb puddle |
+| O213 | `obj-bar-glass.webp` | melting ice / spreading drink ring |
+| O214 | `obj-mouth-noise.webp` | lower face speaking in noisy room |
+| O215 | `obj-argument-doorway.webp` | empty hallway beyond argument |
+| O216 | `obj-name-tag.webp` | school uniform name tag |
+| O217 | `obj-mop-bucket.webp` | cloudy cleaning water |
+| O218 | `obj-schoolbag.webp` | heavy middle-school bag |
+| O219 | `obj-road-home.webp` | ordinary residential walking route |
+| O220 | `obj-train-neighbor.webp` | chatty stranger on the train (Scene 2) |
+| O221 | `obj-graphic-tshirt.webp` | faded graphic tee (Scene 4) |
+| O222 | `obj-doorway-sign.webp` | unreadable sign, bar or restaurant (Scene 5) |
 
 ### Plate (1)
 
 | ID | Filename | Plate |
 |---|---|---|
-| P201 | `plate-c2-pool.png` | Scene 7 opening — the arrival |
+| P201 | `plate-c2-pool.webp` | Scene 7 opening — the arrival |
 
-The `plate-` prefix is load-bearing, not cosmetic: in Chapter I it is what files a held image into
-Register III of the tally wall (`js/wall.js` matches on prefix with `startsWith`). Keep it if Chapter
-II ever gets a wall of its own. The `c2-` segment avoids colliding with Chapter I's
-`plate-scene-7.webp`, which is a different image in a different chapter.
+The `plate-` prefix is load-bearing, not cosmetic: it is what files a held image into Register III of
+the tally wall (`js/wall-c2.js`, matched with `startsWith`). Chapter II **has** its own wall, so
+renaming this file without the prefix silently drops it off that wall — the same trap Chapter I's art
+doc records. The `c2-` segment avoids colliding with Chapter I's `plate-scene-7.webp`, a different
+image in a different chapter.
+
+### Shipping these files
+
+Filenames above are the **shipped** `.webp` in `assets/images/`, which is what `js/scenes-c2.js` and
+`js/endings-c2.js` reference. Generated art is a master, not a shipped file: drop the PNG master in
+`assets_backup/images-png-master/` and run `./scripts/optimize_images.sh`. Widths, quality and the
+reason the downscale is not optional are all in Chapter I's art doc §3c — that section governs both
+chapters and is not restated here.
+
+**None of these files exist yet, and the game runs anyway.** `main.js` draws a procedural stand-in for
+any asset that 404s, so Chapter II is fully playable with placeholder plates; drop the real file in at
+the same path and it just works.
 
 ### Ending images
 
 | ID | Filename | Ending |
 |---|---|---|
-| E201 | `ending-unrecorded.png` | The Unrecorded |
-| E202 | `ending-kept-word.png` | The Kept Word |
-| E203 | `ending-testimony.png` | The Testimony |
+| E201 | `ending-unrecorded.webp` | The Unrecorded |
+| E202 | `ending-kept-word.webp` | The Kept Word |
+| E203 | `ending-testimony.webp` | The Testimony |
 
 **Total generated assets:** 33 (7 scenes + 22 objects + 1 plate + 3 endings). Scene 5's "examine the
 conversation" hotspot is text-only, no image, the same convention as Chapter I's calendar widget.  
@@ -154,7 +167,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 # 5. MAIN SCENE PROMPTS
 
-## S201 — `scene-01-dropoff.png`
+## S201 — `scene-01-dropoff.webp`
 
 **Usage:** Scene 1 main art.
 
@@ -166,7 +179,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 ---
 
-## S202 — `scene-02-station.png`
+## S202 — `scene-02-station.webp`
 
 **Usage:** Scene 2 main art.
 
@@ -178,7 +191,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 ---
 
-## S203 — `scene-03-bottle.png`
+## S203 — `scene-03-bottle.webp`
 
 **Usage:** Scene 3 main art.
 
@@ -188,7 +201,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 ---
 
-## S204 — `scene-04-street.png`
+## S204 — `scene-04-street.webp`
 
 **Usage:** Scene 4 highlight art. Keep it lean; most emotional work is in the main image.
 
@@ -200,7 +213,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 ---
 
-## S205 — `scene-05-noise.png`
+## S205 — `scene-05-noise.webp`
 
 **Usage:** Scene 5 main art.
 
@@ -212,7 +225,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 ---
 
-## S206 — `scene-06-road-home.png`
+## S206 — `scene-06-road-home.webp`
 
 **Usage:** Scene 6 main art.
 
@@ -224,7 +237,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 ---
 
-## S207 — `scene-07-pool.png`
+## S207 — `scene-07-pool.webp`
 
 **Usage:** Scene 7 reveal.
 
@@ -236,7 +249,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 ---
 
-## P201 — `plate-c2-pool.png`
+## P201 — `plate-c2-pool.webp`
 
 **Usage:** Scene 7 **opening plate**. Held full screen, alone, with the plate's text over it and one
 advance control. See the script doc's THE PLATE section.
@@ -359,7 +372,7 @@ sees that something is in it twice over. No glow, no seam, no double-exposure ef
 
 # 7. ENDING PROMPTS
 
-## E201 — `ending-unrecorded.png`
+## E201 — `ending-unrecorded.webp`
 
 **Prompt:**
 
@@ -367,7 +380,7 @@ sees that something is in it twice over. No glow, no seam, no double-exposure ef
 
 ---
 
-## E202 — `ending-kept-word.png`
+## E202 — `ending-kept-word.webp`
 
 **Prompt:**
 
@@ -375,7 +388,7 @@ sees that something is in it twice over. No glow, no seam, no double-exposure ef
 
 ---
 
-## E203 — `ending-testimony.png`
+## E203 — `ending-testimony.webp`
 
 **Prompt:**
 

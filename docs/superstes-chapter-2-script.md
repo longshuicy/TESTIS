@@ -112,7 +112,7 @@ choices, nothing to click but *continue*.
 
 | Plate | Asset | Position | Job |
 |---|---|---|---|
-| Scene 7 opening | `plate-c2-pool.png` | Before Scene 7's text | The arrival. First image allowed to be symbolic, and the seam where the voice changes. |
+| Scene 7 opening | `plate-c2-pool.webp` | Before Scene 7's text | The arrival. First image allowed to be symbolic, and the seam where the voice changes. |
 
 **Why only one, and why here.** Scene 7 otherwise has to carry the pool, the seven figures arriving
 one by one, the reveal, the title, three inspectables, a reactive block *and* the three-way final
@@ -592,7 +592,7 @@ script doc's PLATES section and the tech doc's scene schema). No new schema.
 
 # SCENE 7: The Pool ★ REVEAL
 
-**OPENING PLATE:** `plate-c2-pool.png`
+**OPENING PLATE:** `plate-c2-pool.webp`
 *Held image. Renders alone, before the scene proper. Advance on click. Text and rationale in THE
 PLATE, above — the arrival happens there, and the scene body picks up with the figures.*
 
@@ -686,6 +686,52 @@ PLATE, above — the arrival happens there, and the scene body picks up with the
 - **A. “Let the words stay where time left them.”** → Ending A: **The Unrecorded**
 - **B. “Go back. Listen again.”** → Ending B: **The Kept Word**
 - **C. “Say only what you know happened.”** → Ending C: **The Testimony**
+
+---
+
+# THE TALLY WALL
+
+Chapter II has **its own wall**, and it is deliberately asymmetric with Chapter I's. Copy lives in
+`js/wall-c2.js`; captions derive at runtime from the scene and ending data, same as Chapter I's, so
+nothing is restated in two places.
+
+| Element | Chapter I | Chapter II |
+|---|---|---|
+| Heading | Something is already keeping count | **Something *was* already keeping count** |
+| Register I | The Rooms | The Places |
+| Register II | Evidence | What Was Kept |
+| Register III | The Accused | The People |
+| Un-inked cell | Not seen | **Not remembered** |
+| Ending's last button | See what was counted | See what was kept |
+| Secret plaque | the Morse phrase | **none** |
+| Foot of the wall | Begin again | **nothing** |
+
+**The two absences are the point, not omissions.**
+
+**No exit.** Chapter I is a relay and its wall loops — *Begin again* is the last thing it offers.
+Chapter II is about the fact that nothing came next, so its wall is the last screen and it stays
+there. There is no *Begin again*, no close control, nothing to click. The only way out is the
+browser's own, which is exactly the difference between the two chapters stated in the one place a
+player cannot miss it. `gallery.js` renders no exit for a wall whose copy has no `again` key.
+
+**No plaque.** There is no Morse in Chapter II, so there is nothing withheld for a plaque to hand
+back. Chapter I's plaque is a courtesy for outside effort; Chapter II has asked nothing of the player
+that it is holding an answer to.
+
+**The tense change in the heading** is doing the same work as *Not remembered*: Chapter I's wall says
+something is *already* counting, before the player has done anything. By the time Chapter II's wall
+opens, the counting is what has just been revealed.
+
+## Getting here from Chapter I
+
+The player-facing route is the title screen's second door — a deliberately muted line below *Enter
+the fog* reading **Someone else was keeping count · II**. It skips a chapter for anyone who has
+already played Chapter I, and for everyone else it is the only thing on that screen that admits there
+is a second chapter at all. It says *II* and nothing else; naming the chapter would spoil it.
+
+Chapter I's own wall is **not** currently a fork — it still offers only *Begin again*, which returns
+to the title screen where the second door is. Adding a fork at the foot of Chapter I's wall remains
+an open option, not a decision.
 
 ---
 
@@ -910,7 +956,7 @@ No visible headers or seams in-game.
 
 # STATUS
 
-**Narrative content is complete for a first implementation pass.** All seven scenes, the reveal, Tier-2 inspectables, reactive blocks, the Scene 4 branch, final branch, and ending callback tables are written.
+**Narrative content is complete, and a first implementation pass is built.** All seven scenes, the reveal, Tier-2 inspectables, reactive blocks, the Scene 4 branch, final branch, and ending callback tables are written.
 
 ### Content inventory
 

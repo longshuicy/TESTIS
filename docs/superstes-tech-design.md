@@ -177,13 +177,53 @@ widget, and no scene-level `conditionalText`. What it does use already exists:
 | Every scene's CONTINUATION block | `text` paragraphs, or `closingText` for Scene 4's (it follows the branch) |
 | One branch (`turned_back`), one final branch (`final_choice`) | Branch scenes, below |
 | Scene 5's "examine the conversation" hotspot, which has no art | `tier2[].image` is optional — omit for text-only |
-| **Scene 7's opening plate** (its only one) | `plate` with `position: "before"` — same field Chapter I's Scenes 2 and 5 use |
+| **Scene 7's opening plate** (its only one) | `openingPlate` — same field Chapter I's Scenes 2 and 5 use |
 | Six local/consumed flags plus two Scene 7 flags | `flags`, §5 |
 | Three endings assembled base + conditional middle + shared callback + closing | Ending schema, §4 |
 
-Note that `plate` is on Chapter I's own outstanding tech-doc work item (its script doc's *Remaining
-work*), so it is specified but not yet implemented. Chapter II does not add a requirement here; it
-adds a second consumer of the same one.
+> **Correction, recorded during the Chapter II build.** Chapter I's script doc proposes a single
+> `plate: { position: "before" | "after" }` field. That is **not** what shipped: `main.js` implements
+> two separate fields, `openingPlate` and `closingPlate`, and there is no `position` key. The two
+> fields are the better shape — `advanceTo` consumes the opening one before a word is rendered while
+> `renderExit` consumes the closing one after a branch resolves, so they are read at different times
+> by different functions and a shared field would only be destructured apart again. Chapter II's
+> Scene 7 uses `openingPlate`. The proposal in the script doc is stale; treat this table as the
+> schema of record.
+
+### Two chapters, one page
+
+`js/chapters.js` is the answer to the module-layout question this doc previously left open.
+
+Each chapter's data files declare their own globals (`SCENES_C1` / `SCENES_C2`, `ENDINGS_C1` /
+`ENDINGS_C2`, `WALL_C1` / `WALL_C2`, `WITNESS_CALLBACK_C1` / `DEPARTURE_CALLBACK`). The four names the
+engine actually reads — `SCENES`, `ENDINGS`, `WALL`, `SHARED_CALLBACK` — are `let` bindings that
+`activateChapter(key)` points at one chapter's data. Nothing else in `main.js` or `gallery.js` knows a
+second chapter exists; they keep reading the same four names they always did.
+
+The alternative was namespacing every reference at each of ~40 call sites, which buys nothing: only
+one chapter is playable at a time, so a pointer swap is the honest shape of the problem.
+
+`activateChapter` also empties and refills `flags` (each chapter declares its own set, and the object
+is mutated rather than replaced so every existing reference stays valid), clears `examined`, calls
+`Gallery.reset()` so one chapter's inked cells cannot be credited to the other's wall, and stamps
+`document.body.dataset.chapter`.
+
+**Load order in `index.html`** is therefore: every chapter's data files → `chapters.js` → `audio.js` →
+`gallery.js` → `main.js`.
+
+**Entry points.** `?chapter=ii` starts Chapter II; `?debug=c2-…` infers it from the id prefix;
+`?all=ii` opens Chapter II's wall. Everything unqualified is Chapter I, as before.
+
+### Additive engine changes made for Chapter II
+
+All four are backward-compatible — Chapter I's behavior is unchanged:
+
+| Change | Why |
+|---|---|
+| `closingText` is no longer branch-only | Chapter I uses it once, after a branch. Every Chapter II scene ends on a continuation beat that follows its reactive block, so `renderExit`'s non-branch path renders it too. |
+| Branch options may carry `response` prose | Reactive options already could. Chapter I's two branches don't use it; Chapter II's Scene 4 does. It renders before `closingText`. |
+| `advanceTo` asks `ENDINGS` whether an id is an ending | It previously tested for an `"ending-"` string prefix, which `c2-ending-a` does not match. |
+| `gallery.js` tolerates a wall missing `credit`, `secretPrompt`, or `again` | Chapter II's wall has no plaque and no exit; see the sound/script docs. A wall without `again` renders no exit at all. |
 
 The one open question is not schema but **module layout**: two chapters' worth of `SCENES`/`ENDINGS`
 cannot both be globals under the same names given §1's no-ES-modules constraint. Decide that when
