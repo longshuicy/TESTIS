@@ -450,11 +450,7 @@ script doc's PLATES section and the tech doc's scene schema). No new schema.
 
 > Melted ice had raised the waterline without adding anything worth drinking. A ring spread beneath the glass. I watched it reach the edge of the napkin and continue onto the table.
 
-**TIER 2, examine his mouth instead of listening:**
-
-> I could see the shape of emphasis. A smile, then seriousness, then the small sideways movement people make when they are correcting themselves. The face preserved the grammar and lost every noun.
-
-**TIER 2, examine the conversation instead of his mouth:** *(no dedicated image; text-only, like Chapter I's calendar hotspot)*
+**TIER 2, examine the conversation instead of listening:** *(no dedicated image; text-only, like Chapter I's calendar hotspot)*
 
 > I have tried, standing in this memory, to recover a single sentence of what either of us actually said. Not the tone, not the shape of it — the words themselves, in order, the way a person actually talks.
 >
@@ -966,7 +962,7 @@ No visible headers or seams in-game.
 | Plates (held images) | 1 (Scene 7 opening) |
 | Distinct real-world memory episodes | 7 (Scene 5 contains two) |
 | Endings | 3 |
-| Tier-2 inspectables | 26 (22 dedicated object-art assets; Scene 7's 3 and Scene 5's "the conversation" are text/scene-art only) |
+| Tier-2 inspectables | 25 (21 dedicated object-art assets; Scene 7's 3 and Scene 5's "the conversation" are text/scene-art only) |
 | Reactive blocks | 7 |
 | Real branch points | 2 (`turned_back`, `final_choice`) |
 | Shared ending callback rows | 4 |

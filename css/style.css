@@ -1618,6 +1618,35 @@ body.wall-open { overflow: hidden; }
 .wall-again.wall-again-pending { display: none; }
 .wall-again.wall-again-in { animation: wall-secret-in 500ms ease; }
 
+/* Two exits at the foot of the wall: stack them rather than sitting them side
+   by side, so neither reads as the other's alternative. */
+.wall-again .continue + .continue { margin-top: 1.1rem; }
+
+/* The door on to Chapter II, kept quieter than "Begin again" — the same
+   treatment as the title screen's second door, since it is the same door.
+   No border, dimmer than the text around it, and it only comes up to legible
+   on hover. */
+.wall-next-chapter {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-color: transparent;
+  color: #4a453c;
+  letter-spacing: 0.14em;
+  font-size: 0.68rem;
+  padding: 0.6rem 1rem;
+  transition: color 400ms ease, border-color 400ms ease;
+}
+
+.wall-next-chapter:hover,
+.wall-next-chapter:focus-visible {
+  color: var(--candle-dim);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
 @media (max-width: 760px) {
   .wall-grid.the-rooms   { grid-template-columns: 1fr; }
   .wall-grid.evidence    { grid-template-columns: repeat(2, 1fr); }

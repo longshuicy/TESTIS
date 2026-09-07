@@ -85,6 +85,22 @@ const STINGS = {
     loop: true,
     volume: 0.2,      // present, not announcing itself
     fadeOut: 1200     // hands over to bed-scene-7 rather than clearing out
+  },
+
+  // Chapter II's only plate, and its only borrowed sound: the grandfather clock
+  // from bed-scene-5, which is also what the title screen ticks under. No new
+  // asset — the same recording, and the reuse is the point. Chapter I opens on
+  // that clock before the player has done anything; it comes back under the one
+  // image in Chapter II where the counting is finally visible.
+  //
+  // Same shape as scene-7 above: a texture, not an event. It has to still be
+  // sounding when a slow reader finally clicks, and the Scene 6→7 match-cut is
+  // specified to run near-dry, so this arrives into near-silence.
+  "c2-scene-7": {
+    src: "assets/sound/bed-scene-5.wav",
+    loop: true,
+    volume: 0.18,     // under Chapter I's, since a bed mix is hotter than a sting
+    fadeOut: 1400     // hands over to Chapter II's Scene 7 bed once one exists
   }
 };
 

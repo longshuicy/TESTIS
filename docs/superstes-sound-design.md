@@ -240,11 +240,20 @@ ripples — `c2-scene-6` runs out, the cuts happen close to dry, and `c2-scene-7
 **Ending beds behave exactly as Chapter I's do**, including carrying into the tally wall uncut and
 un-restarted, and including running out mid-read if the player lingers.
 
-**One plate sting: `plate-c2-pool`.** Chapter II has exactly one plate (Scene 7's opening — script
-doc, THE PLATE), so it gets exactly one one-shot over the bed, and §4 governs it unchanged: 4–7
-seconds, no loop, faded out over 300ms the moment the player dismisses the plate, with `sceneStarted`
-as the second guard. Do not deliver a long tail here — §4's cautionary example was an 87-second sting
-that had to be cut to 6.
+**One plate sting, and it is borrowed, not sourced.** Chapter II has exactly one plate (Scene 7's
+opening — script doc, THE PLATE) and it reuses **`bed-scene-5.wav`**, the grandfather clock — the same
+recording the title screen ticks under. There is no new asset to find, and the reuse is the point:
+Chapter I opens on that clock before the player has done anything, and it returns under the one image
+in Chapter II where the counting is finally visible.
+
+It is registered in `STINGS` as `c2-scene-7` with the same shape Chapter I's Scene 7 plate uses — a
+texture rather than an event: `loop: true`, so it is still sounding when a slow reader finally clicks,
+`volume: 0.18` (under Chapter I's 0.2, since a bed mix is hotter than a sting), and a `fadeOut` so it
+hands over to Chapter II's Scene 7 bed rather than clearing out of its way. §4's other rules still
+apply unchanged, including dying with the plate on dismissal and `sceneStarted` as the second guard.
+
+Because it loops, §4's 4–7 second guidance does not bind it — that rule is about one-shots with tails
+that outlive their plate. This one has no tail; it is stopped, not waited out.
 
 The plate is the destination of the Scene 6→7 match-cut, and the note above about staying near-dry
 through the ripples is what makes room for this sting: `c2-scene-6` has run out, the cuts happen in

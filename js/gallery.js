@@ -509,6 +509,27 @@ const Gallery = (function () {
       again.textContent = WALL.again;
       again.addEventListener("click", () => window.location.reload());
       wrap.appendChild(again);
+
+      // A wall may also open onto the next chapter. Both exits appear together
+      // and are gated together — the plaque holds the foot of the wall shut,
+      // not just one button of it.
+      //
+      // Loading the next chapter as a fresh page rather than swapping it in
+      // place: nothing here is persisted, so a reload costs the player nothing
+      // and buys a guaranteed-clean state instead of unwinding an ending's
+      // body classes, background layers and runtime by hand. "Begin again"
+      // already works exactly this way.
+      if (WALL.nextChapter) {
+        const on = document.createElement("button");
+        on.type = "button";
+        on.className = "continue wall-next-chapter";
+        on.textContent = WALL.nextChapter.label;
+        on.addEventListener("click", () => {
+          window.location.search = "?chapter=" + encodeURIComponent(WALL.nextChapter.key);
+        });
+        wrap.appendChild(on);
+      }
+
       overlay.appendChild(wrap);
       againWrap = wrap;
     } else {

@@ -117,7 +117,6 @@ Before Scene 7, do not make the water glow, behave supernaturally, or attract vi
 | O211 | `obj-parking-stripe.webp` | white parking stripe between two pairs of shoes |
 | O212 | `obj-street-puddle.webp` | smiling reflection in curb puddle |
 | O213 | `obj-bar-glass.webp` | melting ice / spreading drink ring |
-| O214 | `obj-mouth-noise.webp` | lower face speaking in noisy room |
 | O215 | `obj-argument-doorway.webp` | empty hallway beyond argument |
 | O216 | `obj-name-tag.webp` | school uniform name tag |
 | O217 | `obj-mop-bucket.webp` | cloudy cleaning water |
@@ -126,6 +125,11 @@ Before Scene 7, do not make the water glow, behave supernaturally, or attract vi
 | O220 | `obj-train-neighbor.webp` | chatty stranger on the train (Scene 2) |
 | O221 | `obj-graphic-tshirt.webp` | faded graphic tee (Scene 4) |
 | O222 | `obj-doorway-sign.webp` | unreadable sign, bar or restaurant (Scene 5) |
+
+IDs are stable once assigned and are not renumbered when one is dropped, so the gaps are expected:
+**O214 is retired** (Scene 5's "his mouth" inspectable was cut — the conversation hotspot beside it
+does the same work better and without art), and O220–O222 sit out of scene order because they were
+added later.
 
 ### Plate (1)
 
@@ -159,7 +163,7 @@ the same path and it just works.
 | E202 | `ending-kept-word.webp` | The Kept Word |
 | E203 | `ending-testimony.webp` | The Testimony |
 
-**Total generated assets:** 33 (7 scenes + 22 objects + 1 plate + 3 endings). Scene 5's "examine the
+**Total generated assets:** 32 (7 scenes + 21 objects + 1 plate + 3 endings). Scene 5's "examine the
 conversation" hotspot is text-only, no image, the same convention as Chapter I's calendar widget.  
 If generation budget is tight, see Section 9 for cuts.
 
@@ -332,10 +336,6 @@ sees that something is in it twice over. No glow, no seam, no double-exposure ef
 
 > half-finished drink with melting ice, condensation and water ring spreading beyond a paper napkin onto table, background indistinct
 
-## O214 — Mouth in noise
-
-> lower half of a person's face speaking across a noisy table, expression shifting from smile to seriousness, glass reflections and blurred crowd behind, no speech text
-
 ## O215 — Argument doorway
 
 > ordinary interior doorway with empty hallway beyond, foreground edge of tense conversation only barely visible, exit path visually clear but not dramatic
@@ -502,7 +502,6 @@ If generating all 29 images is too expensive, use this order.
 - O205 departure board
 - O208 empty train seat
 - O210 packed car
-- O214 mouth in noise
 - O215 argument doorway
 - O218 schoolbag
 - O220 train neighbor
@@ -512,7 +511,7 @@ If generating all 29 images is too expensive, use this order.
 **Minimum viable art set:** 11 images (7 scenes + the plate + 3 endings). The plate is not optional —
 it is the chapter's one held image and the reveal is staged on it.  
 **Recommended set:** 21 images (Tier 1 + Tier 2).  
-**Full set:** 33 images.
+**Full set:** 32 images.
 
 ---
 

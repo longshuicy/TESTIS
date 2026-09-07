@@ -307,16 +307,10 @@ const SCENES_C2 = [
         text: "Melted ice had raised the waterline without adding anything worth drinking. A ring spread beneath the glass. I watched it reach the edge of the napkin and continue onto the table."
       },
       {
-        id: "mouth-noise",
-        label: "His mouth, instead of listening",
-        image: "assets/images/obj-mouth-noise.webp",
-        text: "I could see the shape of emphasis. A smile, then seriousness, then the small sideways movement people make when they are correcting themselves. The face preserved the grammar and lost every noun."
-      },
-      {
         // No image, deliberately — the one text-only hotspot in the chapter,
         // the same convention as Chapter I's calendar. `image` is optional.
         id: "the-conversation",
-        label: "The conversation, instead of his mouth",
+        label: "The conversation, instead of listening",
         text: "I have tried, standing in this memory, to recover a single sentence of what either of us actually said. Not the tone, not the shape of it — the words themselves, in order, the way a person actually talks.\n\nNothing comes. I get as far as knowing we were talking, which is either a very small thing to know or, depending on the day, the only thing that ever mattered."
       },
       {

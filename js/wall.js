@@ -49,6 +49,14 @@ const WALL_C1 = {
   enter: "See what was counted",
   again: "Begin again",
 
+  // The door on to Chapter II, at the foot of the wall beside "Begin again"
+  // and revealed with it. The label is word-for-word the title screen's own
+  // muted second door, because it is the same door — and arriving here it also
+  // answers this wall's heading directly: something is already keeping count,
+  // and someone else was. It names no chapter beyond the numeral; naming it
+  // would spoil it.
+  nextChapter: { key: "ii", label: "Someone else was keeping count · II" },
+
   // Provenance. Kept here rather than in the art doc's voice because it is
   // read by players, not by whoever generates the next asset.
   credit: [
