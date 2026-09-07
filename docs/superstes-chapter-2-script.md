@@ -50,6 +50,26 @@ Before Scene 7:
 
 Scene 7 is where the pattern is named for the first time.
 
+### Two reveals, and only one of them is protected
+
+This rule is about **the pattern** — that nothing came after any of these conversations. It is *not*
+a rule against strangeness. Those are two different reveals and they escalate on different schedules:
+
+| | Reveal | Where it starts |
+|---|---|---|
+| **The strangeness** | Something is wrong with these memories. Water misbehaves, a reflection lags, a place holds architecture that isn't there. | **Scene 4's puddle**, then increasing |
+| **The pattern** | These were the last conversations. Nothing followed any of them. | **Scene 7 only** |
+
+Withholding both until Scene 7 is what makes the reveal feel unearned — the theme summary's emotional
+spine already puts *unstable* third, before *accumulating* and *recognized*, and Scene 4 is where that
+belongs. So Scene 4 is the turn: the first anomaly the player is meant to actually catch, and the
+first time the narrator knows a memory is not behaving.
+
+**What she may do:** report an impossible fact plainly, and say she can't account for it. *The
+reflection lagged. The puddle held a window that wasn't there. I could not tell you what it was.*
+**What she may not do:** interpret it, connect it to the other memories, or treat it as a message.
+Nothing before Scene 7 may suggest the anomalies are *about* endings.
+
 ---
 
 ## FLAG SYSTEM
@@ -363,7 +383,17 @@ script doc's PLATES section and the tech doc's scene schema). No new schema.
 
 **TIER 2, examine the puddle beside the curb:**
 
-> His reflection smiled a fraction later than he did. A bus went past and broke the face into black water. When the surface settled he was still standing there, whole again.
+> His reflection smiled a fraction later than he did.
+>
+> I want to be accurate about this, because it is the first thing in any of these memories that I know did not happen the way I remember it. He smiled. Then the water smiled. Not together. There was a gap, about the length of a blink, and I noticed it while it was happening rather than afterward.
+>
+> A bus went past and broke the face into black water.
+>
+> When the surface settled he was still standing there, whole again — and for a moment the puddle was holding something else as well. A window, or a glass door, belonging to no building on that street. It was gone before I could look at it properly.
+>
+> I could not tell you what it was. I could tell you it did not belong there.
+>
+> I looked up. He was still talking. Nothing in his face suggested anything had happened.
 
 **TIER 2, examine his shirt:**
 
@@ -389,6 +419,8 @@ script doc's PLATES section and the tech doc's scene schema). No new schema.
 > The street remained where it was.
 >
 > I left it anyway.
+>
+> Something had changed by then. Up to that afternoon I had been remembering ordinary days. After it I was doing something else, and I did not have a word for what.
 
 → Scene 5
 
@@ -919,7 +951,8 @@ No visible headers or seams in-game.
   particular. The register shift is itself part of the reveal: a narrator who refused to draw a
   conclusion for six scenes finally draws one. Do not flatten the endings to match Scenes 1–6, and do
   not let the aphorisms migrate back up into Scenes 1–6.
-- **Water accumulates without explanation.** It is atmosphere in Scenes 1–6 and becomes structural only at the Scene 6→7 transition.
+- **Water accumulates without explanation.** It is atmosphere in Scenes 1–6 and becomes structural only at the Scene 6→7 transition. **Scene 4's puddle is the single exception** and is deliberate — see *Two reveals*. It is where the water first does something it shouldn't, and it is the only pre-Scene-7 anomaly the player is meant to catch.
+- **Scene 4 is the instability turn, and it is not optional.** The vivid version lives in the puddle inspectable, but tier-2s can be skipped, so the continuation carries a plain non-missable version (*I did not have a word for what*). Do not move the whole beat into the hotspot; a player who never clicks the puddle must still feel the floor tilt.
 - **Ending A is surrender without erasure.** The protagonist lets the transcript go, not the people.
 - **Ending B is resistance without certainty.** The protagonist knowingly chooses reconstruction even though reconstruction contaminates memory.
 - **Ending C is SUPERSTES's relay equivalent.** What is carried forward is not a recovered quote but honest testimony: “I was there; this happened.”

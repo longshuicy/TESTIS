@@ -23,7 +23,7 @@ The art must resist making the departures look important. The visual reveal belo
 - **No farewell iconography before Scene 7.** No waving silhouettes against sunsets, tearful close-ups, receding trains framed like death, dramatic backlighting, or exaggerated loneliness.
 - **Faces are specific enough to feel human but not portrait-literal.** The chapter is autobiographical in emotional source, not a demand for exact likenesses.
 - **Different memories may involve different people.** Do not accidentally make every male figure look like the same recurring character.
-- **Memory instability is subtle.** Small shifts in object position, reflection, or water can change on revisit. Avoid obvious glitch effects.
+- **Memory instability is subtle.** Small shifts in object position, reflection, or water can change on revisit. Avoid obvious glitch effects. **Scene 4's puddle is the first instance the player is meant to catch**; everything before it stays beneath notice.
 - **Water is the only recurring visual motif.** It begins incidental and becomes impossible only in Scene 7.
 - **Generated art contains no important readable text.** Timetables, phone screens, receipts, signs, badges, etc. should use abstract marks. All narrative/UI text is HTML/CSS.
 
@@ -77,12 +77,12 @@ Water should increase gradually:
 1. **Scene 1:** condensation only.
 2. **Scene 2:** cold station glass / rain or melted snow.
 3. **Scene 3:** literal water bottle.
-4. **Scene 4:** curb puddle.
+4. **Scene 4:** curb puddle — **the first anomaly.** The reflection lags, and for a moment the water holds architecture from somewhere else.
 5. **Scene 5:** melting ice / drink ring.
 6. **Scene 6:** mop bucket / wet floor.
 7. **Scene 7:** all water sources merge into one impossible shallow pool.
 
-Before Scene 7, do not make the water glow, behave supernaturally, or attract visual attention beyond what the script calls for.
+Before Scene 7, do not make the water glow, behave supernaturally, or attract visual attention beyond what the script calls for — **with one deliberate exception, Scene 4's puddle.** That is where the chapter's instability enters (script doc, *Two reveals*), and it is the only pre-Scene-7 anomaly the player is meant to actually catch. Even there it is a held detail rather than an effect: no glow, no magic ripple, no glitch, and at a glance still an ordinary puddle on an ordinary street.
 
 ---
 
@@ -309,7 +309,11 @@ Use the master style + Tier-2 object suffix for all prompts below.
 
 ## O212 — Street puddle
 
-> shallow curb puddle reflecting part of a smiling face and nearby street, reflection disturbed by passing vehicle ripple, subtle
+> shallow curb puddle reflecting part of a smiling face and nearby street, the reflected face very slightly out of step with the person above it, and at one edge of the water a faint sliver of architecture belonging to somewhere else — a pale window or glass door with no source on this street — subtle enough to miss at a glance, reflection disturbed by a passing vehicle ripple
+
+**This is the chapter's first anomaly** (§3, water continuity). The wrong architecture must be
+findable but not announced: a player who scans the image sees a puddle, and a player who studies it
+sees that something is in it twice over. No glow, no seam, no double-exposure effect.
 
 ## O213 — Bar glass
 
@@ -398,6 +402,11 @@ Keep animation minimal and primarily CSS-based.
 ### Scene 4
 - If `turned_back=true`, reuse scene art with subtle pan/crop; figure becomes smaller behind passing pedestrian.
 - Puddle ripple briefly breaks the reflected smile.
+- **The lag, if animated at all, is one beat and never repeats.** The reflected smile arrives roughly
+  a blink after the real one — no more than ~150ms, once. Nothing marks it, nothing replays it, and it
+  does not happen again on revisit. A player who missed it should be able to wonder whether they did.
+- After the ripple settles, the wrong architecture holds for a moment in the water and then is simply
+  gone. Fade, do not cut, and do not draw the eye to it.
 
 ### Scene 5
 - Layer ambient crowd motion as very subtle parallax.
@@ -528,7 +537,7 @@ Before accepting a generated image, verify:
 - [ ] Can the key silhouette/object be read at web-game size?
 - [ ] Does Scene 5 feel like memory overlap rather than digital corruption?
 - [ ] Is Scene 6 visually modest rather than sentimentally overproduced?
-- [ ] Is Scene 7 the first unmistakably symbolic image?
+- [ ] Is Scene 7 the first unmistakably *symbolic* image — with Scene 4's puddle the only earlier *anomaly*, and still an ordinary puddle at a glance?
 - [ ] Do the three ending images feel like three responses to the same pool, not three unrelated artworks?
 
 ---
