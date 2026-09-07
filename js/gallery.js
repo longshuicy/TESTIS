@@ -219,12 +219,19 @@ const Gallery = (function () {
 
     const foot = document.createElement("p");
     foot.className = "wall-foot";
-    foot.innerHTML = WALL.credit.map(esc).join("<br>");
+    foot.innerHTML = (WALL.credit || []).map(esc).join("<br>");
     wall.appendChild(foot);
 
-    wall.appendChild(secretBlock());
+    // Chapter II's wall has no plaque: there is no Morse in that chapter, so
+    // there is nothing withheld for a plaque to hand back. A wall without a
+    // `secretPrompt` simply doesn't grow one.
+    if (hasSecret()) wall.appendChild(secretBlock());
 
     return wall;
+  }
+
+  function hasSecret() {
+    return !!(WALL && WALL.secretPrompt);
   }
 
   /* ─────────────────────────────────────────────────────── the secret plaque
@@ -488,10 +495,14 @@ const Gallery = (function () {
 
     overlay.appendChild(build());
 
-    if (final) {
+    // A wall with no `again` offers no way out at all, which is Chapter II's
+    // whole point: Chapter I is a relay and loops, Chapter II is about the fact
+    // that nothing came next, so its wall is the last screen and it stays there.
+    // The only exit is the browser's own.
+    if (final && WALL.again) {
       const wrap = document.createElement("div");
       wrap.className = "continue-wrap wall-again" +
-        (secretRevealed ? "" : " wall-again-pending");
+        (hasSecret() && !secretRevealed ? " wall-again-pending" : "");
       const again = document.createElement("button");
       again.type = "button";
       again.className = "continue";
@@ -551,10 +562,21 @@ const Gallery = (function () {
 
   function setRevealAll(v) { revealAll = !!v; }
 
+  // Chapter switch. The count belongs to the chapter that earned it, and the
+  // catalogue is derived from whichever SCENES/ENDINGS are active, so carrying
+  // Chapter I's inked cells into Chapter II's wall would credit it with plates
+  // it never showed. The plaque state resets with it.
+  function reset() {
+    seen.clear();
+    secretRevealed = false;
+    secretPrompted = false;
+  }
+
   return {
     saw: saw,
     open: open,
     close: dismiss,
+    reset: reset,
     setRevealAll: setRevealAll,
     count: () => catalogue().filter(i => has(i.id)).length,
     total: () => catalogue().length

@@ -8,7 +8,7 @@
 //
 // See docs/superstes-script.md § The Tally Wall.
 
-const WALL = {
+const WALL_C1 = {
   heading: "Something is already keeping count",
 
   // Registers are matched against the asset's filename prefix, in order. An

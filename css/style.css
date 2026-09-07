@@ -293,6 +293,32 @@ em { font-style: italic; color: #f7f2e6; }
   color: #4a453c;
 }
 
+/* The second door into Chapter II. Quieter than everything around it — dimmer
+   than .foot's own grey, no border, no emphasis — so it reads as a footnote a
+   returning player finds rather than an option the game is offering. It brings
+   itself only as far as legible on hover. */
+.foot.skip {
+  margin-top: 0.85rem;
+}
+
+#skip-to-ii {
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  color: #332f29;
+  background: none;
+  border: 0;
+  padding: 0.35rem 0.2rem;
+  cursor: pointer;
+  transition: color 400ms ease;
+}
+
+#skip-to-ii:hover,
+#skip-to-ii:focus-visible {
+  color: var(--candle-dim);
+  outline: none;
+}
+
 /* ────────────────────────────────────────────────────── scene content */
 
 .scene-content {
@@ -329,6 +355,19 @@ em { font-style: italic; color: #f7f2e6; }
   height: 1px;
   margin: 1.4rem auto 0;
   background: linear-gradient(to right, transparent, var(--candle-dim), transparent);
+}
+
+/* A chapter subtitle, withheld until its reveal scene and then stated plainly.
+   No flash, no glitch, no animation — the art doc is explicit that the words
+   simply appear. It gets space around it and nothing else. */
+.title-reveal {
+  font-family: var(--label);
+  font-size: 0.82rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--candle);
+  margin: 3.5rem 0 3rem;
 }
 
 .narration p,

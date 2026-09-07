@@ -6,7 +6,7 @@
 //   {morse}        renders the block's `morse` field as a typed inscription
 //   {player_name}  renders the carved name, or "a name" if declined
 
-const SCENES = [
+const SCENES_C1 = [
 
   // ─────────────────────────────────────────────────────────────── SCENE 1
   {
