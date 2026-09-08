@@ -71,6 +71,14 @@ it there — don't let it leak into the wrong doc or drift the docs out of sync 
   the downscale is load-bearing (decoded bitmap memory, not file size, is what crashes phones).
 - `assets/widgets/` holds standalone HTML prototypes. Nothing there is fetched at runtime — the
   shipped calendar is built in `main.js`, and fetching fragments would break `file://`.
+- `assets_original/chapter_II/` holds the Chapter II art as delivered, git-ignored like the other art
+  working directories. It is the source of truth for a re-run of
+  `scripts/prepare_chapter2_art.sh`, which is Chapter II's extra shipping step: Chapter I's masters
+  arrived already in their final palette, Chapter II's did not (neutral grey instead of navy, and one
+  image delivered inverted). That script renames, fixes, palette-unifies via `scripts/unify_colors.py`,
+  and then hands off to `optimize_images.sh` as normal. Art doc §4 *Shipping these files* explains each
+  step. `unify_colors.py` is a **hue** unifier and barely touches luminance — do not reach for it to
+  fix a too-bright image.
 - `assets_sound_src/` holds the original 320kbps/24-bit audio masters, git-ignored like the other
   working directories. Shipped audio is re-encoded from there by `scripts/optimize_audio.sh`, never
   edited in place — the audio counterpart to `scripts/optimize_images.sh`, same masters-are-truth

@@ -153,14 +153,33 @@ image in a different chapter.
 ### Shipping these files
 
 Filenames above are the **shipped** `.webp` in `assets/images/`, which is what `js/scenes-c2.js` and
-`js/endings-c2.js` reference. Generated art is a master, not a shipped file: drop the PNG master in
-`assets_backup/images-png-master/` and run `./scripts/optimize_images.sh`. Widths, quality and the
-reason the downscale is not optional are all in Chapter I's art doc §3c — that section governs both
-chapters and is not restated here.
+`js/endings-c2.js` reference. Widths, quality and the reason the downscale is not optional are all in
+Chapter I's art doc §3c — that section governs both chapters and is not restated here.
 
-**None of these files exist yet, and the game runs anyway.** `main.js` draws a procedural stand-in for
-any asset that 404s, so Chapter II is fully playable with placeholder plates; drop the real file in at
-the same path and it just works.
+**31 of the 32 are delivered and shipping.** The one gap is **O207 `obj-phone-message`** (Scene 2's
+glowing phone), which was not in the delivery. `main.js` draws a procedural stand-in for any asset
+that 404s, so that hotspot is fully playable meanwhile; drop the real file in and re-run the script.
+
+**Chapter II does not ship the way Chapter I does, and needs its own step first.** Chapter I's masters
+arrived already in their final palette, so its whole shipping path is `optimize_images.sh`. Chapter
+II's originals needed two fixes before that, so the pipeline is written down as
+`./scripts/prepare_chapter2_art.sh`:
+
+| Step | What and why |
+|---|---|
+| Rename | Three delivered names differ from this manifest, which is what the code references and therefore wins: `obj-cup-holder-receipt` → `obj-cup-receipt`, `obj-school-bag` → `obj-schoolbag`, and `obj-parked-car` → **`obj-packed-car`** (the car is packed for a move, not parked). |
+| Invert `scene-01-dropoff` | It was delivered **light-ground** — black ink on pale grey, the inverse of every other asset in both chapters. It is negated back into the house idiom, cold linework on near-black, before the palette remap. |
+| `unify_colors.py` | Remaps onto Chapter I's four anchors. Chapter II comes out of the generator **neutral cool grey** (`#51565E`, `#939DAB`) where Chapter I is **navy/steel-blue** (`#354153`, `#495972`); this is what puts them in the same world. It is a *hue* unifier and deliberately barely touches luminance — which is exactly why it cannot fix an inverted image, and why the negate above has to happen first. |
+| `optimize_images.sh` | Unchanged, and run across the whole master directory. It re-encodes from masters and is byte-deterministic, so Chapter I's files are rewritten with identical bytes and leave no diff. Verified, not assumed. |
+
+Delivered originals live in `assets_original/chapter_II/` and are git-ignored like every other art
+working directory. They are the source of truth for a re-run; the script never works from its own
+output.
+
+**Chapter II is lighter than Chapter I on purpose and this is not drift.** Its scenes land around
+0.15–0.35 mean luminance against Chapter I's 0.02–0.09, because Chapter II is daylit — cars, parking
+lots, a street after rain, a classroom in late afternoon — where Chapter I is candle-and-fog. Do not
+"correct" it toward Chapter I.
 
 ### Ending images
 
