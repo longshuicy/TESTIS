@@ -498,10 +498,9 @@ const Gallery = (function () {
 
     overlay.appendChild(build());
 
-    // A wall with no `again` offers no way out at all, which is Chapter II's
-    // whole point: Chapter I is a relay and loops, Chapter II is about the fact
-    // that nothing came next, so its wall is the last screen and it stays there.
-    // The only exit is the browser's own.
+    // A wall with no `again` offers no way out at all — the only exit is the
+    // browser's own. Chapter II used to ship that way; it now carries Begin
+    // again (script doc, reversed decision) but still has no nextChapter.
     if (final && WALL.again) {
       const wrap = document.createElement("div");
       wrap.className = "continue-wrap wall-again" +
@@ -589,8 +588,12 @@ const Gallery = (function () {
   // Chapter switch. The count belongs to the chapter that earned it, and the
   // catalogue is derived from whichever SCENES/ENDINGS are active, so carrying
   // Chapter I's inked cells into Chapter II's wall would credit it with plates
-  // it never showed. The plaque state resets with it.
+  // it never showed. Clear the catalogue cache too — it was built against the
+  // previous chapter's SCENES/ENDINGS — and drop revealAll so a `?all` visit
+  // cannot ink the next chapter's wall for free. The plaque state resets with it.
   function reset() {
+    cache = null;
+    revealAll = false;
     seen.clear();
     secretRevealed = false;
     secretPrompted = false;

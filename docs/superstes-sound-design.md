@@ -220,12 +220,15 @@ is the chapter's own motif: water is in every scene, and Scene 7 is where all of
 | `bed-c2-drip.wav` | 11.9s, nine drip intervals at 1.323s, mono 16-bit 48kHz, ~1.1MB. Cut seamlessly from `drip.wav` by `scripts/make_c2_drip_bed.py`. |
 
 **WAV, not AAC**, for the §7 reason: encoder padding would put a gap at the loop point. Same
-exception `bed-scene-5.wav` and `drip-single.wav` take.
+exception `bed-scene-5.wav` and `drip-single.wav` take — `bed-c2-drip.wav` is the third WAV.
 
 **It never restarts.** All ten `BEDS` keys (`c2-scene-1`…`c2-ending-c`) are the *same spec object*,
 and `bedElement` pools by `src|rate|loop` rather than by key name, so all ten resolve to one `<audio>`
 element. `playBed` then takes its "same bed, just bring it back up" path at every scene change instead
-of cutting over. One unbroken loop for the chapter's whole 15–22 minutes.
+of cutting over. One unbroken loop for the chapter's whole 15–22 minutes. Choice beats still halt it
+briefly (the same `haltBed` Chapter I uses) — "unbroken" means it does not rewind or cut over between
+scenes, not that it never pauses. The universal prompt/confirm cues still fire; they are interface,
+not score.
 
 That pooling change is safe for Chapter I: its only shared `src` is `bed-scene-2.m4a`, held by
 `scene-2` and by `scene-6` at `rate: 0.89`, and the rate is part of the pool identity — so those stay
@@ -258,10 +261,12 @@ alone when there is no sting. Chapter I's four plates all have stings, so nothin
 Chapter I's Scene 2 plate still gets its hard cut into silence, because that silence comes from its
 own sting arriving over a cut bed, not from this branch.
 
-So Chapter II has exactly one sound, start to finish: the drip. The plate is not an exception to it.
+So Chapter II has exactly one *bed*, start to finish: the drip. The plate is not an exception to it.
+(The prompt/confirm cues and the title-door `chapterTease` drip still fire; they are interface.)
 
-Nothing above changes the `Sound` interface in §12; these are `BEDS` and plate-sting entries, not new
-call sites.
+Nothing above changes the `Sound` interface in §12 beyond documenting `chapterTease` and the
+sting-gated `plateOpened` behaviour; these are still `BEDS` and plate-sting entries, not new call
+sites for narrative moments.
 
 ---
 
@@ -404,7 +409,7 @@ asset and no bytes. The `AudioContext` is created on a user gesture so it starts
 | Generative (Suno, ElevenLabs SFX) | Per-service | Fastest route for the 10 beds; check licence terms for game use. |
 
 **Format as shipped:** **AAC in an MP4 container (`.m4a`)** — 96kbps for beds, 128kbps for the plate
-stings — with two exceptions that stay uncompressed, below. AAC rather than MP3 because macOS
+stings — with three exceptions that stay uncompressed, below. AAC rather than MP3 because macOS
 `afconvert` is the encoder here and cannot write MP3; support is universal in every browser this
 game targets. Audio lazy-loads and never blocks the first scene render.
 
@@ -413,7 +418,7 @@ by the `afconvert` pipeline. They were delivered as MP3, they are 41KB and 129KB
 them to AAC would save nothing worth the generation loss. Do not assume one extension anywhere in
 this directory; `js/audio.js` is the only place the filenames are written down.
 
-Two files stay WAV on purpose:
+Three files stay WAV on purpose:
 
 - **`bed-scene-5.wav`** is a seamless tick loop, and every lossy codec adds encoder padding at the
   head and tail that a loop turns into an audible click. It is 16-bit stereo (down from 24-bit),
@@ -421,7 +426,11 @@ Two files stay WAV on purpose:
   player rarely reaches the loop point.
 - **`drip-single.wav`** is 60KB and is fired dozens of times in a row with tight timing. Nothing to
   gain by compressing it, and decode latency to lose.
-**`plate-scene-7.m4a` looks like it should be a third exception and is not.** It loops, so the
+- **`bed-c2-drip.wav`** is Chapter II's continuous drip bed — an 11.9s seamless loop cut from
+  `drip.wav` by `scripts/make_c2_drip_bed.py`. Same loop-gaplessness reason as `bed-scene-5.wav`.
+  Built by that script, not by `optimize_audio.sh`.
+
+**`plate-scene-7.m4a` looks like it should be a fourth exception and is not.** It loops, so the
 `bed-scene-5` rule appears to apply — but that rule needs a loop whose head meets its tail, and this
 recording fades to digital silence 1.15s before it ends. AAC's padding (measured at 64ms) lands
 inside silence the recording already has. Checked, not assumed, and the check is the point: *does the
@@ -492,8 +501,9 @@ Cut from the bottom. The asset count is now small enough that all of this is ach
 3. **Scene beds.** Nine loops, since Scene 6 is Scene 2 pitched down.
 4. **The three plate stings.**
 
-**Total asset count: 14.** Nine beds, two drip files (the source recording and the single-drip cut
-taken from it), three plate stings. Everything else is sequencing, silence, or volume automation —
+**Total shipped audio count: 17.** Nine Chapter I beds, one Chapter II drip bed, two drip files
+(the source recording lives in `assets_sound_src/` only; the single-drip cut ships), four plate
+stings, two interface cues. Everything else is sequencing, silence, or volume automation —
 including Scene 4's low note, which is synthesised (§6).
 
 ---
@@ -506,7 +516,7 @@ mapping (which scene gets which bed, which plate gets which sting) is itself a s
 lives with the rest of the sound logic in the `BEDS`, `STINGS` and `CLOCKS` tables. Keys in those
 tables are scene ids and tier2 hotspot ids, so a renamed scene or hotspot must be renamed there too.
 
-### Beds (9)
+### Beds (10)
 
 | Filename | Scene | Mood |
 |---|---|---|
@@ -519,6 +529,7 @@ tables are scene ids and tier2 hotspot ids, so a renamed scene or hotspot must b
 | `bed-ending-a.m4a` | Ending A, The Drained | Water running out of a room that is already empty. Not grief exactly — the sound after grief, when the feeling has finished and what remains is the absence of it. Does not loop; should end and not return. |
 | `bed-ending-b.m4a` | Ending B, The Kept Hour | Something broken that is still trying. Ragged at the edges, interrupted, going wrong in small ways and then in larger ones. And then, without warning, complete silence, which is not peace. |
 | `bed-ending-c.m4a` | Ending C, The Relay | The only ending permitted to sound like continuity rather than conclusion. Unresolved — not because it is sad, but because it has handed something to the next movement and that movement has not begun yet. Held open. |
+| `bed-c2-drip.wav` | Chapter II, every scene and ending (§3) | One drip loop. No music. Cut seamlessly from `drip.wav` by `scripts/make_c2_drip_bed.py`. |
 
 > **Scene 6 has no dedicated bed.** Load `bed-scene-2.m4a` and set `playbackRate = 0.89`
 > (roughly two semitones down, also slowing it slightly, which suits the scene). If that sounds
@@ -534,6 +545,9 @@ tables are scene ids and tier2 hotspot ids, so a renamed scene or hotspot must b
 `drip-single.wav` is derived, not sourced — regenerate it from `drip.wav` rather than re-recording if
 it ever needs to change. Keep it mono 16-bit: 24-bit WAV playback in `<audio>` is not reliable
 everywhere, and the sample is short enough that the format costs nothing.
+
+`bed-c2-drip.wav` is the other cut of the same master — see §3 and the Beds table above. Regenerate
+it with `scripts/make_c2_drip_bed.py`, not by hand.
 
 ### Plates (4)
 
@@ -598,6 +612,7 @@ stay as they are.
 
 ```
 assets/sound/                 assets_sound_src/     (git-ignored originals)
+  bed-c2-drip.wav               drip.wav  (cut by scripts/make_c2_drip_bed.py)
   bed-ending-a.m4a              bed-ending-a.mp3
   bed-ending-b.m4a              bed-ending-b.mp3
   bed-ending-c.m4a              bed-ending-c.mp3
@@ -616,8 +631,8 @@ assets/sound/                 assets_sound_src/     (git-ignored originals)
   prompt-notification.mp3       —  (delivered as shipped)
 ```
 
-16 shipped files. **Mixed `.m4a`, `.wav` and `.mp3` — load each by its exact filename.** Do not
-assume a single extension and do not derive one from the scene id; the two WAVs are WAVs and the two
+17 shipped files. **Mixed `.m4a`, `.wav` and `.mp3` — load each by its exact filename.** Do not
+assume a single extension and do not derive one from the scene id; the three WAVs are WAVs and the two
 cues are MP3s for the reasons in §7.
 Alphabetical order matches Finder and most file browsers.
 
@@ -631,9 +646,10 @@ It is the audio counterpart to `scripts/optimize_images.sh` and keeps the same b
 encodes from the masters in `assets_sound_src/`, never from its own output, so re-running it does not
 stack generational loss, and it never edits a shipped file in place. The rules it implements are the
 ones above — beds to AAC 96k, stings to AAC 128k, `bed-scene-5` down to 16-bit WAV, looping stings to
-16-bit WAV if listed in `STING_LOOP`. It skips the two delivered-as-shipped cues and `drip-single.wav`
-(which is a cut this script does not make, see §10). Masters that are Float32 are brought down to
-16-bit even when they stay WAV: 32-bit float playback in `<audio>` is not reliable across browsers.
+16-bit WAV if listed in `STING_LOOP`. It skips the two delivered-as-shipped cues, `drip-single.wav`,
+and `bed-c2-drip.wav` (cuts this script does not make, see §10). Masters that are Float32 are brought
+down to 16-bit even when they stay WAV: 32-bit float playback in `<audio>` is not reliable across
+browsers.
 
 Underneath, it is these three `afconvert` calls, which ship with macOS and need no install:
 
@@ -742,8 +758,8 @@ bookkeeping that must survive being switched on mid-scene (which bed is current,
 | `Sound.titleShown()` | `DOMContentLoaded`, right after `init` | Brings up Scene 5's bed under the title screen (see §3). Cut over the normal way when Scene 1's bed starts — no special-casing |
 | `Sound.sceneStarted(id)` | `renderScene`, inside the fade | Brings that scene's bed up from silence (cutting any bed still sounding first, never across it), clears `halted`, warms the next bed, stops any morse |
 | `Sound.endingStarted(id)` | `renderEnding` | Brings up the ending's bed, cutting any interface cue the final choice left ringing. The only place an ending's bed begins |
-| `Sound.plateOpened(sceneId)` | `renderPlate`, once visible | Cuts a still-sounding bed over 200ms and starts that plate's sound — one-shot, or looping at its own volume if the `STINGS` entry says so |
-| `Sound.plateClosed()` | `renderPlate`, on dismiss | Fades that sound out with the plate, so nothing a plate started carries into the scene behind it. A sting with its own `fadeOut` still goes, only slowly enough that the next bed comes up through it (Scene 7) |
+| `Sound.plateOpened(sceneId)` | `renderPlate`, once visible | If the plate has a sting, cuts a still-sounding bed over 200ms and starts that plate's sound — one-shot, or looping at its own volume if the `STINGS` entry says so. A sting-less plate (Chapter II Scene 7) leaves the bed alone |
+| `Sound.plateClosed()` | `renderPlate`, on dismiss | Fades that sound out with the plate, so nothing a plate started carries into the scene behind it. A sting with its own `fadeOut` still goes, only slowly enough that the next bed comes up through it (Scene 7). No-op when the plate had no sting |
 | `Sound.hotspotOpened(sceneId, item)` | tier2 accordion, on open | Water-clocks start their morse; the tally sets `AUDIO.dim` and stops the bed; everything else is silent |
 | `Sound.hotspotClosed(sceneId, item)` | tier2 accordion, on close | Stops the morse; brings the bed back after the tally, quieter — unless a choice has since halted it |
 | `Sound.choicesArriving(sceneId)` | `renderChoices`, when a choice block uncovers itself | Settles the bed out and halts it until the next scene. **This is where the music stops** |
@@ -752,6 +768,7 @@ bookkeeping that must survive being switched on mid-scene (which bed is current,
 | `Sound.nameCarved()` | the Scene 1 gate interaction, on a name actually carved | The confirmation. Declining sounds nothing |
 | `Sound.secretPrompted()` | the tally wall's secret plaque, once, when the player scrolls (or tabs) to it | The prompt cue — the same one every in-scene choice sounds as its question arrives |
 | `Sound.secretRevealed()` | the tally wall's secret plaque, on a matching guess or the ask-outright link | The confirmation. A wrong guess sounds nothing |
+| `Sound.chapterTease()` | title-screen Chapter II door, on hover/focus | One drip from the Morse pool — Chapter II's whole bed in miniature |
 | `Sound.branchChosen(sceneId, nextId)` | `renderExit`, on selection | Scene 4 sounds the low note. Scene 7 sounds nothing |
 
 `sceneId` on a plate is the scene the plate **belongs to** — the arriving scene for an opening plate,

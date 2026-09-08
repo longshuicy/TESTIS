@@ -7,18 +7,20 @@ Guidance for Claude Code (or any agent) working in this repo.
 SUPERSTES is a short narrative web game. Plain HTML/CSS/JS, no build step, no backend, no persistence.
 See [README.md](README.md) for how to run it.
 
-## The four docs — read this before touching anything
+## The docs — read this before touching anything
 
-This repo's content is governed by four companion docs in `docs/`. Each is the **single source of
+This repo's content is governed by companion docs in `docs/`. Each is the **single source of
 truth** for its own domain. They cross-reference each other and are written to agree; keeping them
 in sync is more important than any individual edit.
 
 | Doc | Domain | Owns |
 |---|---|---|
-| [docs/superstes-script.md](docs/superstes-script.md) | **Story** | All narrative content: scene text, dialogue, object descriptions, flag/state logic tied to story meaning, branch points, endings, theme, tone. Where the four docs disagree, **this one wins.** |
-| [docs/superstes-art-prompts.md](docs/superstes-art-prompts.md) | **Art** | Image generation prompts, style/negative-prompt boilerplate, asset filenames, what each asset depicts. |
-| [docs/superstes-tech-design.md](docs/superstes-tech-design.md) | **Tech** | Stack choices, file structure, the state machine, data shapes (SCENES/ENDINGS schema), constraints (no framework, no build step, `file://`-safe). Deliberately contains **no narrative content** — code examples with story text are illustrative only, never the real strings. |
-| [docs/superstes-sound-design.md](docs/superstes-sound-design.md) | **Sound** | Beds, stings, the morse drip, the toggle, volume behavior, audio filenames, and the `Sound` interface `main.js` calls. Audio filenames live in `js/audio.js`, never in `scenes.js`/`endings.js`. |
+| [docs/superstes-script.md](docs/superstes-script.md) | **Story (Ch I)** | Chapter I narrative: scene text, dialogue, object descriptions, flag/state logic tied to story meaning, branch points, endings, theme, tone. Where the docs disagree on Chapter I story, **this one wins.** |
+| [docs/superstes-chapter-2-script.md](docs/superstes-chapter-2-script.md) | **Story (Ch II)** | Chapter II narrative — same ownership rules for Chapter II content. |
+| [docs/superstes-art-prompts.md](docs/superstes-art-prompts.md) | **Art (Ch I)** | Chapter I image generation prompts, style/negative-prompt boilerplate, asset filenames, what each asset depicts. |
+| [docs/superstes-chapter-2-art-prompts.md](docs/superstes-chapter-2-art-prompts.md) | **Art (Ch II)** | Chapter II art prompts and filenames. |
+| [docs/superstes-tech-design.md](docs/superstes-tech-design.md) | **Tech** | Stack choices, file structure, the state machine, data shapes (SCENES/ENDINGS schema), chapter switching, constraints (no framework, no build step, `file://`-safe). Deliberately contains **no narrative content** — code examples with story text are illustrative only, never the real strings. |
+| [docs/superstes-sound-design.md](docs/superstes-sound-design.md) | **Sound** | Beds, stings, the morse drip, Chapter II's drip bed, the toggle, volume behavior, audio filenames, and the `Sound` interface `main.js` calls. Audio filenames live in `js/audio.js`, never in `scenes.js`/`endings.js`. |
 
 ### Routing rule for new content
 
@@ -85,18 +87,20 @@ it there — don't let it leak into the wrong doc or drift the docs out of sync 
   edited in place — the audio counterpart to `scripts/optimize_images.sh`, same masters-are-truth
   bargain. `drip.wav` lives there too: the game loads `drip-single.wav`, one drip cut out of it (a cut
   the script does not make). See sound doc §10.
-- Shipped audio is mixed `.m4a` and `.wav` — `bed-scene-5.wav` and `drip-single.wav` are
-  deliberately uncompressed (loop gaplessness and trigger latency). Never assume one extension;
-  sound doc §7 explains both exceptions. `plate-scene-7.m4a` loops and is *not* a third exception:
-  AAC's padding lands inside silence its recording already ends with. That was checked, not assumed —
-  the question is whether the seam falls in sound or in silence, not whether the file loops.
+- Shipped audio is mixed `.m4a` and `.wav` — `bed-scene-5.wav`, `drip-single.wav`, and
+  `bed-c2-drip.wav` are deliberately uncompressed (loop gaplessness and trigger latency). Never
+  assume one extension; sound doc §7 explains the WAV exceptions. `plate-scene-7.m4a` loops and is
+  *not* one of them: AAC's padding lands inside silence its recording already ends with. That was
+  checked, not assumed — the question is whether the seam falls in sound or in silence, not whether
+  the file loops.
 - Audio still ships over the sound doc's 8MB budget (~31MB, down from ~127MB). The remaining gap is
   bed *length*, not bitrate, and closing it means trimming the music to loops — an editorial call
   that has not been made. See sound doc §7 before "fixing" it.
 
 ## Conventions
 
-- No ES modules — plain `<script>` tags sharing globals, load order: `scenes.js`, `endings.js`,
-  `audio.js`, `main.js`. Keep it that way (see tech doc §1 for why).
+- No ES modules — plain `<script>` tags sharing globals. Load order: every chapter's data files →
+  `chapters.js` → `audio.js` → `gallery.js` → `main.js` (see `index.html` and tech doc §2). Keep it
+  that way (see tech doc §1 for why).
 - No framework, no npm, no bundler, no backend, no persistence. Don't introduce any of these without
   discussing it with the user first — it's a stated constraint, not an oversight.
