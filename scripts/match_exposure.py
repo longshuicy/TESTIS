@@ -9,7 +9,7 @@ that unify_colors.py applies or the two chapters stop matching.
 
 So this runs BEFORE unify_colors.py and only moves luminance:
 
-    per-image black point  ->  unify_colors.py (palette)  ->  optimize_images.sh
+    per-image levels  ->  unify_colors.py (palette)  ->  optimize_images.sh
 
 Order matters. Darkening first means a crushed midtone lands on the *dark* end
 of the anchor ramp and a highlight still lands on the light end, so the result
@@ -18,9 +18,10 @@ Chapter I looks like. Darkening afterwards would instead dim the anchors
 themselves, flattening exactly the highlights that give Chapter I its lit
 surfaces.
 
-The black point is solved per image against the *composed* transform (the lift,
-then the anchor curve), so the number quoted here is the mean the file will
-actually have after unify_colors runs. ANCHORS is imported from unify_colors rather than
+The black point is solved per image against the *composed* transform (the levels
+adjustment, then the anchor curve), so the number quoted here is the mean the
+file will actually have after unify_colors runs. The white point is set from a
+high percentile of the source rather than solved. ANCHORS is imported from unify_colors rather than
 copied, so the palette has one definition.
 
 Relative order is preserved rather than every image being snapped to one value:
@@ -51,9 +52,26 @@ ANCHORS = _uc.ANCHORS
 # the tighter, darker band; objects appear in the examine panel over their own
 # scrim and can hold a little more light.
 BANDS = {
-    "wide":   (0.030, 0.078),
-    "object": (0.035, 0.090),
+    "wide":   (0.045, 0.088),
+    "object": (0.050, 0.098),
+    # Plates play undimmed and full-screen — the CSS says so outright — so
+    # Chapter I's plate sits at 0.118 mean against its scenes' 0.020-0.063.
+    # Chapter II's one plate is matched to that, not to its scenes.
+    "plate":  (0.100, 0.125),
 }
+
+# Floor on the width of the levels window. Below this the stretch amplifies the
+# source's own grain into visible snow: the plate first solved to a 0.09-wide
+# window and came out as speckle. Holding a minimum span and letting the black
+# point fall to compensate keeps the same mean without the noise.
+MIN_SPAN = 0.30
+
+# Where the white point lands, as a percentile of the source's luminance. Only
+# lifting the black point darkened without ever *expanding* anything, so the art
+# came out dark and low-contrast. Pulling the white point down to just under the
+# brightest content stretches what is left across the full range, so highlights
+# reach true white and the drawing gets its snap back.
+WHITE_PCT = 99.3
 
 _STOPS = np.array([a[0] for a in ANCHORS], dtype=np.float64)
 _COLS = np.array([a[1] for a in ANCHORS], dtype=np.float64)
@@ -62,38 +80,46 @@ _ANCHOR_LUM = 0.2126 * _COLS[:, 0] + 0.7152 * _COLS[:, 1] + 0.0722 * _COLS[:, 2]
 
 
 def role(name):
-    return "object" if name.startswith("obj-") else "wide"
+    if name.startswith("obj-"):
+        return "object"
+    if name.startswith("plate-"):
+        return "plate"
+    return "wide"
 
 
 def lum(arr):
     return 0.2126 * arr[..., 0] + 0.7152 * arr[..., 1] + 0.0722 * arr[..., 2]
 
 
-def lift_black(x, black):
-    """Raise the black point, keeping white at white.
+def levels(x, black, white):
+    """A levels adjustment: black point up, white point down, range restretched.
 
-    A plain gamma was the obvious way to darken and the wrong one: it pulls the
-    linework down along with the ground, so the image gets dark and *flat*
-    (measured: Chapter II fell to sd 0.04 against Chapter I's 0.08-0.13). This
-    instead crushes the murky low end to true black and leaves the bright end
-    where it is, which is how Chapter I reads -- near-black ground, linework
-    still bright. Contrast goes up while the mean comes down.
+    Two earlier attempts were both wrong in an instructive way. A plain gamma
+    pulls the linework down along with the ground, so the art goes dark and flat
+    (sd 0.04 against Chapter I's 0.08-0.13). Lifting only the black point fixed
+    the mean but still never expanded anything, so it stayed flat (sd ~0.05).
+
+    Doing both is what Chapter I actually looks like: the murky low end crushed
+    to true black, and whatever was brightest pulled up to true white, so the
+    drawing keeps its snap at a low overall mean.
     """
     b = black * 255.0
-    return np.clip((x - b) / max(255.0 - b, 1e-6), 0.0, 1.0) * 255.0
+    w = max(white * 255.0, b + 1e-6)
+    return np.clip((x - b) / (w - b), 0.0, 1.0) * 255.0
 
 
-def composed_mean(rgb, black):
-    """Mean luminance after the black lift and then the anchor curve."""
-    L = lum(lift_black(rgb, black))
+def composed_mean(rgb, black, white):
+    """Mean luminance after the levels adjustment and then the anchor curve."""
+    L = lum(levels(rgb, black, white))
     return float(np.interp(L, _STOPS, _ANCHOR_LUM).mean() / 255.0)
 
 
-def solve_black(rgb, target, lo=0.0, hi=0.97):
+def solve_black(rgb, target, white, lo=0.0, hi=0.97):
     """Bisect for the black point whose composed mean hits `target`."""
+    hi = min(hi, white - 1e-3)
     for _ in range(50):
         mid = (lo + hi) / 2.0
-        if composed_mean(rgb, mid) > target:
+        if composed_mean(rgb, mid, white) > target:
             lo = mid          # still too bright, crush harder
         else:
             hi = mid
@@ -131,13 +157,25 @@ def main():
             target = t_lo + (src_mean - s_lo) / span * (t_hi - t_lo)
 
             arr = np.asarray(Image.open(os.path.join(src, f)).convert("RGBA"), dtype=np.float64)
+            rgb = arr[..., :3]
 
-            black = solve_black(arr[..., :3], target)
+            # Solve the black point against a percentile white point, then, if
+            # that leaves too narrow a window, widen it and re-solve. Raising
+            # white lowers the output, so the re-solve pulls black back down and
+            # the mean is preserved at a lower amplification.
+            white = float(np.percentile(lum(rgb), WHITE_PCT)) / 255.0
+            black = solve_black(rgb, target, white)
+            for _ in range(4):
+                if white - black >= MIN_SPAN:
+                    break
+                white = min(black + MIN_SPAN, 1.0)
+                black = solve_black(rgb, target, white)
             out = arr.copy()
-            out[..., :3] = lift_black(arr[..., :3], black)
+            out[..., :3] = levels(rgb, black, white)
             Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).save(os.path.join(dst, f))
 
-            print(f"  {f:<28} {src_mean:.3f} -> {target:.3f} (black point {black:.3f})")
+            print(f"  {f:<28} {src_mean:.3f} -> {target:.3f} "
+                  f"(levels {black:.3f}-{white:.3f}, span {white - black:.2f})")
 
 
 if __name__ == "__main__":

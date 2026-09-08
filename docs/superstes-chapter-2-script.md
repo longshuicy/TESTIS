@@ -112,7 +112,7 @@ choices, nothing to click but *continue*.
 
 | Plate | Asset | Position | Job |
 |---|---|---|---|
-| Scene 7 opening | `plate-c2-pool.webp` | Before Scene 7's text | The arrival. First image allowed to be symbolic, and the seam where the voice changes. |
+| Scene 7 opening | `plate-c2-pool.webp` (4:5) | Before Scene 7's text | The arrival. First image allowed to be symbolic, and the seam where the voice changes. |
 
 **Why only one, and why here.** Scene 7 otherwise has to carry the pool, the seven figures arriving
 one by one, the reveal, the title, three inspectables, a reactive block *and* the three-way final

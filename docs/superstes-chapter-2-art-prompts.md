@@ -178,13 +178,26 @@ output.
 
 **Chapter II is exposure-matched to Chapter I, and that is a pipeline step, not a prompt note.**
 Out of the generator its scenes sat at 0.09–0.59 mean luminance against Chapter I's 0.02–0.08 — far
-too light to carry light prose. `scripts/match_exposure.py` solves a per-image **black point** so each
-lands inside Chapter I's envelope; shipped scenes now sit at 0.030–0.076.
+too light to carry light prose. `scripts/match_exposure.py` applies a per-image **levels adjustment**
+so each lands inside Chapter I's envelope. Shipped Chapter II now sits at 0.045–0.089 mean with
+sd 0.079–0.092, against Chapter I's 0.020–0.063 / 0.079–0.129.
 
-A black point rather than a gamma, deliberately: gamma pulls the linework down along with the ground,
-so the art goes dark *and flat* (measured, on the first attempt: sd fell to 0.04 against Chapter I's
-0.08–0.13). Lifting the black point instead crushes the murky low end to true black and leaves the
-bright end alone, which is how Chapter I reads — near-black ground, linework still bright.
+It took three attempts and the two failures are worth keeping, because both look correct as numbers:
+
+| Attempt | Result |
+|---|---|
+| Gamma | Pulls the linework down along with the ground. Dark *and flat* — sd fell to 0.04 against Chapter I's 0.08–0.13. |
+| Black point only | Fixed the mean, but only ever crushes and never *expands*, so it stayed flat at sd ~0.05. |
+| **Black + white point** | Crushes the murky low end to true black **and** pulls whatever was brightest up to true white. Low mean, contrast intact. This is what Chapter I looks like. |
+
+Two guards matter:
+
+- **`MIN_SPAN`.** A narrow levels window amplifies the source's own grain into visible snow — the
+  plate first solved to a 0.09-wide window and came out as speckle. The script holds a minimum span
+  and lets the black point fall to compensate, preserving the mean at lower amplification.
+- **Plates get their own band.** Plates play undimmed and full-screen (the CSS says so outright), so
+  Chapter I's plate sits at 0.118 mean against its scenes' 0.020–0.063. Chapter II's plate is matched
+  to *that*, not to its scenes, and lands at 0.100.
 
 It runs **before** `unify_colors.py`, and that order is load-bearing. Darkening first means a crushed
 midtone lands on the dark end of the anchor ramp while a highlight still lands on the light end.
@@ -192,14 +205,11 @@ Darkening afterwards would dim the anchors themselves and flatten exactly the hi
 Chapter I its lit surfaces.
 
 Source means are rank-mapped into a target band rather than every image being snapped to one value,
-so a dim bar stays dimmer than a bright street. Chapter II still ends up slightly flatter than
-Chapter I (sd ~0.05 against ~0.09–0.13) because its art is evenly detailed line work where Chapter
-I's is large black masses with hard highlights. That is a difference in the drawings, not something
-exposure maths should force.
+so a dim bar stays dimmer than a bright street.
 
-`scene-01-dropoff` is the one that fights it: delivered light-ground, it needs a 0.76 black point to
-reach 0.076, which flattens the drawing to a faint suggestion. It is legible and tonally consistent,
-but it wants **regenerating dark-ground** rather than transforming.
+`scene-01-dropoff` is the one that fights it: delivered light-ground, it needs a 0.75 black point to
+come down, and lands at sd 0.051 — the flattest thing in the chapter. It is legible and tonally
+consistent, but it wants **regenerating dark-ground** rather than transforming.
 
 ### Ending images
 
@@ -308,16 +318,23 @@ advance control. See the script doc's THE PLATE section.
 
 **Prompt:**
 
-> first-person downward view of one's own feet standing ankle-deep in a shallow impossible pool, ordinary shoes and trouser hems soaked, water only a few inches deep and perfectly clear, ordinary objects resting just beneath the surface within reach: a scratched reusable water bottle, a folded damp receipt, a cello case, a small cloth name tag, a train ticket, reflected on the surface above them the architecture of several incompatible places at once — automatic glass doors, a small station window, a painted parking stripe, a streetlamp, a bar table, tall classroom windows — all held still in the same water under a light belonging to none of them, no other people, no horror, quiet impossible stillness, black and white pen-and-ink line illustration, delicate graphite wash, sparse cross-hatching, high-contrast negative space, quiet melancholic contemporary realism, slightly dreamlike but not fantasy, elegant thin linework, restrained facial detail, soft film-grain texture, no color, no photorealism, no 3D render, no anime, no comic speech bubbles, no readable text, no logos, no watermark, symbolic but restrained, surrealism emerging from ordinary objects, cinematic horizontal composition, 16:9, no horror imagery
+> first-person downward view of one's own feet standing ankle-deep in a shallow impossible pool, ordinary shoes and trouser hems soaked, water only a few inches deep and perfectly clear, ordinary objects resting just beneath the surface within reach: a scratched reusable water bottle, a folded damp receipt, a cello case, a small cloth name tag, a train ticket, reflected on the surface above them the architecture of several incompatible places at once — automatic glass doors, a small station window, a painted parking stripe, a streetlamp, a bar table, tall classroom windows — all held still in the same water under a light belonging to none of them, no other people, no horror, quiet impossible stillness, black and white pen-and-ink line illustration, delicate graphite wash, sparse cross-hatching, high-contrast negative space, quiet melancholic contemporary realism, slightly dreamlike but not fantasy, elegant thin linework, restrained facial detail, soft film-grain texture, no color, no photorealism, no 3D render, no anime, no comic speech bubbles, no readable text, no logos, no watermark, symbolic but restrained, surrealism emerging from ordinary objects, vertical portrait composition, 4:5, no horror imagery
 
 **Composition brief.** This is the counterpart to S207, not a duplicate of it: **the plate looks
 down, the scene looks out.** The plate is intimate and first-person, holds the objects and the
 impossible reflections, and contains **no other people**. S207 is the wide view with the seven
 figures around the edge. Generate the two back to back so the water reads as the same water.
 
-Unlike a scene background, this image is never overlaid with hotspots — but it *does* carry the
-plate's paragraphs, so keep the upper half open enough to hold five short paragraphs of text. The
-objects and the standing feet belong in the lower two-thirds.
+**Ships 4:5 portrait, like every Chapter I plate.** Chapter I's held plates are all 800×1000, and the
+plate layout in `css/style.css` is built for that — the image is capped at `62vh` with the text
+running *beneath* it, not over it. So this needs no reserved space of its own; frame the feet and the
+objects and let the text sit below.
+
+The delivered original was landscape (1232×928) and `prepare_chapter2_art.sh` cuts a centred 742×928
+from it — full height, so nothing is lost vertically, and the centre column is where the feet and the
+submerged objects already were. If this is ever regenerated, generate it **4:5 directly** and the
+crop step becomes a no-op. It ships at 742×928 rather than 800×1000 only because
+`optimize_images.sh` never upscales, and the CSS cap is well below either.
 
 **Avoid:** a deep or dark pool; anything that could read as drowning, a grave, or a baptism; glowing
 or supernatural water; visible faces or figures; making the objects float rather than rest.

@@ -12,7 +12,8 @@
 # Pipeline:
 #   assets_original/chapter_II/   delivered PNGs (source of truth, untouched)
 #     -> rename to the manifest's names
-#     -> match_exposure.py          per-image gamma into Chapter I's range
+#     -> crop the plate to 4:5      matching Chapter I's held plates
+#     -> match_exposure.py          per-image levels into Chapter I's range
 #     -> unify_colors.py            palette remap onto Chapter I's anchors
 #     -> assets_backup/images-png-master/    joins the master set
 #     -> optimize_images.sh         downscale + WebP + wall thumbs
@@ -45,6 +46,14 @@ cp "$SRC"/*.png "$stage"/
 mv "$stage/obj-cup-holder-receipt.png" "$stage/obj-cup-receipt.png"
 mv "$stage/obj-parked-car.png"         "$stage/obj-packed-car.png"
 mv "$stage/obj-school-bag.png"         "$stage/obj-schoolbag.png"
+
+# The plate is cropped to 4:5 to match Chapter I's held plates, which all ship
+# 800x1000. Delivered 16:9-ish at 1232x928, it is cut to a centred 742x928 —
+# full height, so nothing is lost vertically, and the centre column is where the
+# feet and the submerged objects are. optimize_images.sh then lands it at
+# 800x1000, byte-for-byte the same framing Chapter I's plate uses.
+echo "cropping the plate to 4:5 ..."
+magick "$stage/plate-c2-pool.png" -gravity center -crop 742x928+0+0 +repage "$stage/plate-c2-pool.png"
 
 # NOTE: scene-01-dropoff was delivered light-ground — black ink on pale grey,
 # where every other asset in both chapters is dark-ground. It is shipped exactly
