@@ -205,8 +205,11 @@ const Gallery = (function () {
       section.appendChild(h3);
 
       const grid = document.createElement("div");
-      grid.className = "wall-grid " + slug(reg.label);
-      const groups = slug(reg.label) === "the-rooms" ? 3 : 1;
+      // Layout comes from the register's `layout` role, not its label — a
+      // renamed register must not lose its columns (see style.css).
+      const layout = reg.layout || "square";
+      grid.className = "wall-grid " + layout;
+      const groups = layout === "wide" ? 3 : 1;
 
       mine.forEach(item => {
         plate++;

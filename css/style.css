@@ -1294,10 +1294,14 @@ body.is-ending .scene-content { padding-top: 20vh; }
   color: var(--paper-faint);
 }
 
+/* Keyed off each register's `layout` role (wall.js), never its display name:
+   Chapter II renames every register, and keying this to the label silently
+   dropped the columns and the aspect-ratio, collapsing the grid to one giant
+   cell per row. */
 .wall-grid { display: grid; gap: 0.7rem; }
-.wall-grid.the-rooms   { grid-template-columns: repeat(2, 1fr); }
-.wall-grid.evidence    { grid-template-columns: repeat(5, 1fr); }
-.wall-grid.the-accused { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.wall-grid.wide     { grid-template-columns: repeat(2, 1fr); }
+.wall-grid.square   { grid-template-columns: repeat(5, 1fr); }
+.wall-grid.portrait { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 
 .wall-cell {
   position: relative;
@@ -1318,9 +1322,9 @@ body.is-ending .scene-content { padding-top: 20vh; }
 .wall-cell.seen:hover,
 .wall-cell.seen:focus-visible { border-color: var(--candle-dim); }
 
-.the-rooms   .wall-cell { aspect-ratio: 16 / 9; }
-.evidence    .wall-cell { aspect-ratio: 1 / 1; }
-.the-accused .wall-cell { aspect-ratio: 4 / 5; }
+.wide     .wall-cell { aspect-ratio: 16 / 9; }
+.square   .wall-cell { aspect-ratio: 1 / 1; }
+.portrait .wall-cell { aspect-ratio: 4 / 5; }
 
 .wall-cell.seen { cursor: pointer; }
 
@@ -1648,8 +1652,8 @@ body.wall-open { overflow: hidden; }
 }
 
 @media (max-width: 760px) {
-  .wall-grid.the-rooms   { grid-template-columns: 1fr; }
-  .wall-grid.evidence    { grid-template-columns: repeat(2, 1fr); }
-  .wall-grid.the-accused { grid-template-columns: repeat(2, 1fr); }
+  .wall-grid.wide     { grid-template-columns: 1fr; }
+  .wall-grid.square   { grid-template-columns: repeat(2, 1fr); }
+  .wall-grid.portrait { grid-template-columns: repeat(2, 1fr); }
   .wall-overlay { padding: 4rem 1rem 3.5rem; }
 }

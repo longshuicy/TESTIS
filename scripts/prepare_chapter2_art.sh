@@ -4,15 +4,14 @@
 #
 # Chapter I's masters arrived already in their final palette, so its shipping
 # path is nothing but optimize_images.sh. Chapter II's originals are neutral
-# cool grey rather than the navy the rest of the game is drawn in, and one of
-# them is inverted, so they need two fixes first. This script is those fixes
-# plus the handoff, written down so the result is reproducible rather than a
-# thing that happened once in a shell.
+# cool grey rather than the navy the rest of the game is drawn in, and three
+# are named differently from the manifest, so they need fixing first. This
+# script is those fixes plus the handoff, written down so the result is
+# reproducible rather than a thing that happened once in a shell.
 #
 # Pipeline:
 #   assets_original/chapter_II/   delivered PNGs (source of truth, untouched)
 #     -> rename to the manifest's names
-#     -> fix the one inverted image
 #     -> unify_colors.py            palette remap onto Chapter I's anchors
 #     -> assets_backup/images-png-master/    joins the master set
 #     -> optimize_images.sh         downscale + WebP + wall thumbs
@@ -46,13 +45,13 @@ mv "$stage/obj-cup-holder-receipt.png" "$stage/obj-cup-receipt.png"
 mv "$stage/obj-parked-car.png"         "$stage/obj-packed-car.png"
 mv "$stage/obj-school-bag.png"         "$stage/obj-schoolbag.png"
 
-# scene-01-dropoff was delivered light-ground: black ink on pale grey, the
-# inverse of every other asset in both chapters. unify_colors.py remaps hue and
-# deliberately leaves luminance almost alone, so it cannot fix this — a bright
-# image stays bright. Negating first puts it back in the house idiom, cold
-# linework on near-black, before the palette remap runs.
-echo "inverting scene-01-dropoff (delivered light-ground) ..."
-magick "$stage/scene-01-dropoff.png" -negate "$stage/scene-01-dropoff.png"
+# NOTE: scene-01-dropoff was delivered light-ground — black ink on pale grey,
+# where every other asset in both chapters is dark-ground. It is shipped exactly
+# as delivered regardless: Chapter I's pipeline inverts nothing, and negating
+# this one produced a photographic-negative look that matched neither Chapter I
+# nor the rest of Chapter II. A pixel operation cannot turn a light line drawing
+# into Chapter I's dark painted scenes; that image wants regenerating at source.
+# Do not add an invert step here.
 
 # Palette remap onto Chapter I's four anchors. This is a hue unifier, not a
 # darkener: Chapter II is neutral cool grey out of the generator, Chapter I is

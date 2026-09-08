@@ -19,9 +19,9 @@ const WALL_C1 = {
   // "scene-" alone would also miss it — the prefixes are tested with
   // startsWith, and "plate-scene-7" does not begin with "scene-".
   registers: [
-    { numeral: "I",   label: "The Rooms",   prefix: ["scene-", "ending-"] },
-    { numeral: "II",  label: "Evidence",    prefix: ["obj-"] },
-    { numeral: "III", label: "The Accused", prefix: ["char-", "plate-"] }
+    { numeral: "I",   label: "The Rooms",   layout: "wide",     prefix: ["scene-", "ending-"] },
+    { numeral: "II",  label: "Evidence",    layout: "square",   prefix: ["obj-"] },
+    { numeral: "III", label: "The Accused", layout: "portrait", prefix: ["char-", "plate-"] }
   ],
 
   // Shown on an un-inked cell. Deliberately not "locked" or "???" — the wall

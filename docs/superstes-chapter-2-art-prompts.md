@@ -168,7 +168,7 @@ II's originals needed two fixes before that, so the pipeline is written down as
 | Step | What and why |
 |---|---|
 | Rename | Three delivered names differ from this manifest, which is what the code references and therefore wins: `obj-cup-holder-receipt` → `obj-cup-receipt`, `obj-school-bag` → `obj-schoolbag`, and `obj-parked-car` → **`obj-packed-car`** (the car is packed for a move, not parked). |
-| Invert `scene-01-dropoff` | It was delivered **light-ground** — black ink on pale grey, the inverse of every other asset in both chapters. It is negated back into the house idiom, cold linework on near-black, before the palette remap. |
+| *(no invert step)* | `scene-01-dropoff` was delivered **light-ground** — black ink on pale grey, where every other asset in both chapters is dark-ground. It ships **exactly as delivered** anyway. Chapter I's pipeline inverts nothing, and negating this one produced a photographic-negative look that matched neither Chapter I nor the rest of Chapter II. No pixel operation turns a light line drawing into Chapter I's dark painted scenes — that image wants regenerating at source. Do not add an invert step. |
 | `unify_colors.py` | Remaps onto Chapter I's four anchors. Chapter II comes out of the generator **neutral cool grey** (`#51565E`, `#939DAB`) where Chapter I is **navy/steel-blue** (`#354153`, `#495972`); this is what puts them in the same world. It is a *hue* unifier and deliberately barely touches luminance — which is exactly why it cannot fix an inverted image, and why the negate above has to happen first. |
 | `optimize_images.sh` | Unchanged, and run across the whole master directory. It re-encodes from masters and is byte-deterministic, so Chapter I's files are rewritten with identical bytes and leave no diff. Verified, not assumed. |
 
@@ -180,6 +180,11 @@ output.
 0.15–0.35 mean luminance against Chapter I's 0.02–0.09, because Chapter II is daylit — cars, parking
 lots, a street after rain, a classroom in late afternoon — where Chapter I is candle-and-fog. Do not
 "correct" it toward Chapter I.
+
+`scene-01-dropoff` is the far end of that at ~0.59, being light-ground. It stays legible because
+`.vignette` lays a dark column behind the measure, so the prose has ground regardless of what the art
+behind it is doing — but it is visibly the brightest thing in either chapter. If it should match its
+neighbours, regenerate it dark-ground rather than transforming what is there.
 
 ### Ending images
 

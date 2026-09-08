@@ -22,9 +22,11 @@ const WALL_C2 = {
   // and an asset matching nothing is silently left off — the same trap as
   // Chapter I's, which is why `plate-` is listed explicitly.
   registers: [
-    { numeral: "I",   label: "The Places",  prefix: ["scene-", "ending-"] },
-    { numeral: "II",  label: "What Was Kept", prefix: ["obj-"] },
-    { numeral: "III", label: "The People",   prefix: ["char-", "plate-"] }
+    { numeral: "I",   label: "The Places",    layout: "wide",   prefix: ["scene-", "ending-"] },
+    { numeral: "II",  label: "What Was Kept", layout: "square", prefix: ["obj-"] },
+    // Chapter II's one held plate is the 16:9 pool, not a portrait like
+    // Chapter I's character shots, so this register is laid out wide.
+    { numeral: "III", label: "The People",    layout: "wide",   prefix: ["char-", "plate-"] }
   ],
 
   // Chapter I says "Not seen" — you were not there. Chapter II's whole subject

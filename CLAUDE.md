@@ -74,9 +74,10 @@ it there — don't let it leak into the wrong doc or drift the docs out of sync 
 - `assets_original/chapter_II/` holds the Chapter II art as delivered, git-ignored like the other art
   working directories. It is the source of truth for a re-run of
   `scripts/prepare_chapter2_art.sh`, which is Chapter II's extra shipping step: Chapter I's masters
-  arrived already in their final palette, Chapter II's did not (neutral grey instead of navy, and one
-  image delivered inverted). That script renames, fixes, palette-unifies via `scripts/unify_colors.py`,
-  and then hands off to `optimize_images.sh` as normal. Art doc §4 *Shipping these files* explains each
+  arrived already in their final palette, Chapter II's did not (neutral grey instead of navy). That
+  script renames three files to the manifest, palette-unifies via `scripts/unify_colors.py`, and then
+  hands off to `optimize_images.sh` as normal. **It inverts nothing** — `scene-01-dropoff` arrived
+  light-ground and ships that way; see the art doc for why negating it was tried and rejected. Art doc §4 *Shipping these files* explains each
   step. `unify_colors.py` is a **hue** unifier and barely touches luminance — do not reach for it to
   fix a too-bright image.
 - `assets_sound_src/` holds the original 320kbps/24-bit audio masters, git-ignored like the other
