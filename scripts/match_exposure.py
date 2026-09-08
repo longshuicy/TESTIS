@@ -7,9 +7,9 @@ around 0.09-0.59 mean luminance where Chapter I's sit at 0.02-0.08. Light art
 under light prose does not work, and the fix has to keep the four-anchor palette
 that unify_colors.py applies or the two chapters stop matching.
 
-So this runs BEFORE unify_colors.py and only moves luminance:
+So this runs BEFORE unify_colors.py:
 
-    per-image levels  ->  unify_colors.py (palette)  ->  optimize_images.sh
+    denoise  ->  per-image levels  ->  unify_colors.py (palette)  ->  optimize_images.sh
 
 Order matters. Darkening first means a crushed midtone lands on the *dark* end
 of the anchor ramp and a highlight still lands on the light end, so the result
@@ -37,7 +37,7 @@ import sys
 import importlib.util
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -60,6 +60,27 @@ BANDS = {
     "plate":  (0.100, 0.125),
 }
 
+# Grain. Chapter I's art was hand-finished and its masters are 2464px downscaled
+# to 1600, so the downscale itself averages away what little speckle there was:
+# it ships at 0.25-0.95 mean |px - median3|. Chapter II's generated art carries
+# heavy film grain (its own prompts ask for it) and arrives at roughly final size,
+# so nothing removes it -- delivered, it measures 2.7-7.5, and the levels stretch
+# below then amplifies it into visible snow.
+#
+# A median filter is the right tool for speckle on flat line art: it removes
+# isolated outliers and leaves hard edges alone, where a blur would soften the
+# linework. Size is proportional to resolution because the same kernel is far
+# more aggressive on a 512px object than on a 1232px scene. Calibrated to land on
+# Chapter I's own profile on both axes -- speckle *and* surviving edge energy:
+# median 5 on the 1232px scenes (noise 0.4-0.8 / edges 2.7-3.6 against Chapter
+# I's 0.25-0.95 / 2.5-3.5) and median 3 on the 512px objects (0.9-2.5 against
+# Chapter I's noisier, more crosshatched objects at 1.2-3.6).
+#
+# It has to run BEFORE the levels adjustment, or the grain is amplified first and
+# no amount of filtering afterwards recovers the smooth areas.
+DENOISE_REF_PX = 1232
+DENOISE_REF_SIZE = 5
+
 # Floor on the width of the levels window. Below this the stretch amplifies the
 # source's own grain into visible snow: the plate first solved to a 0.09-wide
 # window and came out as speckle. Holding a minimum span and letting the black
@@ -77,6 +98,12 @@ _STOPS = np.array([a[0] for a in ANCHORS], dtype=np.float64)
 _COLS = np.array([a[1] for a in ANCHORS], dtype=np.float64)
 # Luminance each anchor colour actually has, i.e. the curve unify_colors applies.
 _ANCHOR_LUM = 0.2126 * _COLS[:, 0] + 0.7152 * _COLS[:, 1] + 0.0722 * _COLS[:, 2]
+
+
+def denoise_size(width):
+    """Odd median kernel scaled to the image's width, >= 3."""
+    k = max(3, int(round(DENOISE_REF_SIZE * width / DENOISE_REF_PX)))
+    return k if k % 2 else k + 1
 
 
 def role(name):
@@ -136,11 +163,21 @@ def main():
     if not files:
         print(f"error: no PNGs in {src}"); sys.exit(1)
 
-    # Pass 1: measure, so the band mapping can preserve relative order.
+    # Pass 1: denoise and measure. Measuring the *denoised* image is deliberate --
+    # the levels solve that follows works on it, so the means have to match.
     stats = {}
+    cleaned = {}
     for f in files:
-        a = np.asarray(Image.open(os.path.join(src, f)).convert("RGB"), dtype=np.float64)
-        L = lum(a)
+        img = Image.open(os.path.join(src, f))
+        k = denoise_size(img.width)
+        rgb = img.convert("RGB").filter(ImageFilter.MedianFilter(k))
+        # Keep any alpha from the original alongside the cleaned colour.
+        if img.mode in ("RGBA", "LA", "P"):
+            alpha = img.convert("RGBA").split()[-1]
+        else:
+            alpha = None
+        cleaned[f] = (rgb, alpha, k)
+        L = lum(np.asarray(rgb, dtype=np.float64))
         stats[f] = (L.mean() / 255.0, role(f))
 
     # Pass 2: rank-map each role group into its band, solve gamma, write.
@@ -156,8 +193,8 @@ def main():
             src_mean = stats[f][0]
             target = t_lo + (src_mean - s_lo) / span * (t_hi - t_lo)
 
-            arr = np.asarray(Image.open(os.path.join(src, f)).convert("RGBA"), dtype=np.float64)
-            rgb = arr[..., :3]
+            clean_rgb, alpha, k = cleaned[f]
+            rgb = np.asarray(clean_rgb, dtype=np.float64)
 
             # Solve the black point against a percentile white point, then, if
             # that leaves too narrow a window, widen it and re-solve. Raising
@@ -170,12 +207,14 @@ def main():
                     break
                 white = min(black + MIN_SPAN, 1.0)
                 black = solve_black(rgb, target, white)
-            out = arr.copy()
-            out[..., :3] = levels(rgb, black, white)
-            Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).save(os.path.join(dst, f))
+            out = Image.fromarray(
+                np.clip(levels(rgb, black, white), 0, 255).astype(np.uint8))
+            if alpha is not None:
+                out.putalpha(alpha)
+            out.save(os.path.join(dst, f))
 
             print(f"  {f:<28} {src_mean:.3f} -> {target:.3f} "
-                  f"(levels {black:.3f}-{white:.3f}, span {white - black:.2f})")
+                  f"(median{k}, levels {black:.3f}-{white:.3f}, span {white - black:.2f})")
 
 
 if __name__ == "__main__":

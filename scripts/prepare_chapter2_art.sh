@@ -13,7 +13,7 @@
 #   assets_original/chapter_II/   delivered PNGs (source of truth, untouched)
 #     -> rename to the manifest's names
 #     -> crop the plate to 4:5      matching Chapter I's held plates
-#     -> match_exposure.py          per-image levels into Chapter I's range
+#     -> match_exposure.py          denoise + per-image levels into Chapter I's range
 #     -> unify_colors.py            palette remap onto Chapter I's anchors
 #     -> assets_backup/images-png-master/    joins the master set
 #     -> optimize_images.sh         downscale + WebP + wall thumbs
