@@ -24,9 +24,10 @@ const WALL_C2 = {
   registers: [
     { numeral: "I",   label: "The Places",    layout: "wide",   prefix: ["scene-", "ending-"] },
     { numeral: "II",  label: "What Was Kept", layout: "square", prefix: ["obj-"] },
-    // Chapter II's one held plate is the 16:9 pool, not a portrait like
-    // Chapter I's character shots, so this register is laid out wide.
-    { numeral: "III", label: "The People",    layout: "wide",   prefix: ["char-", "plate-"] }
+    // Same 4:5 as Chapter I's register III: the pool plate is cropped to 4:5 to
+    // match Chapter I's held plates, so the wall cell has to be 4:5 too or
+    // object-fit: cover crops a portrait into a landscape slot.
+    { numeral: "III", label: "The People",    layout: "portrait", prefix: ["char-", "plate-"] }
   ],
 
   // Chapter I says "Not seen" — you were not there. Chapter II's whole subject

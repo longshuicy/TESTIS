@@ -156,9 +156,7 @@ Filenames above are the **shipped** `.webp` in `assets/images/`, which is what `
 `js/endings-c2.js` reference. Widths, quality and the reason the downscale is not optional are all in
 Chapter I's art doc §3c — that section governs both chapters and is not restated here.
 
-**31 of the 32 are delivered and shipping.** The one gap is **O207 `obj-phone-message`** (Scene 2's
-glowing phone), which was not in the delivery. `main.js` draws a procedural stand-in for any asset
-that 404s, so that hotspot is fully playable meanwhile; drop the real file in and re-run the script.
+**All 32 are delivered and shipping.** Nothing in Chapter II falls back to a placeholder any more.
 
 **Chapter II does not ship the way Chapter I does, and needs its own step first.** Chapter I's masters
 arrived already in their final palette, so its whole shipping path is `optimize_images.sh`. Chapter
