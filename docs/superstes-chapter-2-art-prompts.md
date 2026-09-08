@@ -190,22 +190,6 @@ It took three attempts and the two failures are worth keeping, because both look
 | Black point only | Fixed the mean, but only ever crushes and never *expands*, so it stayed flat at sd ~0.05. |
 | **Black + white point** | Crushes the murky low end to true black **and** pulls whatever was brightest up to true white. Low mean, contrast intact. This is what Chapter I looks like. |
 
-The stretch also needs the grain dealt with first, or it amplifies it. Chapter I's art was
-hand-finished and its masters are 2464px downscaled to 1600, so the downscale itself averages away
-what speckle there was: it ships at 0.25–0.95 mean |px − median3|. Chapter II's generated art asks for
-"soft film-grain texture" in its own prompts and arrives at roughly final size, so nothing removes it —
-delivered it measures **2.7–7.5**, and the levels stretch turned that into visible snow.
-
-So a **median filter** runs before the levels, sized proportionally to resolution (median 5 on the
-1232px scenes, median 3 on the 512px objects). A median is the right tool for speckle on flat line
-art — it drops isolated outliers and leaves hard edges alone, where a blur would soften the linework.
-It is calibrated against Chapter I on *both* axes, speckle and surviving edge energy, rather than
-just smoothing until the numbers look low. Chapter II now ships at **0.17–1.26** noise against
-Chapter I's 0.25–2.65.
-
-Worth knowing: this *lowered* the measured contrast on some scenes (scene-04-street from sd 0.16 to
-0.05), because a chunk of what had been registering as contrast was the grain itself.
-
 Two guards matter:
 
 - **`MIN_SPAN`.** A narrow levels window amplifies the source's own grain into visible snow — the
