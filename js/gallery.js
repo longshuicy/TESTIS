@@ -199,9 +199,10 @@ const Gallery = (function () {
       section.className = "wall-register";
 
       const h3 = document.createElement("h3");
+      const inkedHere = mine.filter(i => has(i.id)).length;
       h3.innerHTML = esc(reg.numeral + ". " + reg.label) +
-        '<span class="wall-of">' + mine.filter(i => has(i.id)).length +
-        " of " + mine.length + "</span>";
+        '<span class="wall-of">' + esc(I18N.ui("registerCount")
+          .replace("{n}", inkedHere).replace("{total}", mine.length)) + "</span>";
       section.appendChild(h3);
 
       const grid = document.createElement("div");
@@ -419,7 +420,7 @@ const Gallery = (function () {
     box.className = "wall-box";
     box.setAttribute("role", "dialog");
     box.setAttribute("aria-modal", "true");
-    box.setAttribute("aria-label", cell.dataset.caption || "Plate");
+    box.setAttribute("aria-label", cell.dataset.caption || I18N.ui("plate"));
     box.tabIndex = -1;
 
     const fig = document.createElement("div");
@@ -490,7 +491,7 @@ const Gallery = (function () {
       const close = document.createElement("button");
       close.type = "button";
       close.className = "wall-close";
-      close.setAttribute("aria-label", "Close");
+      close.setAttribute("aria-label", I18N.ui("close"));
       close.innerHTML = "&times;";
       close.addEventListener("click", dismiss);
       overlay.appendChild(close);

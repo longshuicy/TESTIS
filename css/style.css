@@ -1701,3 +1701,145 @@ body.wall-open { overflow: hidden; }
   .wall-grid.portrait { grid-template-columns: repeat(2, 1fr); }
   .wall-overlay { padding: 4rem 1rem 3.5rem; }
 }
+
+/* ═════════════════════════════════════════════════ language ══════════ */
+
+/* The language door, at the very foot of the title screen and below the
+   runtime footnote — subordinate to both game doors, since it changes how the
+   game reads and not what it opens. Hidden by i18n.js when no translation pack
+   is loaded, so the English-only build shows nothing here. */
+.lang-switch {
+  margin: 1.6rem 0 0;
+  text-align: center;
+}
+
+#lang-toggle {
+  font-family: var(--label);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  background: none;
+  border: 0;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  color: #4a453c;
+  transition: color 420ms ease;
+}
+
+#lang-toggle:hover,
+#lang-toggle:focus-visible {
+  color: var(--paper-dim);
+  outline: none;
+}
+
+/* ─────────────────────────────────────────────── the Chinese palette
+
+   Every face in this stylesheet is reached through the six variables in
+   :root, so a translation swaps the whole typographic register in one block
+   rather than at ~40 call sites. None of the Latin faces carry CJK glyphs at
+   all — without this the Chinese pack renders in the system UI font.
+
+   Ma Shan Zheng is a brush hand and takes the display slot the blackletter
+   held: it is the only face here with the same "written by someone, a while
+   ago" quality, and it carries the calendar's hand as well. Noto Serif SC does
+   everything else. Its 300 weight matches the body copy's colour on screen;
+   400 is noticeably heavier than Grenze at the same size.
+
+   The metric adjustments below are not cosmetic. CJK glyphs are full-width and
+   have no ascender/descender air, so Latin line-heights read cramped and Latin
+   letter-spacing — set on nearly every .label rule for the small-caps look —
+   reads as broken text rather than as tracking. */
+body[data-lang="zh"] {
+  --display: "Ma Shan Zheng", "Noto Serif SC", Georgia, serif;
+  --head:    "Noto Serif SC", Georgia, serif;
+  --body:    "Noto Serif SC", Georgia, serif;
+  --label:   "Noto Serif SC", Georgia, serif;
+  --cal-title: "Ma Shan Zheng", "Noto Serif SC", cursive;
+  --cal-mono:  "Noto Serif SC", Georgia, serif;
+
+  /* A CJK line needs fewer characters to fill the same measure, and more air
+     between lines to stay readable at this size. */
+  --measure: 30rem;
+
+  font-weight: 300;
+  line-height: 2;
+}
+
+body[data-lang="zh"] .narration p,
+body[data-lang="zh"] .plate-text p,
+body[data-lang="zh"] .response p,
+body[data-lang="zh"] .tier2-panel p {
+  line-height: 2;
+}
+
+/* Tracking that flatters small-caps Latin pulls CJK apart. Kept on the
+   numerals and register headings, which are still Roman. */
+body[data-lang="zh"] .tier2-heading,
+body[data-lang="zh"] .prompt,
+body[data-lang="zh"] .choice-body,
+body[data-lang="zh"] .ending-label,
+body[data-lang="zh"] .foot,
+body[data-lang="zh"] .latin,
+body[data-lang="zh"] #begin,
+body[data-lang="zh"] #skip-to-ii,
+body[data-lang="zh"] .continue,
+body[data-lang="zh"] .wall-veil,
+body[data-lang="zh"] .calendar-title {
+  letter-spacing: 0.02em;
+}
+
+/* The blackletter title kept a heavy display size the brush hand does not
+   need; Ma Shan Zheng at the same size overruns the measure on a phone. */
+body[data-lang="zh"] #title-screen h1 {
+  letter-spacing: 0.08em;
+}
+
+/* The calendar's weekday row is a single character per column in Chinese
+   rather than one Latin initial, so the typed-glyph face's wide tracking is
+   what makes it wrap. */
+body[data-lang="zh"] .cal-head {
+  letter-spacing: 0;
+}
+
+/* Noto Serif SC ships no italic, so every `font-style: italic` in this
+   stylesheet becomes a synthesised oblique — a slanted CJK line is not an
+   emphasis convention anywhere, it just looks like a rendering fault. The
+   whole-block italics (the blurb, plates, the closing response, the wall's
+   translation) go upright; they are already set apart by size, colour and
+   measure. Inline <em>, which carries actual stress in the prose, takes the
+   Chinese convention instead: 着重号, a mark beside each character. */
+body[data-lang="zh"] .blurb,
+body[data-lang="zh"] .latin em,
+body[data-lang="zh"] .tier2-label,
+body[data-lang="zh"] .response.closing,
+body[data-lang="zh"] .plate-text,
+body[data-lang="zh"] .wall-secret-translation,
+body[data-lang="zh"] #carve-input::placeholder {
+  font-style: normal;
+}
+
+body[data-lang="zh"] em {
+  font-style: normal;
+  text-emphasis: sesame;
+  -webkit-text-emphasis: sesame;
+  text-emphasis-color: var(--candle-dim);
+  -webkit-text-emphasis-color: var(--candle-dim);
+  /* 着重号 sit under the line in Chinese, not over it — over is the Japanese
+     convention and reads here as a stray row of marks. */
+  text-emphasis-position: under right;
+  -webkit-text-emphasis-position: under;
+}
+
+/* …except where <em> wraps a whole quoted line rather than a word or two.
+   Sesame marks under a four-line remembered quotation read as damage; those
+   passages are set off by colour alone. */
+body[data-lang="zh"] .plate-text em,
+body[data-lang="zh"] .latin em {
+  text-emphasis: none;
+  -webkit-text-emphasis: none;
+}
+
+/* The wordmark is Latin and is not translated: it keeps the blackletter it has
+   in every language. Only the copy around it changes face. */
+body[data-lang="zh"] #title-screen h1 {
+  font-family: "Grenze Gotisch", "UnifrakturMaguntia", Georgia, serif;
+}

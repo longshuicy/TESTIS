@@ -12,7 +12,13 @@
 // each of the ~40 call sites, which buys nothing: only one chapter is ever
 // playable at a time, so a pointer swap is the honest shape of the problem.
 //
-// No narrative content lives here. Copy belongs to the chapters' own data files.
+// Localization slots in at the same seam. `I18N.content(name, fallback)` hands
+// back the active pack's copy of a data global, or the English one when there is
+// no pack — so a chapter's four getters are the only place in the engine that
+// has to know translations exist. See js/i18n.js.
+//
+// No narrative content lives here. Copy belongs to the chapters' own data files
+// and, for a translation, to content/<lang>/.
 
 let SCENES = [];
 let ENDINGS = [];
@@ -24,10 +30,10 @@ const CHAPTERS = [
     key: "i",
     numeral: "I",
     start: "scene-1",
-    scenes: () => SCENES_C1,
-    endings: () => ENDINGS_C1,
-    wall: () => WALL_C1,
-    sharedCallback: () => WITNESS_CALLBACK_C1,
+    scenes: () => I18N.content("SCENES_C1", SCENES_C1),
+    endings: () => I18N.content("ENDINGS_C1", ENDINGS_C1),
+    wall: () => I18N.content("WALL_C1", WALL_C1),
+    sharedCallback: () => I18N.content("WITNESS_CALLBACK_C1", WITNESS_CALLBACK_C1),
 
     // Chapter I's flag set (script doc, FLAG SYSTEM). `identity_found` is a
     // real boolean, not null — Ending C's rows match it with strict equality.
@@ -50,10 +56,10 @@ const CHAPTERS = [
     key: "ii",
     numeral: "II",
     start: "c2-scene-1",
-    scenes: () => SCENES_C2,
-    endings: () => ENDINGS_C2,
-    wall: () => WALL_C2,
-    sharedCallback: () => DEPARTURE_CALLBACK,
+    scenes: () => I18N.content("SCENES_C2", SCENES_C2),
+    endings: () => I18N.content("ENDINGS_C2", ENDINGS_C2),
+    wall: () => I18N.content("WALL_C2", WALL_C2),
+    sharedCallback: () => I18N.content("DEPARTURE_CALLBACK", DEPARTURE_CALLBACK),
 
     // Chapter II's flag set. `turned_back` is a real boolean once set; every
     // other flag is a string or null. No player_name — Chapter II has no

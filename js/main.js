@@ -383,7 +383,7 @@ function renderTier2(list) {
   if (!list || !list.length) return;
 
   const wrap = el("div", "tier2");
-  const heading = el("p", "tier2-heading", "Examine");
+  const heading = el("p", "tier2-heading", I18N.ui("examine"));
   wrap.appendChild(heading);
 
   list.forEach(item => {
@@ -435,7 +435,11 @@ function renderTier2(list) {
    number, not Math.random, so the calendar looks the same on every render.
    ─────────────────────────────────────────────────────────────────────── */
 
-const CAL_WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
+// The weekday initials and the month/year caption are the calendar's only
+// words, so they come from the locale table rather than from here — a Chinese
+// calendar heads its columns 日一二三四五六, not S M T W T F S. The layout
+// below (May 1543 starting on a Tuesday) is history and does not localize.
+const calWeekdays = () => I18N.ui("calendarWeekdays");
 const CAL_LAST_STRUCK = 20;   // days 1..20 crossed out
 const CAL_CIRCLED = 24;       // never explained in-game
 
@@ -474,10 +478,10 @@ function handCircle(day) {
 
 function buildMayCalendar() {
   const wrap = el("div", "calendar");
-  wrap.appendChild(el("p", "calendar-title", "Maius · MDXLIII"));
+  wrap.appendChild(el("p", "calendar-title", I18N.ui("calendarTitle")));
 
   const grid = el("div", "calendar-grid");
-  CAL_WEEKDAYS.forEach(w => grid.appendChild(el("div", "cal-head", w)));
+  calWeekdays().forEach(w => grid.appendChild(el("div", "cal-head", w)));
 
   // May 1, 1543 (Julian) fell on a Tuesday — weekday index 2 of a S-M-T-W-T-F-S
   // header, so the grid opens with two empty cells. Verified against the
@@ -961,7 +965,7 @@ function renderPlate(rawSpec, onDone, sceneId) {
   const caption = el("div", "plate-text");
   if (spec.text) prose(caption, spec.text);
 
-  const hint = el("p", "plate-hint", "Continue");
+  const hint = el("p", "plate-hint", I18N.ui("continue"));
 
   plate.appendChild(backdrop);
   plate.appendChild(figure);
@@ -1050,7 +1054,7 @@ function renderExit(scene) {
 
 function renderContinue(onGo) {
   const wrap = el("div", "continue-wrap");
-  const b = el("button", "continue", "Continue");
+  const b = el("button", "continue", I18N.ui("continue"));
   b.type = "button";
   b.addEventListener("click", () => { b.disabled = true; onGo(); });
   wrap.appendChild(b);
@@ -1130,7 +1134,7 @@ function renderEnding(id) {
 // {player_name} is inserted as a text node, never as markup, and never renders
 // as null/undefined/an empty gap.
 function appendClosing(node, closing) {
-  const name = (flags.player_name || "").trim() || "a name";
+  const name = (flags.player_name || "").trim() || I18N.ui("unnamedPlayer");
   String(closing).split(/\n{2,}/).forEach(part => {
     const p = document.createElement("p");
     const chunks = part.split("{player_name}");
@@ -1181,6 +1185,12 @@ function startGame(chapterKey) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  // Language first: Sound.init() labels the toggle, and the title screen has to
+  // be rewritten before it is shown rather than after.
+  I18N.resolve();
+  I18N.applyStatic();
+  I18N.mountToggle(document.getElementById("lang-toggle"));
+
   Sound.init();
   Sound.titleShown();
   const begin = document.getElementById("begin");

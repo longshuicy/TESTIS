@@ -1,0 +1,47 @@
+{
+  "lang": "zh",
+  "htmlLang": "zh-Hans",
+  "toggleLabel": "English",
+  "toggleAria": "Switch to English",
+  "ui": {
+    "examine": "细看",
+    "continue": "继续",
+    "close": "关闭",
+    "plate": "图版",
+    "unnamedPlayer": "一个名字",
+    "registerCount": "{n} / 共 {total}",
+    "soundOn": "声音已开",
+    "soundOff": "声音已关",
+    "calendarTitle": "五月 · MDXLIII",
+    "calendarWeekdays": [
+      "日",
+      "一",
+      "二",
+      "三",
+      "四",
+      "五",
+      "六"
+    ]
+  },
+  "title": {
+    "docTitle": "SUPERSTES",
+    "metaDescription": "一个关于对得太早的短篇叙事游戏。",
+    "heading": "Superstes",
+    "latin": "拉丁语：<em>见证者</em>。当时在场的那个人。",
+    "latinSmall": "字面是<em>站在其外</em>：活过了它，并且还说得出来的那个人。",
+    "blurb": [
+      "他不是第一个。",
+      "他们从来没有要他翻悔。",
+      "翻不翻悔从来不是要点。",
+      "他们问他，这东西是谁给他的，",
+      "他拒绝的时候，眼睛越过他们看向别处，",
+      "而水清清地淌到地上。",
+      "没有人在流血。",
+      "你不会是最后一个。",
+      "已经有什么在数着了。"
+    ],
+    "secondDoor": "另有一个人也在数",
+    "begin": "走进雾里",
+    "foot": "15–20 分钟 · 无存档 · 刷新即从头开始"
+  }
+}
