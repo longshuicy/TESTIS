@@ -702,37 +702,43 @@ nothing is restated in two places.
 | Register I | The Rooms | The Places |
 | Register II | Evidence | What Was Kept |
 | Register III | The Accused | The People |
+| Register III layout | 4:5 portrait | 4:5 portrait — the pool plate is cropped to match |
 | Un-inked cell | Not seen | **Not remembered** |
 | Ending's last button | See what was counted | See what was kept |
 | Secret plaque | the Morse phrase | **none** |
-| Foot of the wall | Begin again | **nothing** |
-
-**The two absences are the point, not omissions.**
-
-**No exit.** Chapter I is a relay and its wall loops — *Begin again* is the last thing it offers.
-Chapter II is about the fact that nothing came next, so its wall is the last screen and it stays
-there. There is no *Begin again*, no close control, nothing to click. The only way out is the
-browser's own, which is exactly the difference between the two chapters stated in the one place a
-player cannot miss it. `gallery.js` renders no exit for a wall whose copy has no `again` key.
+| Foot of the wall | Begin again, then the Chapter II door | Begin again |
 
 **No plaque.** There is no Morse in Chapter II, so there is nothing withheld for a plaque to hand
 back. Chapter I's plaque is a courtesy for outside effort; Chapter II has asked nothing of the player
-that it is holding an answer to.
+that it is holding an answer to. One consequence: Chapter II's *Begin again* is visible as soon as
+the wall opens, where Chapter I's waits for the plaque to be dealt with.
 
 **The tense change in the heading** is doing the same work as *Not remembered*: Chapter I's wall says
 something is *already* counting, before the player has done anything. By the time Chapter II's wall
 opens, the counting is what has just been revealed.
 
+> **Reversed decision, recorded.** Chapter II's wall was originally a dead end — no *Begin again*, no
+> close control, nothing to click — on the argument that Chapter I is a relay and loops while Chapter
+> II is about nothing coming next. It read well as an argument and badly as a screen to actually sit
+> in front of, so it offers the way out. It still has no `nextChapter`: Chapter II is the last one.
+
 ## Getting here from Chapter I
 
-The player-facing route is the title screen's second door — a deliberately muted line below *Enter
-the fog* reading **Someone else was keeping count · II**. It skips a chapter for anyone who has
-already played Chapter I, and for everyone else it is the only thing on that screen that admits there
-is a second chapter at all. It says *II* and nothing else; naming the chapter would spoil it.
+Two routes, sharing one label so they read as one door:
 
-Chapter I's own wall is **not** currently a fork — it still offers only *Begin again*, which returns
-to the title screen where the second door is. Adding a fork at the foot of Chapter I's wall remains
-an open option, not a decision.
+**The title screen**, under the blurb and above *Enter the fog*. The blurb ends *"Something is
+already keeping count."* and the door answers it — **Someone else was keeping count · II** — so it
+belongs in that couplet rather than in the fine print below the runtime line. One line in the label
+face with the numeral inline and picked out in the accent — a stacked blackletter **II** above the
+line was tried and read as a stray mark rather than a chapter number. Hovering it sounds a single
+drip, which is Chapter II's entire score (sound doc), so the tease tells the truth about what it
+opens without describing it. It names no chapter; that would spoil it.
+
+**The foot of Chapter I's wall**, beside *Begin again* and revealed with it once the plaque has been
+dealt with — the plaque holds the whole foot of the wall shut, not one button of it. It loads Chapter
+II as a fresh page (`?chapter=ii`) rather than swapping it in place: nothing is persisted, so a
+reload costs the player nothing and buys clean state instead of unwinding an ending's body classes,
+backgrounds and runtime by hand.
 
 ---
 

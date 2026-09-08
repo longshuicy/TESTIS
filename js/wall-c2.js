@@ -38,6 +38,12 @@ const WALL_C2 = {
 
   enter: "See what was kept",
 
+  // Chapter II's wall used to be a dead end -- Chapter I loops, Chapter II
+  // stops -- which read well as an argument and badly as a thing to actually
+  // sit in front of. It offers the way out. There is still no `nextChapter`
+  // here: Chapter II is the last one, so this is the end of the line.
+  again: "Begin again",
+
   // Same provenance line as Chapter I's wall. Kept rather than inherited so
   // each chapter's wall carries its own copy and neither depends on the other.
   credit: [

@@ -190,6 +190,24 @@ widget, and no scene-level `conditionalText`. What it does use already exists:
 > Scene 7 uses `openingPlate`. The proposal in the script doc is stale; treat this table as the
 > schema of record.
 
+### Chapter II's skin
+
+`activateChapter` stamps `document.body.dataset.chapter`, and `css/style.css` carries one
+`body[data-chapter="ii"]` block that overrides two things:
+
+| Token | Chapter I | Chapter II | Why |
+|---|---|---|---|
+| `--candle` / `-dim` / `-deep` | warm gold | steel blue | Chapter I is a chapel lit by a candle. Chapter II has no fire in it anywhere — it has water. `--candle-dim` is `#6a80a1`, the exact anchor `unify_colors.py` maps every Chapter II image onto, so UI and art are finally the same temperature. |
+
+The accent is the **only** override. A contemporary display face was tried for Chapter II and
+rejected: it read as a different product rather than a second chapter. The blackletter is the house
+face and carries across both.
+
+`--accent-rgb` exists because of this: twenty glows and washes had the accent hardcoded as
+`rgba(201,165,95,…)`, and a chapter overriding `--candle` left all of them gold — the swap only half
+happened. They now read `rgba(var(--accent-rgb), …)`. **Keep `--accent-rgb` in step with `--candle`
+in any new palette.**
+
 ### Two chapters, one page
 
 `js/chapters.js` is the answer to the module-layout question this doc previously left open.

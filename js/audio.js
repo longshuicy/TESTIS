@@ -52,6 +52,12 @@ const RESUME_FADE_MS = 900;
 // One entry per scene/ending id. `rate` pitches and slows playback (Scene 6 is
 // Scene 2's bed two semitones down); `loop: false` marks a bed that should end
 // and not return.
+// Chapter II's only bed, shared by all ten of its keys (see the block below).
+// 11.9s, nine drip intervals cut seamlessly from the original recording by
+// scripts/make_c2_drip_bed.py. WAV, not AAC: encoder padding would put a gap at
+// the loop point -- the same exception bed-scene-5.wav takes.
+const C2_DRIP = { src: "assets/sound/bed-c2-drip.wav" };
+
 const BEDS = {
   "scene-1":  { src: "assets/sound/bed-scene-1.m4a" },
   "scene-2":  { src: "assets/sound/bed-scene-2.m4a" },
@@ -62,7 +68,35 @@ const BEDS = {
   "scene-7":  { src: "assets/sound/bed-scene-7.m4a" },
   "ending-a": { src: "assets/sound/bed-ending-a.m4a", loop: false },
   "ending-b": { src: "assets/sound/bed-ending-b.m4a", loop: false },
-  "ending-c": { src: "assets/sound/bed-ending-c.m4a", loop: false }
+  "ending-c": { src: "assets/sound/bed-ending-c.m4a", loop: false },
+
+  // ── Chapter II ────────────────────────────────────────────────────────────
+  // Chapter II has no music. Its bed is the water itself: one drip loop under
+  // the entire chapter, scenes and endings alike. Every key below is the *same
+  // spec object*, and bedElement pools by src, so all ten resolve to one
+  // <audio> element -- playBed then takes its "same bed, just bring it back up"
+  // path at every scene change and the drip never restarts. It runs unbroken
+  // from Scene 1 to the tally wall.
+  //
+  // The one deliberate interruption is the Scene 7 plate: plateOpened cuts the
+  // bed under a plate so the sting lands in silence. silenceBed pauses rather
+  // than rewinds, so the drip resumes mid-loop afterwards. The drip stopping is
+  // the only silence in the chapter and it falls on the reveal, which is worth
+  // keeping rather than working around.
+  //
+  // Unlike Chapter I's endings this does not stop at the ending (`loop` stays
+  // true): there is no composed piece to end, and a drip that stopped dead
+  // would read as a fault rather than a finish.
+  "c2-scene-1": C2_DRIP,
+  "c2-scene-2": C2_DRIP,
+  "c2-scene-3": C2_DRIP,
+  "c2-scene-4": C2_DRIP,
+  "c2-scene-5": C2_DRIP,
+  "c2-scene-6": C2_DRIP,
+  "c2-scene-7": C2_DRIP,
+  "c2-ending-a": C2_DRIP,
+  "c2-ending-b": C2_DRIP,
+  "c2-ending-c": C2_DRIP
 };
 
 // Plate stings. Each of these scenes has exactly one plate, so the scene id is
@@ -85,23 +119,12 @@ const STINGS = {
     loop: true,
     volume: 0.2,      // present, not announcing itself
     fadeOut: 1200     // hands over to bed-scene-7 rather than clearing out
-  },
-
-  // Chapter II's only plate, and its only borrowed sound: the grandfather clock
-  // from bed-scene-5, which is also what the title screen ticks under. No new
-  // asset — the same recording, and the reuse is the point. Chapter I opens on
-  // that clock before the player has done anything; it comes back under the one
-  // image in Chapter II where the counting is finally visible.
-  //
-  // Same shape as scene-7 above: a texture, not an event. It has to still be
-  // sounding when a slow reader finally clicks, and the Scene 6→7 match-cut is
-  // specified to run near-dry, so this arrives into near-silence.
-  "c2-scene-7": {
-    src: "assets/sound/bed-scene-5.wav",
-    loop: true,
-    volume: 0.18,     // under Chapter I's, since a bed mix is hotter than a sting
-    fadeOut: 1400     // hands over to Chapter II's Scene 7 bed once one exists
   }
+
+  // Chapter II has no plate sting. Its bed is one continuous drip loop and the
+  // plate is not an exception to it -- see plateOpened, which now leaves the bed
+  // alone when a plate has no sting of its own. A borrowed grandfather clock was
+  // tried here and it was the only thing in the chapter that was not water.
 };
 
 function stingSpec(sceneId) {
@@ -156,10 +179,16 @@ const MORSE = {
 const bedPool = new Map();
 const fades = new WeakMap();
 
+// Pooled by src + rate + loop rather than by key, so two keys naming the same
+// file share one element. That is what lets Chapter II's ten keys be one
+// continuous drip. Chapter I is unaffected: its only shared src is
+// bed-scene-2.m4a, held by scene-2 and by scene-6 at rate 0.89, and the rate is
+// part of the identity here so those stay two separate elements.
 function bedElement(key) {
-  if (bedPool.has(key)) return bedPool.get(key);
   const spec = BEDS[key];
   if (!spec) return null;
+  const id = spec.src + "|" + (spec.rate || 1) + "|" + (spec.loop !== false);
+  if (bedPool.has(id)) return bedPool.get(id);
 
   const el = new Audio();
   el.src = spec.src;
@@ -174,7 +203,7 @@ function bedElement(key) {
     el.mozPreservesPitch = false;
     el.webkitPreservesPitch = false;
   }
-  bedPool.set(key, el);
+  bedPool.set(id, el);
   return el;
 }
 
@@ -738,6 +767,14 @@ const Sound = {
   // so the ending's music played over the scene the player had just finished,
   // for however long they took to press it. The ending's bed belongs to the
   // ending: it starts when the ending paints, like every other bed.
+  // One drip, for the Chapter II door on the title screen. Chapter II's whole
+  // bed is this sound, so hovering the door hears the chapter it opens without
+  // being told anything about it. Reuses the Morse sequencer's pool and sample.
+  chapterTease() {
+    if (!AUDIO.enabled) return;
+    playDrip();
+  },
+
   branchChosen(sceneId, nextId) {
     if (sceneId === "scene-4") lowNote();
   }

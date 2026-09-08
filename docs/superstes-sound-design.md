@@ -203,63 +203,62 @@ which the retry catches a beat before the click handler fires, so the clock has 
 before Scene 1's bed cuts it over. It only really sounds for a player who lingers and interacts with
 the page first — the sound toggle, a keypress — before pressing on.
 
-### Chapter II beds — slots to source
+### Chapter II's bed: one drip, the whole way through
 
-Chapter II (`superstes-chapter-2-script.md`) needs its own beds plus **one plate sting**. Everything else
-is reused unchanged: the drip, the hotspot effects, the choice cues and the toggle, and §1's three
-earned silences apply to Chapter II exactly as written. Filenames follow the existing convention
-(`bed-c2-scene-1.m4a`, `ending-c2-unrecorded.m4a`).
+**Chapter II has no music.** Its bed is the water itself — one drip loop running continuously from
+Scene 1 to the tally wall. Nothing to source; nothing to compose.
 
-These ten `BEDS` keys are missing, listed with the mood the scene asks for.
+That is not a placeholder for music that never arrived. Chapter I is scored because it is a
+proceeding with a shape: rooms, a question, an instrument, an ending. Chapter II is seven ordinary
+memories that only turn out to have been anything in the last scene, and a score would tell the
+player they were important — which is the one thing the whole chapter is built to withhold (script
+doc, *Two reveals*). A drip is the sound of nothing happening, which is exactly the register, and it
+is the chapter's own motif: water is in every scene, and Scene 7 is where all of it pools.
 
-| Key | Scene | Mood the script asks for |
-|---|---|---|
-| `c2-scene-1` | The Drop-Off | Ordinary daytime interior. Car cabin, low road noise. Nothing that signals significance. |
-| `c2-scene-2` | The Station | Cold, open, a little wind. Sparse. |
-| `c2-scene-3` | The Bottle | Flat afternoon daylight. The least musical bed in the chapter. |
-| `c2-scene-4` | The Street | Mild, almost pleasant. This is the only scene where someone is glad to see her. |
-| `c2-scene-5` | Noise | Crowd and room tone rather than music. **Must be able to cut hard** — see the transition below. |
-| `c2-scene-6` | The Road Home | Small, thin, slightly childlike. Should feel less produced than the adult scenes. |
-| `c2-scene-7` | The Pool | Water. The first bed permitted to sound deliberate. |
-| `c2-ending-unrecorded` | Ending A | Settles and stops. `loop: false`. |
-| `c2-ending-kept-word` | Ending B | Accumulates, repeats, does not resolve. `loop: false`. |
-| `c2-ending-testimony` | Ending C | Held open rather than circular. `loop: false`. |
+| Asset | What |
+|---|---|
+| `bed-c2-drip.wav` | 11.9s, nine drip intervals at 1.323s, mono 16-bit 48kHz, ~1.1MB. Cut seamlessly from `drip.wav` by `scripts/make_c2_drip_bed.py`. |
 
-Two structural notes, both from the script rather than the music:
+**WAV, not AAC**, for the §7 reason: encoder padding would put a gap at the loop point. Same
+exception `bed-scene-5.wav` and `drip-single.wav` take.
 
-**Scene 5 contains a cut, not a crossfade.** The script's transition ("the sound peaks, then cuts")
-moves from a loud bar into a quieter argument in a different year — *Different place. Different year.
-No music.* The bar bed has to stop dead there. Do not source a track whose ending needs a fade, and
-do not fade this one; the silence on the far side of the cut is the point, and it is the same
-mechanism as §1's earned silences.
+**It never restarts.** All ten `BEDS` keys (`c2-scene-1`…`c2-ending-c`) are the *same spec object*,
+and `bedElement` pools by `src|rate|loop` rather than by key name, so all ten resolve to one `<audio>`
+element. `playBed` then takes its "same bed, just bring it back up" path at every scene change instead
+of cutting over. One unbroken loop for the chapter's whole 15–22 minutes.
 
-**Scene 6 → 7 wants to arrive near-dry.** Scene 6 ends on the waters that had never touched,
-touching, and Scene 7 opens on the plate. Nothing visual moves across that seam — there is no
-animated transition anywhere in this game — so the handover is carried by sound alone, which means
-getting out of the way: `c2-scene-6` runs out rather than being faded under something, and
-`c2-scene-7` does not start until the player clicks off the plate.
+That pooling change is safe for Chapter I: its only shared `src` is `bed-scene-2.m4a`, held by
+`scene-2` and by `scene-6` at `rate: 0.89`, and the rate is part of the pool identity — so those stay
+two separate elements and Scene 6 still pitches down. Verified, along with the endings still being
+`loop: false`.
 
-**Ending beds behave exactly as Chapter I's do**, including carrying into the tally wall uncut and
-un-restarted, and including running out mid-read if the player lingers.
+**Chapter II's endings keep looping**, unlike Chapter I's. There is no composed piece to end, and a
+drip stopping dead would read as a fault rather than a finish. The drip carries into the tally wall
+the same way Chapter I's ending beds do — uncut and un-restarted, because `Gallery.open()` touches
+nothing in `Sound`.
 
-**One plate sting, and it is borrowed, not sourced.** Chapter II has exactly one plate (Scene 7's
-opening — script doc, THE PLATE) and it reuses **`bed-scene-5.wav`**, the grandfather clock — the same
-recording the title screen ticks under. There is no new asset to find, and the reuse is the point:
-Chapter I opens on that clock before the player has done anything, and it returns under the one image
-in Chapter II where the counting is finally visible.
+### The silence it does not make
 
-It is registered in `STINGS` as `c2-scene-7` with the same shape Chapter I's Scene 7 plate uses — a
-texture rather than an event: `loop: true`, so it is still sounding when a slow reader finally clicks,
-`volume: 0.18` (under Chapter I's 0.2, since a bed mix is hotter than a sting), and a `fadeOut` so it
-hands over to Chapter II's Scene 7 bed rather than clearing out of its way. §4's other rules still
-apply unchanged, including dying with the plate on dismissal and `sceneStarted` as the second guard.
+**Scene 5's cut.** The script moves from a loud bar into an argument in a different year —
+*Different place. Different year. No music.* With a single continuous bed there is no bar bed to stop,
+so this is no longer an audio event at all; the line does its own work. Nothing to build.
 
-Because it loops, §4's 4–7 second guidance does not bind it — that rule is about one-shots with tails
-that outlive their plate. This one has no tail; it is stopped, not waited out.
+### No plate sting
 
-The near-dry handover above is what makes room for this sting: `c2-scene-6` has run out, the clock
-sounds as the plate fades up, and `c2-scene-7` starts only when the player clicks through. That
-ordering is the whole effect — a sting into silence, not a sting over a bed.
+Chapter II's one plate has **no sting**. The drip keeps running straight through it.
+
+A borrowed grandfather clock (`bed-scene-5.wav`, the one the title screen ticks under) was tried
+here, on the reasoning that Chapter I opens on that clock and it could return under the one image
+where the counting becomes visible. In practice it was the only sound in the chapter that was not
+water, and it read as a bug rather than a callback. Removed.
+
+This needed one change in `plateOpened`: it used to cut the bed *before* checking whether the plate
+had a sting, so a sting-less plate produced dead air rather than a held image. It now leaves the bed
+alone when there is no sting. Chapter I's four plates all have stings, so nothing there changes — and
+Chapter I's Scene 2 plate still gets its hard cut into silence, because that silence comes from its
+own sting arriving over a cut bed, not from this branch.
+
+So Chapter II has exactly one sound, start to finish: the drip. The plate is not an exception to it.
 
 Nothing above changes the `Sound` interface in §12; these are `BEDS` and plate-sting entries, not new
 call sites.

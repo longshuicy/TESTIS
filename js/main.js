@@ -1195,9 +1195,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
   begin.addEventListener("click", () => enter("i"));
 
-  // The muted second door. It skips a chapter, and it is also the only place
-  // the title screen admits there is more than one — which is the hint.
-  if (skip) skip.addEventListener("click", () => enter("ii"));
+  // The second door. It skips a chapter, and it is also the only place the
+  // title screen admits there is more than one — which is the hint. Hovering it
+  // sounds a single drip: Chapter II's whole bed is that sound, so the tease
+  // tells the truth about what it opens without describing it. Once per hover,
+  // not on every mousemove, and on keyboard focus too.
+  if (skip) {
+    skip.addEventListener("click", () => enter("ii"));
+    skip.addEventListener("mouseenter", () => Sound.chapterTease());
+    skip.addEventListener("focus", () => Sound.chapterTease());
+  }
 
   if (query.has("all")) {
     // ?all is Chapter I's wall by default; ?all=ii opens Chapter II's.
