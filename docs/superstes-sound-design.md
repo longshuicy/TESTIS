@@ -233,9 +233,11 @@ No music.* The bar bed has to stop dead there. Do not source a track whose endin
 do not fade this one; the silence on the far side of the cut is the point, and it is the same
 mechanism as §1's earned silences.
 
-**Scene 6 → 7 is the chapter's one long transition.** The art doc gives it 3–5 seconds of match-cut
-ripples before the pool opens out. Audio should arrive *with* the pool rather than under the
-ripples — `c2-scene-6` runs out, the cuts happen close to dry, and `c2-scene-7` starts on the reveal.
+**Scene 6 → 7 wants to arrive near-dry.** Scene 6 ends on the waters that had never touched,
+touching, and Scene 7 opens on the plate. Nothing visual moves across that seam — there is no
+animated transition anywhere in this game — so the handover is carried by sound alone, which means
+getting out of the way: `c2-scene-6` runs out rather than being faded under something, and
+`c2-scene-7` does not start until the player clicks off the plate.
 
 **Ending beds behave exactly as Chapter I's do**, including carrying into the tally wall uncut and
 un-restarted, and including running out mid-read if the player lingers.
@@ -255,10 +257,9 @@ apply unchanged, including dying with the plate on dismissal and `sceneStarted` 
 Because it loops, §4's 4–7 second guidance does not bind it — that rule is about one-shots with tails
 that outlive their plate. This one has no tail; it is stopped, not waited out.
 
-The plate is the destination of the Scene 6→7 match-cut, and the note above about staying near-dry
-through the ripples is what makes room for this sting: `c2-scene-6` has run out, the cuts happen in
-near-silence, the sting sounds as the plate fades up, and `c2-scene-7` starts only when the player
-clicks through. That ordering is the whole effect — a sting into silence, not a sting over a bed.
+The near-dry handover above is what makes room for this sting: `c2-scene-6` has run out, the clock
+sounds as the plate fades up, and `c2-scene-7` starts only when the player clicks through. That
+ordering is the whole effect — a sting into silence, not a sting over a bed.
 
 Nothing above changes the `Sound` interface in §12; these are `BEDS` and plate-sting entries, not new
 call sites.

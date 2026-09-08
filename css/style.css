@@ -358,7 +358,7 @@ em { font-style: italic; color: #f7f2e6; }
 }
 
 /* A chapter subtitle, withheld until its reveal scene and then stated plainly.
-   No flash, no glitch, no animation — the art doc is explicit that the words
+   No flash, no glitch, no animation — the script doc is explicit that the words
    simply appear. It gets space around it and nothing else. */
 .title-reveal {
   font-family: var(--label);

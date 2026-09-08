@@ -144,14 +144,14 @@ reveal.
 >
 > I stood there with my shoes ruined and understood that I was not going to be allowed to call this a dream.
 
-**Pacing.** The Scene 6→7 transition is a 3–5 second match-cut sequence that ends on *Then they did.*
-The plate is what that sequence lands on, so it wants a slow fade up out of the last ripple — **not**
-Chapter I's Scene 2 trick of cutting in hard. The art doc's transition note calls this the camera
-pulling back; the plate is the destination of the pull-back. Longer fade in and out than a scene, and
-no hover effect on the advance control.
+**Pacing.** The plate is what Scene 6's closing lines hand off to — *None of these waters had
+touched. / Then they did.* — so it wants a slow fade up out of that, **not** Chapter I's Scene 2
+trick of cutting in hard. Longer fade in and out than a scene, and no hover effect on the advance
+control. Nothing animates: it is a still image that fades, like every other plate in the game.
 
-**Build.** Uses the `plate` field with `position: "before"`, already specified for Chapter I (see that
-script doc's PLATES section and the tech doc's scene schema). No new schema.
+**Build.** Uses the `openingPlate` field, the same one Chapter I's Scenes 2 and 5 use. (Chapter I's
+script doc proposes a single `plate: { position }` field; that is not what shipped — see the tech
+doc's scene schema, which is the schema of record.) No new schema.
 
 ---
 
@@ -645,6 +645,11 @@ PLATE, above — the arrival happens there, and the scene body picks up with the
 **TITLE REVEAL — display only now:**
 
 > **CHAPTER II: THE LAST WORD**
+
+> **Presentation.** Plainly. No flash, no glitch, no typing, no animation of any kind — the words are
+> simply there, with space around them and nothing else. This is the payoff of a subtitle withheld for
+> six scenes, and anything that performs the arrival cheapens it. (Implemented as `.title-reveal` in
+> `css/style.css`, which carries no animation for exactly this reason.)
 
 **TIER 2, examine the water:**
 

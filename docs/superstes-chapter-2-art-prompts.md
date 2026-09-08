@@ -25,6 +25,13 @@ The art must resist making the departures look important. The visual reveal belo
 - **Different memories may involve different people.** Do not accidentally make every male figure look like the same recurring character.
 - **Memory instability is subtle.** Small shifts in object position, reflection, or water can change on revisit. Avoid obvious glitch effects. **Scene 4's puddle is the first instance the player is meant to catch**; everything before it stays beneath notice.
 - **Water is the only recurring visual motif.** It begins incidental and becomes impossible only in Scene 7.
+- **Nothing here animates.** Chapter I ships static plates that crossfade and nothing else — no pan,
+  parallax, match-cut, ripple or animated illustration appears anywhere in it or in its art doc.
+  Chapter II matches that. Scene changes are the engine's existing crossfade, and a plate fades in
+  and out. An earlier draft of this doc carried a per-scene motion section; it was removed rather
+  than left standing as an aspiration, because it specified a production capability the project has
+  never had. If animation is ever wanted it is a new capability to design for both chapters, not a
+  Chapter II detail.
 - **Generated art contains no important readable text.** Timetables, phone screens, receipts, signs, badges, etc. should use abstract marks. All narrative/UI text is HTML/CSS.
 
 ---
@@ -165,7 +172,7 @@ the same path and it just works.
 
 **Total generated assets:** 32 (7 scenes + 21 objects + 1 plate + 3 endings). Scene 5's "examine the
 conversation" hotspot is text-only, no image, the same convention as Chapter I's calendar widget.  
-If generation budget is tight, see Section 9 for cuts.
+If generation budget is tight, see Section 8 for cuts.
 
 ---
 
@@ -213,7 +220,7 @@ If generation budget is tight, see Section 9 for cuts.
 
 > ordinary city sidewalk after light rain, two adults unexpectedly encountering each other while walking opposite directions, one smiling with uncomplicated friendly recognition, casual contemporary clothing, curb puddle reflecting part of the encounter, pedestrians and street context understated, moment feels normal rather than romantic or tragic, no embrace, no tears, no dramatic distance, black and white pen-and-ink line illustration, delicate graphite wash, sparse cross-hatching, high-contrast negative space, quiet melancholic contemporary realism, slightly dreamlike but not fantasy, elegant thin linework, restrained facial detail, soft film-grain texture, no color, no photorealism, no 3D render, no anime, no comic speech bubbles, no readable text, no logos, no watermark, cinematic horizontal composition, 16:9, clear central subject, generous negative space for narrative UI overlay, environment readable at web-game scale
 
-**Branch variant:** Do not generate a second image unless budget allows. `turned_back=true` can be handled with a crop/pan or CSS fade showing the same figure farther down the street.
+**Branch variant:** None. Both sides of the `turned_back` branch use this one image; do not generate a second. The branch is carried by its prose, not by the picture changing.
 
 ---
 
@@ -225,7 +232,9 @@ If generation budget is tight, see Section 9 for cuts.
 
 > crowded summer bar or casual restaurant with old friends, glassware and layered reflections, one person leaning toward the narrator to speak over the room, background figures laughing and talking, image subtly contains a second memory in reflection: a distressed person mid-argument in a quieter doorway, double exposure effect barely noticeable at first, melting ice and water ring on table, emotional but not threatening, black and white pen-and-ink line illustration, delicate graphite wash, sparse cross-hatching, high-contrast negative space, quiet melancholic contemporary realism, slightly dreamlike but not fantasy, elegant thin linework, restrained facial detail, soft film-grain texture, no color, no photorealism, no 3D render, no anime, no comic speech bubbles, no readable text, no logos, no watermark, cinematic horizontal composition, 16:9, clear central subject, generous negative space for narrative UI overlay, environment readable at web-game scale
 
-**Implementation note:** The argument overlay can also be a CSS crossfade into a separately cropped layer from the same generated composition.
+**Implementation note:** The two memories share **one image**. The argument is present inside this
+composition as reflection and double exposure, not layered in at runtime and not crossfaded — the
+script strikes the second memory into the first in prose, and the picture holds both at once.
 
 ---
 
@@ -396,76 +405,9 @@ sees that something is in it twice over. No glow, no seam, no double-exposure ef
 
 ---
 
-# 8. MOTION / TRANSITION NOTES
+# 8. GENERATION PRIORITY / BUDGET CUTS
 
-Keep animation minimal and primarily CSS-based.
-
-### Scene 1
-- Passenger door closes.
-- Tiny bead of condensation slowly moves downward.
-
-### Scene 2
-- Station drifts sideways only after train begins moving.
-- Person behind glass remains still for a fraction longer than expected.
-
-### Scene 3
-- Water inside bottle settles after handoff.
-- Packed car exits frame without cinematic pause.
-
-### Scene 4
-- If `turned_back=true`, reuse scene art with subtle pan/crop; figure becomes smaller behind passing pedestrian.
-- Puddle ripple briefly breaks the reflected smile.
-- **The lag, if animated at all, is one beat and never repeats.** The reflected smile arrives roughly
-  a blink after the real one — no more than ~150ms, once. Nothing marks it, nothing replays it, and it
-  does not happen again on revisit. A player who missed it should be able to wonder whether they did.
-- After the ripple settles, the wrong architecture holds for a moment in the water and then is simply
-  gone. Fade, do not cut, and do not draw the eye to it.
-
-### Scene 5
-- Layer ambient crowd motion as very subtle parallax.
-- Crossfade bar reflection into argument memory.
-- Do **not** use digital glitch aesthetics; this is associative memory, not corrupted software.
-
-### Scene 6
-- One drop from mop into bucket.
-- Very slow settling sediment.
-
-### Scene 6 → 7 transition
-This is the major visual transformation of the chapter.
-
-1. Close crop on mop bucket ripple.
-2. Match-cut ripple to water bottle.
-3. Match-cut to street puddle.
-4. Match-cut to drink ring.
-5. Reflections begin containing architecture from the wrong scenes.
-6. Camera pulls back to reveal the shared pool.
-
-Target: 3–5 seconds. Slow enough to register, not a cutscene.
-
-**The pull-back lands on the plate (P201), not on the scene.** Fade up slowly out of the final
-ripple — do not cut in hard. The plate then holds until the player clicks, and S207 is what they
-arrive at afterward.
-
-### Scene 7
-- Very subtle independent ripples under each memory fragment.
-- On title reveal, do **not** flash or glitch. Let the words appear plainly.
-
-### Ending A
-- Ripples stop.
-
-### Ending B
-- Ripples multiply; scene reflections repeat one additional time every few seconds.
-
-### Ending C
-- Reflections remain, but the protagonist's reflection becomes the clearest element.
-
-Provide reduced-motion equivalents as fades.
-
----
-
-# 9. GENERATION PRIORITY / BUDGET CUTS
-
-If generating all 29 images is too expensive, use this order.
+If generating all 32 images is too expensive, use this order.
 
 ## Tier 1 — required
 
@@ -515,7 +457,7 @@ it is the chapter's one held image and the reveal is staged on it.
 
 ---
 
-# 10. WHAT NOT TO GENERATE
+# 9. WHAT NOT TO GENERATE
 
 Do not generate:
 
@@ -536,7 +478,7 @@ The chapter works only if the player first believes these are **ordinary memorie
 
 ---
 
-# 11. ART ACCEPTANCE CHECKLIST
+# 10. ART ACCEPTANCE CHECKLIST
 
 Before accepting a generated image, verify:
 
@@ -554,7 +496,7 @@ Before accepting a generated image, verify:
 
 ---
 
-# 12. STATUS
+# 11. STATUS
 
 Art direction and prompt manifest are complete for a first generation pass.
 
