@@ -1,6 +1,8 @@
 .DS_Store
 **/.DS_Store
 Thumbs.db
+__pycache__/
+*.py[cod]
 assets_backup/
 assets_tint/
 assets_original/
