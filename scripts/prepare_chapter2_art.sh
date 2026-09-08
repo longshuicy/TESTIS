@@ -12,6 +12,7 @@
 # Pipeline:
 #   assets_original/chapter_II/   delivered PNGs (source of truth, untouched)
 #     -> rename to the manifest's names
+#     -> match_exposure.py          per-image gamma into Chapter I's range
 #     -> unify_colors.py            palette remap onto Chapter I's anchors
 #     -> assets_backup/images-png-master/    joins the master set
 #     -> optimize_images.sh         downscale + WebP + wall thumbs
@@ -53,11 +54,18 @@ mv "$stage/obj-school-bag.png"         "$stage/obj-schoolbag.png"
 # into Chapter I's dark painted scenes; that image wants regenerating at source.
 # Do not add an invert step here.
 
+# Exposure first, palette second, and the order is load-bearing — see the header
+# of match_exposure.py. Chapter II came out of the generator far brighter than
+# Chapter I (0.09-0.59 mean against 0.02-0.08), which does not hold light prose.
+echo "matching exposure to Chapter I ..."
+exposed="$(mktemp -d)"; trap 'rm -rf "$stage" "$unified" "$exposed"' EXIT
+python3 scripts/match_exposure.py "$stage" "$exposed"
+
 # Palette remap onto Chapter I's four anchors. This is a hue unifier, not a
 # darkener: Chapter II is neutral cool grey out of the generator, Chapter I is
 # navy/steel-blue, and this is what puts them in the same world.
 echo "unifying palette ..."
-python3 scripts/unify_colors.py "$stage" "$unified" >/dev/null
+python3 scripts/unify_colors.py "$exposed" "$unified" >/dev/null
 
 echo "installing masters into $MASTERS ..."
 mkdir -p "$MASTERS"

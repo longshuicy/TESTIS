@@ -176,15 +176,30 @@ Delivered originals live in `assets_original/chapter_II/` and are git-ignored li
 working directory. They are the source of truth for a re-run; the script never works from its own
 output.
 
-**Chapter II is lighter than Chapter I on purpose and this is not drift.** Its scenes land around
-0.15–0.35 mean luminance against Chapter I's 0.02–0.09, because Chapter II is daylit — cars, parking
-lots, a street after rain, a classroom in late afternoon — where Chapter I is candle-and-fog. Do not
-"correct" it toward Chapter I.
+**Chapter II is exposure-matched to Chapter I, and that is a pipeline step, not a prompt note.**
+Out of the generator its scenes sat at 0.09–0.59 mean luminance against Chapter I's 0.02–0.08 — far
+too light to carry light prose. `scripts/match_exposure.py` solves a per-image **black point** so each
+lands inside Chapter I's envelope; shipped scenes now sit at 0.030–0.076.
 
-`scene-01-dropoff` is the far end of that at ~0.59, being light-ground. It stays legible because
-`.vignette` lays a dark column behind the measure, so the prose has ground regardless of what the art
-behind it is doing — but it is visibly the brightest thing in either chapter. If it should match its
-neighbours, regenerate it dark-ground rather than transforming what is there.
+A black point rather than a gamma, deliberately: gamma pulls the linework down along with the ground,
+so the art goes dark *and flat* (measured, on the first attempt: sd fell to 0.04 against Chapter I's
+0.08–0.13). Lifting the black point instead crushes the murky low end to true black and leaves the
+bright end alone, which is how Chapter I reads — near-black ground, linework still bright.
+
+It runs **before** `unify_colors.py`, and that order is load-bearing. Darkening first means a crushed
+midtone lands on the dark end of the anchor ramp while a highlight still lands on the light end.
+Darkening afterwards would dim the anchors themselves and flatten exactly the highlights that give
+Chapter I its lit surfaces.
+
+Source means are rank-mapped into a target band rather than every image being snapped to one value,
+so a dim bar stays dimmer than a bright street. Chapter II still ends up slightly flatter than
+Chapter I (sd ~0.05 against ~0.09–0.13) because its art is evenly detailed line work where Chapter
+I's is large black masses with hard highlights. That is a difference in the drawings, not something
+exposure maths should force.
+
+`scene-01-dropoff` is the one that fights it: delivered light-ground, it needs a 0.76 black point to
+reach 0.076, which flattens the drawing to a faint suggestion. It is legible and tonally consistent,
+but it wants **regenerating dark-ground** rather than transforming.
 
 ### Ending images
 
