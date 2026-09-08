@@ -1,0 +1,16 @@
+{
+  "heading": "那时已经有什么在数着了",
+  "registers": [
+    { "numeral": "I",   "label": "那些地方",   "layout": "wide",     "prefix": ["scene-", "ending-"] },
+    { "numeral": "II",  "label": "留下来的",   "layout": "square",   "prefix": ["obj-"] },
+    { "numeral": "III", "label": "那些人",     "layout": "portrait", "prefix": ["char-", "plate-"] }
+  ],
+  "unseen": "不曾记住",
+  "plateWord": "图版",
+  "enter": "去看留下来的",
+  "again": "从头再来",
+  "credit": [
+    "画面由作者拟写提示词，经 Midjourney 生成，",
+    "再以 Procreate 手工描改。"
+  ]
+}

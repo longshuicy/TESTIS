@@ -1,0 +1,21 @@
+{
+  "keys": ["looked_away", "acknowledged_witness"],
+  "table": [
+    {
+      "match": { "looked_away": true, "acknowledged_witness": "held" },
+      "text": "我从他身上把眼睛移开过一次。我没有从他们身上移开。也许这是我在两个方向上唯一还得清的一笔债。"
+    },
+    {
+      "match": { "looked_away": false, "acknowledged_witness": "avoided" },
+      "text": "我把他看到了底，却没能让看我的人得到同样的东西。我现在明白他原谅这件事要花多大力气，而我注意到，他原谅的时候并没有等人来求他。"
+    },
+    {
+      "match": { "looked_away": true, "acknowledged_witness": "avoided" },
+      "text": "我从他身上移开了眼睛，轮到他们，我也移开了。有些花样不会因为你两头都活过一遍就断掉。"
+    },
+    {
+      "match": { "looked_away": false, "acknowledged_witness": "held" },
+      "text": "我把他看到了底，也让自己被人看到了底。如果这真是一场接力，至少我这一棒是睁着眼跑完的。"
+    }
+  ]
+}
