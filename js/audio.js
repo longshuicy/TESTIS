@@ -76,13 +76,10 @@ const BEDS = {
   // spec object*, and bedElement pools by src, so all ten resolve to one
   // <audio> element -- playBed then takes its "same bed, just bring it back up"
   // path at every scene change and the drip never restarts. It runs unbroken
-  // from Scene 1 to the tally wall.
-  //
-  // The one deliberate interruption is the Scene 7 plate: plateOpened cuts the
-  // bed under a plate so the sting lands in silence. silenceBed pauses rather
-  // than rewinds, so the drip resumes mid-loop afterwards. The drip stopping is
-  // the only silence in the chapter and it falls on the reveal, which is worth
-  // keeping rather than working around.
+  // from Scene 1 to the tally wall — including under Scene 7's sting-less plate
+  // (plateOpened only cuts a bed when the plate has a sting of its own).
+  // Choice beats still halt it briefly, the same as Chapter I; "unbroken" means
+  // it does not rewind or cut over between scenes, not that it never pauses.
   //
   // Unlike Chapter I's endings this does not stop at the ending (`loop` stays
   // true): there is no composed piece to end, and a drip that stopped dead
@@ -661,17 +658,18 @@ const Sound = {
     playBed(id);
   },
 
-  // A plate is taking the screen. Scene 2's sting has to land in silence, so
-  // any bed still running is cut under it — fast enough to read as the hard
-  // cut the script asks for, slow enough not to click. The other two plates
-  // arrive after a branch has already stopped the bed.
+  // A plate is taking the screen. Cut the bed only when the plate brings its
+  // own sting — Scene 2's has to land in silence, and Chapter I's other plates
+  // all have stings too. A sting-less plate (Chapter II Scene 7) leaves the bed
+  // alone so the drip keeps running under the held image rather than going
+  // dead until dismiss.
   plateOpened(sceneId) {
     stopMorseAudio();
     stopCue(0);           // a plate's sting lands alone or it does not land
     stopSting(0);
-    if (AUDIO.bed && !AUDIO.bed.paused) silenceBed(null, 200);
     const spec = stingSpec(sceneId);
     if (!spec) return;
+    if (AUDIO.bed && !AUDIO.bed.paused) silenceBed(null, 200);
     // No fade in, on any of them. A plate's sound arrives with its image or it
     // arrives late, and late reads as a reaction to the picture rather than a
     // condition of it.
@@ -759,14 +757,6 @@ const Sound = {
     cue = playFx(CUE_CONFIRM, CUE_CONFIRM_VOL);
   },
 
-  // A branch has been answered. Scene 4 answers with one low note.
-  //
-  // Scene 7 answers with nothing. The original spec had the ending's bed start
-  // here, "under the last line" — but Scene 7's branch has no closing line for
-  // it to start under. What actually follows the choice is a Continue button,
-  // so the ending's music played over the scene the player had just finished,
-  // for however long they took to press it. The ending's bed belongs to the
-  // ending: it starts when the ending paints, like every other bed.
   // One drip, for the Chapter II door on the title screen. Chapter II's whole
   // bed is this sound, so hovering the door hears the chapter it opens without
   // being told anything about it. Reuses the Morse sequencer's pool and sample.
@@ -775,6 +765,14 @@ const Sound = {
     playDrip();
   },
 
+  // A branch has been answered. Scene 4 answers with one low note.
+  //
+  // Scene 7 answers with nothing. The original spec had the ending's bed start
+  // here, "under the last line" — but Scene 7's branch has no closing line for
+  // it to start under. What actually follows the choice is a Continue button,
+  // so the ending's music played over the scene the player had just finished,
+  // for however long they took to press it. The ending's bed belongs to the
+  // ending: it starts when the ending paints, like every other bed.
   branchChosen(sceneId, nextId) {
     if (sceneId === "scene-4") lowNote();
   }

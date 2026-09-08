@@ -1,13 +1,15 @@
 // SUPERSTES — Chapter II's tally wall copy.
 //
-// Same mechanism as Chapter I's wall (see wall.js), with two deliberate
-// absences, both of them the point rather than an omission:
+// Same mechanism as Chapter I's wall (see wall.js), with one deliberate
+// absence and one deliberate presence:
 //
-//   • No `again`. Chapter I is a relay and its wall loops; Chapter II is about
-//     the fact that nothing came next, so its wall is the last screen and it
-//     stays there. gallery.js renders no exit for a wall without this key.
 //   • No secret plaque. There is no Morse in Chapter II, so there is nothing
 //     withheld for a plaque to hand back.
+//   • `again` is present. The wall used to be a dead end (Chapter I loops,
+//     Chapter II stops), which read well as an argument and badly as a thing
+//     to sit in front of, so it offers Begin again. There is still no
+//     `nextChapter`: Chapter II is the last one. See the script doc's
+//     "Reversed decision, recorded."
 //
 // See docs/superstes-chapter-2-script.md § The Tally Wall.
 
@@ -51,5 +53,5 @@ const WALL_C2 = {
     "with post-generation drawing and editing in Procreate."
   ]
 
-  // No `again`, and no secret* keys. Both absences are load-bearing; see above.
+  // No secret* keys. That absence is load-bearing; see above.
 };

@@ -75,6 +75,12 @@ https://freesound.org/s/337163/
 Licensed under Creative Commons 0
 https://creativecommons.org/publicdomain/zero/1.0/
 
+"Blowing into a small glass bottle - Low"
+Wastefield
+https://freesound.org/s/692098/
+Licensed under Creative Commons 0
+https://creativecommons.org/publicdomain/zero/1.0/
+
 ---
 
 Derived assets
@@ -82,6 +88,10 @@ Derived assets
 assets/sound/drip-single.wav is a 0.62-second cut of assets_sound_src/drip.wav,
 trimmed, faded and normalised for use as the Morse drip. It is a derivative of
 that recording and carries its source's licence and attribution.
+
+assets/sound/bed-c2-drip.wav is an 11.9-second seamless loop cut from the same
+drip.wav by scripts/make_c2_drip_bed.py — Chapter II's only bed. Same licence
+and attribution as the source recording.
 
 assets/sound/plate-scene-5.m4a is a 6-second excerpt of its source recording,
 trimmed and faded for use as the Scene 5 plate sting. Same licence and

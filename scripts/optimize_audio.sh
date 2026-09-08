@@ -12,11 +12,12 @@
 #               minutes-listened x bitrate, not the file size.
 #   Stings   -> AAC 128kbps .m4a. Short, and they land inside a silence the
 #               rest of the design worked to earn, so they get the better rate.
-#   Two WAVs -> stay uncompressed, for reasons that are not about size:
+#   Three WAVs -> stay uncompressed, for reasons that are not about size:
 #               bed-scene-5 is a seamless loop (every lossy codec adds encoder
-#               padding that a loop turns into a click), and drip-single is
+#               padding that a loop turns into a click), drip-single is
 #               fired dozens of times with tight timing (decode latency to
-#               lose, nothing to gain).
+#               lose, nothing to gain), and bed-c2-drip is Chapter II's
+#               continuous drip bed (same loop-gaplessness reason).
 #
 # A LOOPING STING CAN BE THE SAME TRAP AS bed-scene-5, but only if its head
 # meets its tail. A sting the game loops under a held plate hits its own loop
@@ -32,7 +33,8 @@
 # The two interface cues (prompt-notification.mp3, confirmation.mp3) were
 # delivered as shipped and have no master here. They are not touched.
 # drip-single.wav is derived from drip.wav by a cut this script does not make
-# (see sound doc section 10); it is not touched either.
+# (see sound doc section 10); it is not touched either. bed-c2-drip.wav is
+# built by scripts/make_c2_drip_bed.py from the same master; also not touched.
 #
 # Idempotent: always encodes from the masters, never from its own output.
 #
@@ -67,7 +69,7 @@ STING_LOOP=""
 
 # Masters with no shipped counterpart, or whose shipped file is produced by a
 # cut this script does not make.
-SKIP="drip drip-single plate-scene-5"
+SKIP="drip drip-single plate-scene-5 bed-c2-drip"
 
 command -v afconvert >/dev/null 2>&1 || { echo "error: afconvert not found (macOS only)" >&2; exit 1; }
 [ -d "$SRC" ] || { echo "error: source dir '$SRC' not found" >&2; exit 1; }
@@ -134,3 +136,4 @@ echo
 echo "Not produced here (no master, or a cut this script does not make):"
 echo "  prompt-notification.mp3, confirmation.mp3  — delivered as shipped"
 echo "  drip-single.wav                            — cut from drip.wav, sound doc section 10"
+echo "  bed-c2-drip.wav                            — cut by scripts/make_c2_drip_bed.py"
