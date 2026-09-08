@@ -83,6 +83,21 @@ function chapterByKey(key) {
   return CHAPTERS.find(c => c.key === key) || null;
 }
 
+// The pointer swap on its own, with no state reset. Also the whole of a
+// language switch: the getters read through I18N, so re-running them re-points
+// the same four names at the same chapter's *other* language, leaving flags,
+// examined and the wall's count exactly where the run left them.
+function pointAtChapter(chapter) {
+  SCENES = chapter.scenes();
+  ENDINGS = chapter.endings();
+  WALL = chapter.wall();
+  SHARED_CALLBACK = chapter.sharedCallback();
+}
+
+function relocalizeChapter() {
+  if (currentChapter) pointAtChapter(currentChapter);
+}
+
 // Points the four shared bindings at a chapter and resets everything that
 // belonged to the previous one. Safe to call before the first render; that is
 // in fact how Chapter I starts.
@@ -94,10 +109,7 @@ function activateChapter(key) {
   }
 
   currentChapter = chapter;
-  SCENES = chapter.scenes();
-  ENDINGS = chapter.endings();
-  WALL = chapter.wall();
-  SHARED_CALLBACK = chapter.sharedCallback();
+  pointAtChapter(chapter);
 
   // `flags` is a const object shared across the whole app, so it is emptied and
   // repopulated rather than replaced — every existing reference stays valid.

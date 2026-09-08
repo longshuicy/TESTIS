@@ -166,11 +166,15 @@ def check_against_english(lang, data):
 
 def check_ui(lang, ui):
     errors = []
-    for key in ("lang", "htmlLang", "toggleLabel", "ui", "title"):
+    for key in ("lang", "htmlLang", "toggleGlyph", "toggleLabel", "ui", "title"):
         if key not in ui:
             errors.append("ui.json: missing %r" % key)
     if ui.get("lang") != lang:
         errors.append("ui.json: lang is %r, expected %r" % (ui.get("lang"), lang))
+    glyph = ui.get("toggleGlyph")
+    if not isinstance(glyph, str) or not 1 <= len(glyph) <= 2:
+        errors.append("ui.json: toggleGlyph must be one or two characters — it "
+                      "is set inside a 2.6rem circle beside the sound button")
     days = ui.get("ui", {}).get("calendarWeekdays")
     if not isinstance(days, list) or len(days) != 7:
         errors.append("ui.json: ui.calendarWeekdays must be 7 entries")
@@ -218,6 +222,7 @@ def build(lang, check_only):
     out.append("I18N.register({")
     out.append("  lang: %s," % json.dumps(ui["lang"]))
     out.append("  htmlLang: %s," % json.dumps(ui["htmlLang"]))
+    out.append("  toggleGlyph: %s," % json.dumps(ui["toggleGlyph"], ensure_ascii=False))
     out.append("  toggleLabel: %s," % json.dumps(ui["toggleLabel"], ensure_ascii=False))
     out.append("  toggleAria: %s," % json.dumps(ui.get("toggleAria", ui["toggleLabel"]), ensure_ascii=False))
     out.append("  ui: %s," % json.dumps(ui["ui"], ensure_ascii=False, indent=2))

@@ -95,8 +95,10 @@ Run `--check` after editing the JSON and before committing. Run the plain build 
 | `I18N.resolve()` | `main.js` boot | reads `?lang=`, falls back to English |
 | `I18N.content(name, fallback)` | `chapters.js` | the pack's copy of a data global, or the English one |
 | `I18N.ui(key)` | `main.js`, `gallery.js`, `audio.js` | one engine-composed string, English if the pack omits it |
-| `I18N.applyStatic()` | `main.js` boot | rewrites the title screen |
-| `I18N.mountToggle(btn)` | `main.js` boot | wires the language door |
+| `I18N.setLang(target)` | `main.js` `switchLanguage()` | swaps the pack, the URL and nothing visible |
+| `I18N.applyLang()` | `main.js` boot and the swap point | paints the page in the active language |
+| `I18N.warmText(sample)` | `main.js` `switchLanguage()` | pulls the font subsets those words need |
+| `I18N.mountToggle(btn, onSwitch)` | `main.js` boot | wires the standing toggle |
 
 **Load order** becomes: `i18n.js` → every chapter's data files → the content packs →
 `chapters.js` → `audio.js` → `gallery.js` → `main.js`.
@@ -107,10 +109,62 @@ Run `--check` after editing the JSON and before committing. Run the plain build 
 `gallery.js` still do not know either axis exists.
 
 **Language is the URL and nothing else.** `?lang=zh`. There is no persistence in this game by
-design (tech doc §1), so there is nowhere else to keep it, and switching reloads rather than
-re-rendering. That is cheap because the toggle exists only on the title screen, where nothing is
-yet at stake; `I18N.urlFor()` preserves every other query param so `?debug=` and `?all` survive
-the switch. An unregistered `?lang=` value falls back to English rather than erroring.
+design (tech doc §1), so there is nowhere else to keep it. An unregistered `?lang=` value falls
+back to English rather than erroring, as does a pack that fails to load.
+
+**The toggle is a standing control**, the sound button's twin, directly beneath it and live for
+the whole run — not a title-screen link. That makes switching mid-run the normal case, so it must
+not cost the player anything, and it does not reload. `main.js`'s `switchLanguage()`:
+
+1. `I18N.setLang(target)` swaps the active pack and rewrites the URL with `history.replaceState`
+   (preserving `?debug=`, `?all` and the rest). It changes **nothing visible** — see below.
+2. `relocalizeChapter()` re-runs the current chapter's four getters. Because they read through
+   `I18N.content()`, that re-points `SCENES` / `ENDINGS` / `WALL` / `SHARED_CALLBACK` at the same
+   chapter's other language. It is `activateChapter()` without the resets.
+3. `I18N.warmText()` is handed the words about to be painted, so their font subsets download during
+   the fade rather than after it.
+4. The view repaints, and `I18N.applyLang()` fires **on the same frame the words change**.
+
+**`setLang` and `applyLang` are split for one reason.** `body[data-lang]` carries the whole font
+block — stack, line height, measure, italic rules — so the frame it flips on is the frame the page
+changes typeface. Flipping it when the pack changes, while a 400ms scene fade still has the old
+language's words on screen, set English prose in a kai face with CJK metrics for most of half a
+second. That was the "weird font in between". `applyLang()` is therefore called at the exact swap
+point, which differs by what is on screen:
+
+| On screen | Where `applyLang()` fires |
+|---|---|
+| Title screen | immediately — it rewrites that copy itself, so words and face change together |
+| A scene or ending | inside `fadeOut`'s `onSwap` hook, the instant the old content is removed |
+| A plate | immediately, with `relocalizePlate()` rewriting the caption in place |
+| The tally wall | immediately, with `Gallery.relabel()` rebuilding it in place |
+
+Plates and the wall are fixed overlays outside `#scene-content`: a scene repaint does not reach
+them, so each is rewritten in place and the scene repainting behind them is invisible. Both are
+checked **before** the `playing` test, because `?all` opens the wall over the title screen.
+
+**English needs a snapshot.** English has no `title` block — it *is* the markup — which was true
+right up until a pack overwrote that markup, and switching no longer reloads the page to bring it
+back. So `applyLang()` snapshots every `[data-i18n]` node (plus `<title>` and the meta description)
+on its first call, before anything is written over them, and restores from that when the active
+pack has no `title`. Still one copy of the English, still in `index.html`; this only remembers what
+it said.
+
+Nothing the run has earned is language, so nothing is lost: `flags`, `examined`, the wall's `seen`
+count, the carved name, the active chapter and the current scene all survive. `Gallery.relabel()`
+drops only the caption cache (built against the old language's `SCENES`/`ENDINGS`) and rebuilds an
+open wall in place — unlike `reset()`, which is the chapter switch and does clear the count. The
+replacement opens **already opaque** and keeps the previous `scrollTop`: letting it run the normal
+fade in showed the title screen through it, and resetting the scroll lost the reader's place.
+
+`{ repaint: true }` suppresses the scene's opening plate: a plate is an arrival beat, and replaying
+it over a scene the player has been sitting in reads as the game restarting. The bed does not
+restart either — `playBed` recognises the same key and simply holds.
+
+**The one casualty** is position *within* a scene. `runtime.answered` is rebuilt with the scene, so
+the reactive chain repaints from its first prompt. Answering again writes the same flag it already
+holds, so nothing downstream changes; it is a repeated question, not a lost one. The alternative
+was reloading, which loses the entire run in a game with no saves. Not close.
 
 **The title screen** is static HTML, and English is that HTML. A pack overrides it through
 `data-i18n="key"` (sets `textContent`) and `data-i18n-html="key"` (sets `innerHTML`, for the two
@@ -119,8 +173,8 @@ lines carrying `<em>`), both resolved against the pack's `title` block; blurb li
 Adding a line to the blurb means adding it to the packs — `--check` enforces the count of nine.
 
 **Engine-composed strings** (the ones no data file owns) live in `UI_EN` in `i18n.js` and in each
-pack's `ui` block: `examine`, `continue`, `close`, `plate`, `unnamedPlayer`, `registerCount`,
-`soundOn`, `soundOff`, `calendarTitle`, `calendarWeekdays`. A pack that omits one degrades to
+pack's `ui` block: `examine`, `continue`, `plate`, `unnamedPlayer`, `registerCount`, `soundOn`,
+`soundOff`, `calendarTitle`, `calendarWeekdays`. A pack that omits one degrades to
 English for that string rather than to `undefined`.
 
 The wall's own copy is **not** here — it is narrative-adjacent and lives in `WALL_*`, so a
@@ -155,10 +209,22 @@ For `zh` (`body[data-lang="zh"]`):
 
 | Slot | English | Chinese | Why |
 |---|---|---|---|
-| `--display` | Grenze Gotisch | Ma Shan Zheng | the only CJK face here with the same "written by someone, a while ago" quality the blackletter has |
-| `--head` / `--body` / `--label` | Grenze Gotisch / Grenze | Noto Serif SC 300 | 300 matches Grenze's colour on screen; 400 is visibly heavier |
+| `--display` | Grenze Gotisch | Ma Shan Zheng | a cursive brush hand, far enough from the body face to keep the hierarchy the blackletter gave the English |
+| `--head` / `--body` / `--label` / `--cal-mono` | Grenze Gotisch / Grenze / Special Elite | LXGW WenKai Screen (`--kai`) | see below |
 | `--cal-title` | Mrs Saint Delafield | Ma Shan Zheng | the calendar's own hand |
-| `--cal-mono` | Special Elite | Noto Serif SC | the typed weekday glyphs are single characters in Chinese |
+
+**The body face is a 楷体, and that is the whole decision.** Kai is brush-derived regular script:
+the stroke entries and exits of a written hand are still in it. A Song/Ming face — Noto Serif SC,
+which this shipped with first — is the Chinese newspaper letter, upright and mechanical, and it
+made the narration read like a report. The entire story is one person remembering out loud, in a
+hand; kai is the closest Chinese equivalent to the face the English is set in.
+
+Google Fonts carries no kai at all, so `LXGW WenKai Screen` (霞鹜文楷, SIL OFL) comes from jsDelivr
+as ~26 unicode-range subsets — a page pulls only the characters it uses. The `--kai` stack falls
+back through the system kai faces (`Kaiti SC`, `STKaiti`, `TW-Kai`, `KaiTi`, `BiauKai`) for anyone
+offline, and to Noto Serif SC behind those; only one of them is ever downloaded. WenKai ships a
+single weight, which is why the `zh` block sets no `font-weight` — asking for 300 only invited a
+synthesised thin from the fallbacks.
 
 Three adjustments that are corrections, not taste:
 
@@ -182,6 +248,15 @@ against ~130KB for the English data files and ~31MB of audio, so gating it behin
 language would buy nothing and would cost the "plain `<script>` tags, no async loading" convention
 that keeps `file://` working. Revisit only if the pack count grows.
 
+**Fonts are warmed before they are needed.** WenKai arrives as ~97 unicode-range subsets, so a
+switch would otherwise fetch its glyphs at the moment they first paint and `font-display: swap`
+would show a fallback for a beat — on the very frame the player is watching. Two calls avoid that:
+hovering or focusing the toggle warms the target pack's title copy (the high-frequency subsets every
+scene needs), and the switch itself warms the exact words about to appear, which then have the
+length of the fade to arrive in. Both go through `I18N.warmText()`, which is family-agnostic on
+purpose — it asks every registered `@font-face` to load that text, and a face whose unicode-range
+does not cover it is never fetched. The font stack stays defined only in the stylesheet.
+
 The two CJK faces are pulled from Google Fonts in `index.html` alongside the Latin ones. They are
 requested unconditionally; splitting the request by language would need JS in `<head>` and would
 cost a flash of unstyled text to save a request the browser makes in parallel anyway.
@@ -191,15 +266,17 @@ cost a flash of unstyled text to save a request the browser makes in parallel an
 ## 7. Adding a language
 
 1. `cp -r content/zh content/<lang>` and translate every string value in place.
-2. Set `lang`, `htmlLang`, `toggleLabel` and `toggleAria` in `ui.json`. `toggleLabel` is what the
-   button says **while that language is active** — the Chinese pack says "English" — so each pack
-   carries the label for leaving itself, and the button never has to reason about direction.
-   English's own entry lives in `i18n.js`'s `packs.en`.
+2. Set `lang`, `htmlLang`, `toggleGlyph`, `toggleLabel` and `toggleAria` in `ui.json`. All of them
+   describe the button **while that language is active** — the Chinese pack offers `A` / "English",
+   English offers `文` / "中文" — so each pack carries the mark for leaving itself, and the button
+   never has to reason about direction. `toggleGlyph` must be one or two characters (`--check`
+   enforces it): it is set inside a 2.6rem circle beside the sound button. English's own entry
+   lives in `i18n.js`'s `packs.en`.
 3. `scripts/build_content.py --check <lang>` until clean, then `scripts/build_content.py <lang>`.
 4. Add `<script src="js/content-<lang>.js"></script>` to `index.html`, after the English data files
    and before `chapters.js`.
 5. Add a `body[data-lang="<lang>"]` block to `css/style.css` if the script needs different faces or
-   metrics, and add its faces to the Google Fonts link.
+   metrics, and add its faces to the font links in `index.html`.
 6. Update `NAMES` in `scripts/build_content.py`, §1 of this doc, and the README.
 
 `I18N.mountToggle` offers exactly one alternative language and picks the first registered pack. A

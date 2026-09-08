@@ -1600,12 +1600,12 @@ const WALL_C2_ZH = {
 I18N.register({
   lang: "zh",
   htmlLang: "zh-Hans",
+  toggleGlyph: "EN",
   toggleLabel: "English",
   toggleAria: "Switch to English",
   ui: {
   "examine": "细看",
   "continue": "继续",
-  "close": "关闭",
   "plate": "图版",
   "unnamedPlayer": "一个名字",
   "registerCount": "{n} / 共 {total}",

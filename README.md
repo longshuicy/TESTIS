@@ -53,9 +53,17 @@ Load order matters: `i18n.js` → every chapter's data files → the translation
 
 ## Languages
 
-English is the default. Chinese is at **`?lang=zh`**, or through the quiet toggle at the foot of
-the title screen. Language lives entirely in the URL — there is no persistence anywhere in this
-game — so switching reloads, keeping any other query params.
+English is the default. Chinese is at **`?lang=zh`**, or through the toggle under the sound button
+— a standing control, live for the whole run, showing the language it offers (`文` while you are
+reading English, `A` while you are reading Chinese).
+
+Switching mid-run costs nothing: the page does not reload. The scene, the chapter, every flag, the
+carved name and the tally wall's count all survive; only the current scene's questions are asked
+again. Language lives entirely in the URL — there is no persistence anywhere in this game — so the
+URL is rewritten in place, keeping any other query params.
+
+The Chinese is set in a 楷体 (LXGW WenKai), not a Song face: the story is one person remembering
+out loud, and kai is the closest Chinese equivalent to the hand the English is set in.
 
 The Chinese text is hand-edited as pure JSON in `content/zh/`, then wrapped into the committed
 `js/content-zh.js` that the page loads:

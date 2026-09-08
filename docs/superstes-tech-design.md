@@ -255,15 +255,19 @@ generated file that registers a full set of chapter data with `I18N`; a chapter'
 language as well as chapter, and `main.js` and `gallery.js` still know about neither axis.
 
 The handful of strings the engine composes itself rather than reading from a data file — the
-Examine heading, the Continue button, the plate/close labels, the unnamed-player fallback, the
+Examine heading, the Continue button, the plate label, the unnamed-player fallback, the
 per-register wall count, the sound toggle's `aria-label`, the calendar's caption and weekday
 initials — come from `I18N.ui(key)`, with English defaults in `UI_EN`. Do not inline a new one at
 its call site: translations lose it silently.
 
 Language is `?lang=` and nothing else, because there is no persistence (§1) and nowhere else to
-keep it. Switching reloads, preserving every other query param; the toggle only exists on the
-title screen, so nothing is lost. Full contract in
-[superstes-localization.md](superstes-localization.md).
+keep it. The toggle is a standing control beside the sound button, live for the whole run, so
+switching does **not** reload: `switchLanguage()` re-points the four bindings through
+`relocalizeChapter()`, repaints the current scene or ending with `advanceTo(id, { repaint: true })`
+and the wall with `Gallery.relabel()`, and rewrites the URL with `replaceState`. Flags, `examined`,
+the wall's count and the current scene all survive; only position within a scene's reactive chain
+is repainted from the top. Full contract in
+[superstes-localization.md](superstes-localization.md) §4.
 
 ### Additive engine changes made for Chapter II
 
@@ -591,8 +595,12 @@ An index of every plate the game can show, built by `gallery.js`. Three entry po
 | `?all` | fully inked, opened immediately | Showing the art to someone who is not here to play. |
 
 The ending's last button opens the wall instead of reloading; "Begin again" moves to the foot of the
-wall. `final: true` drops the close button and adds that button, so the wall is a destination with
-one exit rather than a dismissable panel. It is **not** a separate document, and cannot be: nothing
+wall. **Neither form of the wall has a close icon.** Both exit through that one button at the foot:
+on a final wall it reloads, on a `?all` wall it drops the parameter and lands on the title screen.
+The corner belongs to the two standing controls (sound, language) and a third icon of a different
+kind crowded them; Escape still dismisses a non-final wall. `final: true` additionally gates the
+foot behind the plaque and adds the next-chapter door, so the wall an ending reaches is a
+destination rather than a dismissable panel. It is **not** a separate document, and cannot be: nothing
 is persisted, so navigating away would lose the count it exists to show. An opaque full-screen
 overlay is the same thing to the player and the only version that can hold state.
 
@@ -610,9 +618,8 @@ put on screen — `setBackground`, the tier-2 examine frame, and `renderPlate` �
 was displayed rather than inferring it from scene ids, and a plate the player never reached cannot
 appear inked. Refreshing clears it, exactly as "refreshing begins again" says.
 
-The wall is `z-index: 80`, its lightbox 90, and the sound toggle 85 — the toggle stays reachable on
-the wall while an ending's bed plays out, per sound doc §2, and the wall's close button moves out of
-the corner rather than under it.
+The wall is `z-index: 80`, its lightbox 90, and the standing controls 85 — sound stays reachable on
+the wall while an ending's bed plays out, per sound doc §2, and language with it.
 
 Un-inked cells draw tally marks from a hash of the asset id, so a given plate always wears the same
 scratches. Wide (16:9) cells get three groups and square cells one — a lone cluster in a wide box
@@ -687,9 +694,14 @@ applies to the wall an ending actually hands off to.
 `.wall-close, .continue`, and `.continue` sits at the very foot of a long page — focusing an
 off-screen element scrolls it into view by default, which silently undid the `overlay.scrollTop = 0`
 set two lines above it and opened the wall already scrolled to its own end. Fixed two ways: the
-focus target no longer includes `.continue` at all (falls back to the overlay itself when there is no
-close button), and every focus call here now passes `{ preventScroll: true }` regardless, so this
-class of bug can't recur if the target list changes again later.
+focus target no longer includes `.continue` at all — it is now the overlay itself, there being no
+close button on any wall — and every focus call here passes `{ preventScroll: true }` regardless, so
+this class of bug can't recur if the target list changes again later.
+
+A language switch rebuilds the wall through `Gallery.relabel()`, which opens the replacement
+**already opaque** and restores the previous `scrollTop`. Letting the new overlay run its normal
+400ms fade in showed the title screen through it for the length of the fade, and resetting the
+scroll threw away the reader's place on a page that is mostly scrolling.
 
 ---
 
