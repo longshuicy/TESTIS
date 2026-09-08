@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TESTIS</title>
+<title>SUPERSTES</title>
 <meta name="description" content="A short narrative game about being correct too early.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,9 +32,9 @@
   <!-- title screen -->
   <section id="title-screen">
     <div class="title-inner">
-      <h1>Testis</h1>
+      <h1>Superstes</h1>
       <p class="latin">Latin: <em>a witness</em>. The one who was there.</p>
-      <p class="latin small">From the same root as <em>testament</em>: what a witness leaves behind.</p>
+      <p class="latin small">Literally <em>standing beyond</em>: the one who outlived it, and can still say so.</p>
 
       <div class="blurb">
         <p class="blurb-line">He was not the first.</p>
@@ -48,14 +48,32 @@
         <p class="blurb-line">Something is already keeping count.</p>
       </div>
 
+      <!-- The second door, directly under the blurb rather than below the
+           runtime footnote. The blurb ends "Something is already keeping
+           count."; this answers it, so it belongs in that couplet and not in the
+           fine print. Quiet but legible, and it says "II" and nothing else —
+           naming the chapter would spoil it. Hovering sounds one drip, which is
+           Chapter II's entire score. -->
+      <p class="second-door">
+        <button id="skip-to-ii" type="button">Someone else was keeping count
+          &middot; <span class="door-numeral">II</span></button>
+      </p>
+
       <button id="begin" type="button">Enter the fog</button>
       <p class="foot">15&ndash;20 minutes &middot; no saves &middot; refreshing begins again</p>
     </div>
   </section>
 
+  <!-- Load order matters and there are no modules (tech doc §1): every chapter's
+       data first, then chapters.js which points SCENES/ENDINGS/WALL at one of
+       them, then the engine. -->
   <script src="js/scenes.js"></script>
   <script src="js/endings.js"></script>
   <script src="js/wall.js"></script>
+  <script src="js/scenes-c2.js"></script>
+  <script src="js/endings-c2.js"></script>
+  <script src="js/wall-c2.js"></script>
+  <script src="js/chapters.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/gallery.js"></script>
   <script src="js/main.js"></script>

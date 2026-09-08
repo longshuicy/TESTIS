@@ -1,24 +1,15 @@
-// TESTIS — state machine, rendering, event handling.
+// SUPERSTES — state machine, rendering, event handling.
 // No narrative content lives in this file. All strings come from scenes.js / endings.js.
 
 /* ────────────────────────────────────────────────────────────── state */
 
-const flags = {
-  player_name: null,
-  gate_action: null,
-  identity_found: false,
-  tally_reaction: null,
-  tools_reaction: null,
-  witness_reaction: null,
-  looked_away: null,
-  waking_reaction: null,
-  seen_reaction: null,
-  acknowledged_witness: null,
-  final_choice: null
-};
+// Populated by activateChapter (chapters.js) — each chapter declares its own
+// flag set, and this object is emptied and refilled rather than replaced so
+// every reference to it stays valid across a chapter switch.
+const flags = {};
 
 const examined = new Set();
-let currentSceneId = "scene-1";
+let currentSceneId = null;
 
 // Per-scene bookkeeping for the reactive chain. `requiresExamined` gates are
 // checked when the chain runs, which is on scene load — before the player has
@@ -360,6 +351,12 @@ function renderScene(id) {
       if (t) prose(body, t);
     }
     content.appendChild(body);
+
+    // A chapter subtitle withheld until its reveal scene. Plainly, with no
+    // flash and no glitch — the art doc is explicit that the words just appear.
+    if (scene.titleReveal) {
+      content.appendChild(el("p", "title-reveal", scene.titleReveal));
+    }
 
     setDrip(scene.morse);
     if (scene.morse) {
@@ -1006,6 +1003,13 @@ function renderPlate(rawSpec, onDone, sceneId) {
 
 /* ───────────────────────────────────────────────────────── scene exit */
 
+function appendClosingText(scene) {
+  if (!scene.closingText) return;
+  const res = el("div", "response closing");
+  prose(res, scene.closingText);
+  appendBlock(res);
+}
+
 function renderExit(scene) {
   if (scene.branch) {
     renderChoices(scene.branch, choice => {
@@ -1022,14 +1026,24 @@ function renderExit(scene) {
         return renderPlate(scene.closingPlate, () => advanceTo(choice.next), scene.id);
       }
 
-      if (scene.closingText) {
-        const res = el("div", "response closing");
-        prose(res, scene.closingText);
+      // A branch option may carry its own prose, the same way a reactive
+      // option does. Chapter I's two branches don't; Chapter II's Scene 4
+      // does, and it reads as the consequence of the choice rather than as
+      // the scene's closing line — so it lands before closingText.
+      if (choice.response) {
+        const res = el("div", "response");
+        prose(res, choice.response);
         appendBlock(res);
       }
+
+      appendClosingText(scene);
       renderContinue(() => advanceTo(choice.next));
     }, "branch" + (scene.branch.final ? " final" : ""));
   } else {
+    // closingText is not branch-only. Chapter I happens to use it just once,
+    // after a branch, but every Chapter II scene ends on a continuation beat
+    // that follows its reactive block.
+    appendClosingText(scene);
     renderContinue(() => advanceTo(scene.next));
   }
 }
@@ -1045,7 +1059,10 @@ function renderContinue(onGo) {
 
 function advanceTo(id) {
   currentSceneId = id;
-  if (String(id).startsWith("ending-")) return renderEnding(id);
+  // Asked of the data rather than of the id's spelling: Chapter I's endings are
+  // "ending-a", Chapter II's are "c2-ending-a", and a prefix test would send
+  // the latter looking for a scene that does not exist.
+  if (ENDINGS.some(e => e.id === id)) return renderEnding(id);
 
   // An opening plate lands before a word of the scene is on screen. Fade the
   // outgoing scene first so nothing of it is left behind the plate.
@@ -1078,8 +1095,8 @@ function renderEnding(id) {
   const blocks = [
     e.baseOpening,
     lookup(e.conditionalMiddle),
-    lookup(WITNESS_CALLBACK),
-    e.manuscriptCallback
+    lookup(SHARED_CALLBACK),
+    e.specificCallback
   ].filter(Boolean);
 
   fadeOut(() => {
@@ -1156,10 +1173,11 @@ function applyDebug() {
 
 /* ──────────────────────────────────────────────────────────────── boot */
 
-function startGame() {
+function startGame(chapterKey) {
   document.body.classList.add("playing");
+  const chapter = activateChapter(chapterKey || "i");
   const jump = applyDebug();
-  advanceTo(jump || "scene-1");
+  advanceTo(jump || chapter.start);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -1167,19 +1185,37 @@ window.addEventListener("DOMContentLoaded", () => {
   Sound.titleShown();
   const begin = document.getElementById("begin");
   const title = document.getElementById("title-screen");
+  const skip = document.getElementById("skip-to-ii");
   const query = new URLSearchParams(window.location.search);
 
-  const enter = () => {
+  const enter = key => {
     title.classList.add("gone");
-    setTimeout(() => { title.hidden = true; startGame(); }, 700);
+    setTimeout(() => { title.hidden = true; startGame(key); }, 700);
   };
 
-  begin.addEventListener("click", enter);
+  begin.addEventListener("click", () => enter("i"));
+
+  // The second door. It skips a chapter, and it is also the only place the
+  // title screen admits there is more than one — which is the hint. Hovering it
+  // sounds a single drip: Chapter II's whole bed is that sound, so the tease
+  // tells the truth about what it opens without describing it. Once per hover,
+  // not on every mousemove, and on keyboard focus too.
+  if (skip) {
+    skip.addEventListener("click", () => enter("ii"));
+    skip.addEventListener("mouseenter", () => Sound.chapterTease());
+    skip.addEventListener("focus", () => Sound.chapterTease());
+  }
 
   if (query.has("all")) {
+    // ?all is Chapter I's wall by default; ?all=ii opens Chapter II's.
+    activateChapter(query.get("all") === "ii" ? "ii" : "i");
     Gallery.setRevealAll(true);
     Gallery.open();
     return;
   }
-  if (query.has("debug")) enter();
+  // ?chapter=ii jumps straight in, and ?debug=c2-scene-7 implies Chapter II
+  // without having to say so twice.
+  const debugTarget = query.get("debug") || "";
+  const wants = query.get("chapter") || (debugTarget.indexOf("c2-") === 0 ? "ii" : "i");
+  if (query.has("debug") || query.has("chapter")) enter(wants);
 });

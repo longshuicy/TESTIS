@@ -1,7 +1,7 @@
-# TESTIS — Sound Design
+# SUPERSTES — Sound Design
 
-Companion to `testis-script.md` (narrative), `testis-art-prompts.md` (art), and
-`testis-tech-design.md` (build).
+Companion to `superstes-script.md` (narrative), `superstes-art-prompts.md` (art), and
+`superstes-tech-design.md` (build).
 
 Audio is optional enhancement. **The game must be fully playable and coherent with sound off.**
 Nothing in the writing depends on hearing anything.
@@ -202,6 +202,66 @@ that means most players never hear it — their first gesture is the "Enter the 
 which the retry catches a beat before the click handler fires, so the clock has at most an instant
 before Scene 1's bed cuts it over. It only really sounds for a player who lingers and interacts with
 the page first — the sound toggle, a keypress — before pressing on.
+
+### Chapter II's bed: one drip, the whole way through
+
+**Chapter II has no music.** Its bed is the water itself — one drip loop running continuously from
+Scene 1 to the tally wall. Nothing to source; nothing to compose.
+
+That is not a placeholder for music that never arrived. Chapter I is scored because it is a
+proceeding with a shape: rooms, a question, an instrument, an ending. Chapter II is seven ordinary
+memories that only turn out to have been anything in the last scene, and a score would tell the
+player they were important — which is the one thing the whole chapter is built to withhold (script
+doc, *Two reveals*). A drip is the sound of nothing happening, which is exactly the register, and it
+is the chapter's own motif: water is in every scene, and Scene 7 is where all of it pools.
+
+| Asset | What |
+|---|---|
+| `bed-c2-drip.wav` | 11.9s, nine drip intervals at 1.323s, mono 16-bit 48kHz, ~1.1MB. Cut seamlessly from `drip.wav` by `scripts/make_c2_drip_bed.py`. |
+
+**WAV, not AAC**, for the §7 reason: encoder padding would put a gap at the loop point. Same
+exception `bed-scene-5.wav` and `drip-single.wav` take.
+
+**It never restarts.** All ten `BEDS` keys (`c2-scene-1`…`c2-ending-c`) are the *same spec object*,
+and `bedElement` pools by `src|rate|loop` rather than by key name, so all ten resolve to one `<audio>`
+element. `playBed` then takes its "same bed, just bring it back up" path at every scene change instead
+of cutting over. One unbroken loop for the chapter's whole 15–22 minutes.
+
+That pooling change is safe for Chapter I: its only shared `src` is `bed-scene-2.m4a`, held by
+`scene-2` and by `scene-6` at `rate: 0.89`, and the rate is part of the pool identity — so those stay
+two separate elements and Scene 6 still pitches down. Verified, along with the endings still being
+`loop: false`.
+
+**Chapter II's endings keep looping**, unlike Chapter I's. There is no composed piece to end, and a
+drip stopping dead would read as a fault rather than a finish. The drip carries into the tally wall
+the same way Chapter I's ending beds do — uncut and un-restarted, because `Gallery.open()` touches
+nothing in `Sound`.
+
+### The silence it does not make
+
+**Scene 5's cut.** The script moves from a loud bar into an argument in a different year —
+*Different place. Different year. No music.* With a single continuous bed there is no bar bed to stop,
+so this is no longer an audio event at all; the line does its own work. Nothing to build.
+
+### No plate sting
+
+Chapter II's one plate has **no sting**. The drip keeps running straight through it.
+
+A borrowed grandfather clock (`bed-scene-5.wav`, the one the title screen ticks under) was tried
+here, on the reasoning that Chapter I opens on that clock and it could return under the one image
+where the counting becomes visible. In practice it was the only sound in the chapter that was not
+water, and it read as a bug rather than a callback. Removed.
+
+This needed one change in `plateOpened`: it used to cut the bed *before* checking whether the plate
+had a sting, so a sting-less plate produced dead air rather than a held image. It now leaves the bed
+alone when there is no sting. Chapter I's four plates all have stings, so nothing there changes — and
+Chapter I's Scene 2 plate still gets its hard cut into silence, because that silence comes from its
+own sting arriving over a cut bed, not from this branch.
+
+So Chapter II has exactly one sound, start to finish: the drip. The plate is not an exception to it.
+
+Nothing above changes the `Sound` interface in §12; these are `BEDS` and plate-sting entries, not new
+call sites.
 
 ---
 

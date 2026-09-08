@@ -1,10 +1,10 @@
-# TESTIS
-*(Latin: "witness," also "testament")*
+# SUPERSTES
+*(Latin: "witness" — literally "standing beyond," the one who outlived it and can still testify)*
 
 A short narrative web game. First person, past tense. Black and white line illustration.
 Tone: bizarre, anachronistic, sad, melancholic. Themes: time, destiny, witness vs. intervention.
 
-**Companion docs:** `testis-art-prompts.md` (image generation), `testis-tech-design.md` (build spec).
+**Companion docs:** `superstes-art-prompts.md` (image generation), `superstes-tech-design.md` (build spec).
 This doc is the single source of truth for narrative content. Where the three disagree, this one wins.
 
 **Revision note.** This is v3. Scene count, every tier2 object, every reactive block, every flag key,
@@ -109,7 +109,7 @@ flags = {
 The three local-only flags are deliberate. They give the player agency in the moment without
 multiplying ending permutations.
 
-**Art style suffix:** maintained in `testis-art-prompts.md`, the single source of truth for art
+**Art style suffix:** maintained in `superstes-art-prompts.md`, the single source of truth for art
 direction. Don't duplicate it here; it drifted once already.
 
 ---
@@ -925,7 +925,7 @@ identical to v2, so **all existing art and the tech design doc remain valid.**
       alternate body when the player declined to carve, same token and fallback as the endings;
       (2) the `plate` field, see the PLATES section above, Scene 4's plate supersedes `closingText`;
       (3) the Scene 5 calendar hotspot, which renders an HTML widget rather than an image.
-- [ ] Build per `testis-tech-design.md`
+- [ ] Build per `superstes-tech-design.md`
 - [ ] Playtest all three endings; confirm no conditional row renders the fallback unintentionally
 
 ### Deliberate decisions, recorded so they don't get "fixed"

@@ -1,4 +1,4 @@
-// TESTIS — the tally wall's own copy.
+// SUPERSTES — the tally wall's own copy.
 //
 // Every caption on the wall is derived at runtime from scenes.js / endings.js
 // (scene and ending titles, tier-2 examine labels), so nothing here restates
@@ -6,9 +6,9 @@
 // wall itself needs and nothing else does: its heading, its register names,
 // and the words for a plate you have not reached.
 //
-// See docs/testis-script.md § The Tally Wall.
+// See docs/superstes-script.md § The Tally Wall.
 
-const WALL = {
+const WALL_C1 = {
   heading: "Something is already keeping count",
 
   // Registers are matched against the asset's filename prefix, in order. An
@@ -19,9 +19,9 @@ const WALL = {
   // "scene-" alone would also miss it — the prefixes are tested with
   // startsWith, and "plate-scene-7" does not begin with "scene-".
   registers: [
-    { numeral: "I",   label: "The Rooms",   prefix: ["scene-", "ending-"] },
-    { numeral: "II",  label: "Evidence",    prefix: ["obj-"] },
-    { numeral: "III", label: "The Accused", prefix: ["char-", "plate-"] }
+    { numeral: "I",   label: "The Rooms",   layout: "wide",     prefix: ["scene-", "ending-"] },
+    { numeral: "II",  label: "Evidence",    layout: "square",   prefix: ["obj-"] },
+    { numeral: "III", label: "The Accused", layout: "portrait", prefix: ["char-", "plate-"] }
   ],
 
   // Shown on an un-inked cell. Deliberately not "locked" or "???" — the wall
@@ -48,6 +48,14 @@ const WALL = {
   // the count is the last thing the game says, and "begin again" waits there.
   enter: "See what was counted",
   again: "Begin again",
+
+  // The door on to Chapter II, at the foot of the wall beside "Begin again"
+  // and revealed with it. The label is word-for-word the title screen's own
+  // muted second door, because it is the same door — and arriving here it also
+  // answers this wall's heading directly: something is already keeping count,
+  // and someone else was. It names no chapter beyond the numeral; naming it
+  // would spoil it.
+  nextChapter: { key: "ii", label: "Someone else was keeping count · II" },
 
   // Provenance. Kept here rather than in the art doc's voice because it is
   // read by players, not by whoever generates the next asset.

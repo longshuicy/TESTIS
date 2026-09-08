@@ -1,4 +1,4 @@
-// TESTIS — the tally wall.
+// SUPERSTES — the tally wall.
 //
 // A record of every plate the game can show, in story order, with the ones you
 // actually witnessed inked in and the rest left as marks scratched on the wall.
@@ -205,8 +205,11 @@ const Gallery = (function () {
       section.appendChild(h3);
 
       const grid = document.createElement("div");
-      grid.className = "wall-grid " + slug(reg.label);
-      const groups = slug(reg.label) === "the-rooms" ? 3 : 1;
+      // Layout comes from the register's `layout` role, not its label — a
+      // renamed register must not lose its columns (see style.css).
+      const layout = reg.layout || "square";
+      grid.className = "wall-grid " + layout;
+      const groups = layout === "wide" ? 3 : 1;
 
       mine.forEach(item => {
         plate++;
@@ -219,12 +222,19 @@ const Gallery = (function () {
 
     const foot = document.createElement("p");
     foot.className = "wall-foot";
-    foot.innerHTML = WALL.credit.map(esc).join("<br>");
+    foot.innerHTML = (WALL.credit || []).map(esc).join("<br>");
     wall.appendChild(foot);
 
-    wall.appendChild(secretBlock());
+    // Chapter II's wall has no plaque: there is no Morse in that chapter, so
+    // there is nothing withheld for a plaque to hand back. A wall without a
+    // `secretPrompt` simply doesn't grow one.
+    if (hasSecret()) wall.appendChild(secretBlock());
 
     return wall;
+  }
+
+  function hasSecret() {
+    return !!(WALL && WALL.secretPrompt);
   }
 
   /* ─────────────────────────────────────────────────────── the secret plaque
@@ -488,16 +498,41 @@ const Gallery = (function () {
 
     overlay.appendChild(build());
 
-    if (final) {
+    // A wall with no `again` offers no way out at all, which is Chapter II's
+    // whole point: Chapter I is a relay and loops, Chapter II is about the fact
+    // that nothing came next, so its wall is the last screen and it stays there.
+    // The only exit is the browser's own.
+    if (final && WALL.again) {
       const wrap = document.createElement("div");
       wrap.className = "continue-wrap wall-again" +
-        (secretRevealed ? "" : " wall-again-pending");
+        (hasSecret() && !secretRevealed ? " wall-again-pending" : "");
       const again = document.createElement("button");
       again.type = "button";
       again.className = "continue";
       again.textContent = WALL.again;
       again.addEventListener("click", () => window.location.reload());
       wrap.appendChild(again);
+
+      // A wall may also open onto the next chapter. Both exits appear together
+      // and are gated together — the plaque holds the foot of the wall shut,
+      // not just one button of it.
+      //
+      // Loading the next chapter as a fresh page rather than swapping it in
+      // place: nothing here is persisted, so a reload costs the player nothing
+      // and buys a guaranteed-clean state instead of unwinding an ending's
+      // body classes, background layers and runtime by hand. "Begin again"
+      // already works exactly this way.
+      if (WALL.nextChapter) {
+        const on = document.createElement("button");
+        on.type = "button";
+        on.className = "continue wall-next-chapter";
+        on.textContent = WALL.nextChapter.label;
+        on.addEventListener("click", () => {
+          window.location.search = "?chapter=" + encodeURIComponent(WALL.nextChapter.key);
+        });
+        wrap.appendChild(on);
+      }
+
       overlay.appendChild(wrap);
       againWrap = wrap;
     } else {
@@ -551,10 +586,21 @@ const Gallery = (function () {
 
   function setRevealAll(v) { revealAll = !!v; }
 
+  // Chapter switch. The count belongs to the chapter that earned it, and the
+  // catalogue is derived from whichever SCENES/ENDINGS are active, so carrying
+  // Chapter I's inked cells into Chapter II's wall would credit it with plates
+  // it never showed. The plaque state resets with it.
+  function reset() {
+    seen.clear();
+    secretRevealed = false;
+    secretPrompted = false;
+  }
+
   return {
     saw: saw,
     open: open,
     close: dismiss,
+    reset: reset,
     setRevealAll: setRevealAll,
     count: () => catalogue().filter(i => has(i.id)).length,
     total: () => catalogue().length

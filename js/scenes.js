@@ -1,12 +1,12 @@
-// TESTIS — scene data.
-// Narrative content transcribed from docs/testis-script.md v3 (source of truth).
+// SUPERSTES — scene data.
+// Narrative content transcribed from docs/superstes-script.md v3 (source of truth).
 // No logic in this file.
 //
 // Tokens usable inside any body text, each on its own paragraph:
 //   {morse}        renders the block's `morse` field as a typed inscription
 //   {player_name}  renders the carved name, or "a name" if declined
 
-const SCENES = [
+const SCENES_C1 = [
 
   // ─────────────────────────────────────────────────────────────── SCENE 1
   {

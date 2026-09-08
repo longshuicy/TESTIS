@@ -1,11 +1,11 @@
-// TESTIS — ending data.
-// Transcribed from docs/testis-script.md v3. Assembly order is fixed:
-// baseOpening → conditionalMiddle → WITNESS_CALLBACK → manuscriptCallback (C only) → closing.
+// SUPERSTES — ending data.
+// Transcribed from docs/superstes-script.md v3. Assembly order is fixed:
+// baseOpening → conditionalMiddle → WITNESS_CALLBACK → specificCallback (C only) → closing.
 //
 // NOTE: `looked_away` and `identity_found` are real booleans in both flags and match rows.
 // Do not stringify them; `lookup()` uses strict equality.
 
-const WITNESS_CALLBACK = {
+const WITNESS_CALLBACK_C1 = {
   keys: ["looked_away", "acknowledged_witness"],
   table: [
     {
@@ -28,7 +28,7 @@ const WITNESS_CALLBACK = {
   // No fallback: all 4 combinations are covered.
 };
 
-const ENDINGS = [
+const ENDINGS_C1 = [
 
   // ─────────────────────────────────────────────────────────── ENDING A
   {
@@ -74,7 +74,7 @@ const ENDINGS = [
       ],
       fallback: "I thought of him, and of the water, and of the apology he had offered a room that had not asked for one. It was never about being right. It was only about being handed something early and being made to carry it alone."
     },
-    manuscriptCallback: null,
+    specificCallback: null,
     closing: "“I'm ahead of my time,” I said to no one, because it was the only lie left that might be useful to somebody.\n\nThe marks under the table did not stop at mine. I had seen that and understood it and chosen this anyway, which is either the bravest thing I have done or the most useless, and I was not going to find out which.\n\nSomewhere, someone was carving {player_name} into a threshold, not yet knowing whose chapel it would lead them to."
   },
 
@@ -114,7 +114,7 @@ const ENDINGS = [
       ],
       fallback: "I fought the way water fights a dam, not expecting to win, only refusing to be still about losing. The rope held. I would like to think something in the room noticed that it had to."
     },
-    manuscriptCallback: null,
+    specificCallback: null,
     closing: "They did not stop. Nothing stops, once a room has decided what a man's insides are for.\n\nBut I never answered the question. Not once, not at the end, not when answering would have been easier than the rope. Whatever else the marks under that table record, mine has that next to it, and I find I can live with the rest.\n\nSomewhere, someone was carving {player_name} into a threshold, not yet knowing whose chapel it would lead them to."
   },
 
@@ -154,7 +154,7 @@ const ENDINGS = [
       ],
       fallback: "I did not fully know whose words I was borrowing when I said them. I only knew they were the truest lie in the room, and that someone would need to keep saying it until a century arrived that did not require it."
     },
-    manuscriptCallback: "I thought, saying it, of the page I had reached for and was not allowed to hold, the one a monk had covered with his own hand and called later, meaning never. Wet ink, in a room where the book had not been written.\n\nI understood at last which direction it had been traveling.\n\nNo one stopped me now. I said the words all the way through, out loud, to a room that had no choice left but to hear them, and the one in the dark heard them too, which was the entire purpose of saying them at all.",
+    specificCallback: "I thought, saying it, of the page I had reached for and was not allowed to hold, the one a monk had covered with his own hand and called later, meaning never. Wet ink, in a room where the book had not been written.\n\nI understood at last which direction it had been traveling.\n\nNo one stopped me now. I said the words all the way through, out loud, to a room that had no choice left but to hear them, and the one in the dark heard them too, which was the entire purpose of saying them at all.",
     closing: "Somewhere, and I could feel it the way you feel a door closing in another room of the same house, someone was dreaming this exact chapel. Watching someone they did not yet realize was themselves. Carrying something home in their hands without knowing they had picked it up.\n\nI hope, when it is their turn to wake, they remember it was not punishment.\n\nIt was only ever a relay. And I had just handed off the water.\n\nSomewhere, someone was carving {player_name} into a threshold, not yet knowing whose chapel it would lead them to."
   }
 ];
